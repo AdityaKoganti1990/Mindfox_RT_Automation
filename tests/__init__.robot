@@ -2,8 +2,6 @@
 Library           FlaUILibrary
 Library           Process
 Resource          ../resources/login.resource
-Resource          ../resources/welcome.resource
-
 
 #Suite Setup       Open Application For Suite
 #Suite Teardown    Close Application For Suite
@@ -22,7 +20,6 @@ Open Application For Suite
         Set Suite Variable    ${pid}    ${app_pid}
         Sleep    2s
         Login To FoxViewerDesktop    Sri    Sri
-        Click Ok Button
         Main Window Should Be Open
     ELSE
         ${existing_pid}=    Get Process Id    FoxViewerDesktop.exe

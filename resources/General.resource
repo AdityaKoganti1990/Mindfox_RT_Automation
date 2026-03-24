@@ -18,6 +18,8 @@ ${Select_Folder_XPATH}         /Window/Window/Button[@Name="Select Folder"]
 ${User_Manual_Button_XPATH}    //*[@AutomationId="Main_Btn_UserManual"]
 ${open_about_menu_XPATH}          //*[@AutomationId="Main_Btn_About"]
 ${open_user_management_menu_XPATH}    //*[@AutomationId="Main_Btn_UserManagement"]
+${project_Directory_Path}    ${CURDIR}\\..\\test_Images\\
+${folder_Directory_Path}     ${CURDIR}\\..\\test_Images\\Project Folder_Set1
 
 
 

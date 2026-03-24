@@ -3,6 +3,7 @@ Library           FlaUILibrary    screenshot_dir=${CURDIR}\\..\\Actual\\test.png
 Library           Process
 Library           ../lib/image_comparator.py
 Library           ../lib/ironpy_remote_client.py
+Library           AutoItLibrary
 
 Documentation
 ...    Login and application startup related keywords for ScanviewX.
@@ -47,6 +48,7 @@ Open FoxViewerDesktop Application
     Attach Application By Pid        ${pid}
     Sleep    1s
     Wait Until Element Is Enabled    ${LOGIN_BUTTON_XPATH}    5
+    Sleep    1s
     RETURN    ${pid}
     
     
@@ -64,6 +66,10 @@ Login To FoxViewerDesktop
     Set Text To Textbox    ${PASSWORD_XPATH}     ${password}
     Sleep                 0.5s
     Click                 ${LOGIN_BUTTON_XPATH}
+    Sleep                 1s
+    Focus                 ${MAIN_WINDOW_XPATH}
+    Sleep                 1s
+    Resize FoxRT Application Window    10    10    1850    1000
     Sleep                 1s
 
 Verify Invalid Warning Text
@@ -157,13 +163,13 @@ Assert Application Is Closed
     ${is_visible}=    Verify Application Is Closed
     Should Not Be True    ${is_visible}    Application window is still visible after close.
 
-Restore Window
+Restore FoxRT Window
     ${is_maximized}=    Verify Window Is Maximized
     IF    ${is_maximized}
         Invoke Button    ${MAIN_RESTORE_BTN_XPATH}
     END
 
-Maximize Window
+Maximize FoxRT Window
     ${is_maximized}=    Verify Window Is Maximized
     IF    not ${is_maximized}
         ${has_maximize}=    Run Keyword And Return Status
@@ -177,7 +183,7 @@ Maximize Window
         END
     END
     
-Minimize Window
+Minimize FoxRTWindow
     ${has_minimize}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${MAIN_MINIMIZE_BTN_XPATH}    2
     IF    ${has_minimize}
@@ -187,7 +193,14 @@ Minimize Window
         Press Keys    ${MAIN_WINDOW_XPATH}    WIN+DOWN
     END
 
-Close Application Window
+Resize FoxRT Application Window
+    [Arguments]    ${x}=0    ${y}=0    ${width}=1280    ${height}=800
+    Restore FoxRT Window
+    Focus    ${MAIN_WINDOW_XPATH}
+    Win Move    [ACTIVE]    ${EMPTY}    ${x}    ${y}    ${width}    ${height}
+    Sleep    1s
+
+Close FoxRT Application Window
     ${has_close}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${MAIN_CLOSE_BTN_XPATH}    3
     Should Be True    ${has_close}    Close button not found.

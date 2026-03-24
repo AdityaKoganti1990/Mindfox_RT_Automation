@@ -7,8 +7,6 @@ Resource          ../resources/General.resource
 Resource          ../resources/imageviewer.resource
 
 *** Variables ***
-${project_Directory_Path}    E:\\Automation\\FoxRT\\test_Images\\
-${folder_Directory_Path}     E:\\Automation\\FoxRT\\test_Images\\Project Folder_Set1
 ${names}
 
 *** Test Cases ***
@@ -116,7 +114,7 @@ MFRTG14 - Verify whether able to minimize application window.
         [Documentation]    Verify window can be minimized
     [Tags]    smoke    login    window-state
 
-    Minimize Window
+    Minimize FoxRT Window
     Wait Until Keyword Succeeds    5x    1s    Assert Window Is Minimized
 
     Log    Window maximize validation completed
@@ -125,7 +123,7 @@ MFRTG15 - Verify Window Can Be Restored From Minmized State
     [Documentation]    Verify window can be restored from Minmized state
     [Tags]    smoke    login    window-state
 
-    Restore Window
+    Restore FoxRT Window
     Wait Until Keyword Succeeds    5x    1s    Assert Window Is Maximized
 
     Log    Window restore validation completed
@@ -197,7 +195,7 @@ MFRTG26 - Verify whether able to re-login to application after logout.
 MFRTG27 - Verify whether able to close application window.
     [Documentation]    Verify whether able to close application window
     [Tags]    smoke    general
-    Close Application Window
+    Close FoxRT Application Window
     Verify Application Is Closed
 
     
