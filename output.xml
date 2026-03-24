@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.0.1 (Python 3.11.9 on win32)" generated="20260320 18:15:21.392" rpa="false" schemaversion="3">
+<suite id="s1" name="Autoit Sanity" source="E:\Automation\FoxRT\autoit_sanity.robot">
+<test id="s1-t1" name="AutoItLibrary Loads And Responds" line="5">
+<kw name="Get Version" library="AutoItLibrary">
+<var>${library_version}</var>
+<doc>Returns a string with the version of the AutoItLibrary.</doc>
+<msg timestamp="20260320 18:15:21.563" level="INFO">${library_version} = File: E:\Automation\FoxRT\.venv\Lib\site-packages\AutoItLibrary\__init__.py, Version: 1.1</msg>
+<status status="PASS" starttime="20260320 18:15:21.563" endtime="20260320 18:15:21.563"/>
+</kw>
+<kw name="Get Auto It Version" library="AutoItLibrary">
+<var>${autoit_version}</var>
+<doc>Returns a string with the version of the AutoItX COM object.</doc>
+<msg timestamp="20260320 18:15:21.563" level="INFO">${autoit_version} = AutoItX 3.3.18.0 (COM object)</msg>
+<status status="PASS" starttime="20260320 18:15:21.563" endtime="20260320 18:15:21.563"/>
+</kw>
+<kw name="Should Not Be Empty" library="BuiltIn">
+<arg>${library_version}</arg>
+<doc>Verifies that the given item is not empty.</doc>
+<msg timestamp="20260320 18:15:21.565" level="INFO">Length is 89</msg>
+<status status="PASS" starttime="20260320 18:15:21.563" endtime="20260320 18:15:21.565"/>
+</kw>
+<kw name="Should Not Be Empty" library="BuiltIn">
+<arg>${autoit_version}</arg>
+<doc>Verifies that the given item is not empty.</doc>
+<msg timestamp="20260320 18:15:21.565" level="INFO">Length is 29</msg>
+<status status="PASS" starttime="20260320 18:15:21.565" endtime="20260320 18:15:21.565"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>AutoItLibrary version: ${library_version}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20260320 18:15:21.565" level="INFO">AutoItLibrary version: File: E:\Automation\FoxRT\.venv\Lib\site-packages\AutoItLibrary\__init__.py, Version: 1.1</msg>
+<status status="PASS" starttime="20260320 18:15:21.565" endtime="20260320 18:15:21.565"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>AutoIt runtime version: ${autoit_version}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20260320 18:15:21.565" level="INFO">AutoIt runtime version: AutoItX 3.3.18.0 (COM object)</msg>
+<status status="PASS" starttime="20260320 18:15:21.565" endtime="20260320 18:15:21.565"/>
+</kw>
+<doc>Standalone sanity check to verify AutoItLibrary is installed and the AutoIt COM bridge responds.</doc>
+<tag>autoit</tag>
+<tag>sanity</tag>
+<tag>smoke</tag>
+<status status="PASS" starttime="20260320 18:15:21.563" endtime="20260320 18:15:21.565"/>
+</test>
+<status status="PASS" starttime="20260320 18:15:21.394" endtime="20260320 18:15:21.565"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0" skip="0">autoit</stat>
+<stat pass="1" fail="0" skip="0">sanity</stat>
+<stat pass="1" fail="0" skip="0">smoke</stat>
+</tag>
+<suite>
+<stat pass="1" fail="0" skip="0" id="s1" name="Autoit Sanity">Autoit Sanity</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
