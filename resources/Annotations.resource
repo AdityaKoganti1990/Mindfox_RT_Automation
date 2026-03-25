@@ -17,6 +17,7 @@ ${rectangle_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindo
 ${circle_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AnnotCircle"]
 ${freehand_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AnnotRoi"]
 ${text_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AnnotText"]
+${delete_context_menu_item_xpath}    //*[@Name="Delete"]
 
 *** Keywords ***
 
@@ -200,41 +201,6 @@ Draw Angle On Image
     AutoItLibrary.Mouse Click    left    ${start_x}    ${start_y}    2
     Sleep    0.5
 
-
-Crop Image
-    [Arguments]    ${X}    ${Y}    ${w}    ${H}
-
-    Set Text To Textbox    ${X_XPATH}    ${X}
-    Set Text To Textbox    ${Y_XPATH}    ${Y}
-    Set Text To Textbox    ${WIDTH_XPATH}    ${w}
-    Set Text To Textbox    ${HEIGHT_XPATH}    ${H}
-
-    Click    ${CROP_OK_BUTTON_XPATH}
-    Sleep    1
-
-
-Click Calibrate Button
-    [Arguments]    ${calibrate_value}    ${measurementsUnits}
-
-    ${start_x}    ${start_y}    ${end_x}    ${end_y}    ${start_x1}    ${start_y1}    ${end_x1}    ${end_y1}    Get Current Location Of Image Viewer Polygon
-
-    Mouse Click    Right    ${start_x}    ${start_y}
-    Sleep    1
-    Click    ${CALIBRATE_TOOL_XPATH}
-    Sleep    1
-    Click    ${CALIBRATE_EDIT_XPATH}
-    Sleep    1
-    Send    {DELETE}
-    Sleep    1
-    Send    ${calibrate_value}
-    Sleep    1
-
-    Select Combobox Item By Name    /Window/ComboBox[@AutomationId="cmbMeasurementUnits"]    ${measurementsUnits}
-
-    Sleep    1
-    Click    ${CALIBRATE_OK_BUTTON_XPATH}
-    Sleep    1
-
 Add Annotation
     [Arguments]    ${annotation_type}    ${x_offset}=0    ${y_offset}=0
     [Documentation]    Add annotation of specified type to the image viewer. Supported types: Arrow, Ruler, Line, Rectangle & Circle
@@ -254,6 +220,57 @@ Add Annotation
     Run Keyword If    '${annotation_type}'=='Rectangle'    Click    ${rectangle_annotation_button_xpath}
     Run Keyword If    '${annotation_type}'=='Circle'    Click    ${circle_annotation_button_xpath}
     Sleep    1s
+
+Add Annotation at custom position
+    [Arguments]    ${annotation_type}    ${x1}    ${y1}    ${x2}    ${y2}
+    [Documentation]    Add annotation of specified type using user-provided start and end positions relative to the image viewer's top-left corner. Supported types: Arrow, Ruler, Line
+
+    sleep    1s
+    Run Keyword If    '${annotation_type}'=='Arrow'    Click    ${arrow_annotation_button_xpath}
+    Run Keyword If    '${annotation_type}'=='Ruler'    Click    ${ruler_annotation_button_xpath}
+    Run Keyword If    '${annotation_type}'=='Line'    Click    ${line_annotation_button_xpath}
+    Run Keyword If    '${annotation_type}'=='Rectangle'    Click    ${rectangle_annotation_button_xpath}
+    Run Keyword If    '${annotation_type}'=='Circle'    Click    ${circle_annotation_button_xpath}
+
+    Sleep    1s
+    AutoItLibrary.Mouse Click Drag    left    ${x1}    ${y1}    ${x2}    ${y2}
+    Sleep    1s
+    Run Keyword If    '${annotation_type}'=='Arrow'    Click    ${arrow_annotation_button_xpath}
+    Run Keyword If    '${annotation_type}'=='Ruler'    Click    ${ruler_annotation_button_xpath}
+    Run Keyword If    '${annotation_type}'=='Line'    Click    ${line_annotation_button_xpath}
+    Run Keyword If    '${annotation_type}'=='Rectangle'    Click    ${rectangle_annotation_button_xpath}
+    Run Keyword If    '${annotation_type}'=='Circle'    Click    ${circle_annotation_button_xpath}
+    Sleep    1s
+
+Delete Annotation From Context Menu
+    [Arguments]    ${start_x}    ${start_y}
+    [Documentation]    Delete annotation using context menu option.
+
+    Focus    ${window_XPATH}
+    Sleep    1s
+    AutoItLibrary.Mouse Click    right    ${start_x}    ${start_y}
+    Sleep    0.5
+    Click    ${delete_context_menu_item_xpath}
+    Sleep    1s
+
+Add Freehand Annotation at custom position
+    [Arguments]    ${x1}    ${y1}    ${x2}    ${y2}    ${x3}    ${y3}    ${x4}    ${y4}    ${x5}    ${y5}
+    [Documentation]    Add freehand annotation using user-provided start and end positions relative to the image viewer's top-left corner.
+    Sleep    1s
+    Click    ${freehand_annotation_button_xpath}
+    Sleep    1s
+    AutoItLibrary.Mouse Move    ${x1}    ${y1}
+    Sleep    0.2
+    AutoItLibrary.Mouse Down    left
+    AutoItLibrary.Mouse Move    ${x2}    ${y2}    4
+    AutoItLibrary.Mouse Move    ${x3}    ${y3}    4
+    AutoItLibrary.Mouse Move    ${x4}    ${y4}    4
+    AutoItLibrary.Mouse Move    ${x5}    ${y5}    4
+    AutoItLibrary.Mouse Up    left
+    Sleep    1s
+    Click    ${freehand_annotation_button_xpath}
+    Sleep    1s
+
 
 Add Multiple Annotations Of Same Type
     [Arguments]    ${annotation_type}    ${count}=3

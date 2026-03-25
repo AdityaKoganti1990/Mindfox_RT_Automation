@@ -6,6 +6,9 @@ Library           OperatingSystem
 Library           String
 Library           Collections
 Library           AutoItLibrary
+Resource          ../resources/login.resource
+Resource          ../resources/General.resource
+Resource          ../resources/Annotations.resource
 
 *** Variables ***
 # ─────────────────── Import / Export ───────────────────
@@ -147,4 +150,39 @@ Close Image Viewer
     Wait Until Element Is Enabled    ${CLOSE_IMAGEVIEWER_BUTTON_XPATH}
     Click    ${CLOSE_IMAGEVIEWER_BUTTON_XPATH}
 
+#─────────────────── Viewer Operations ───────────────────
 
+
+Crop Image
+    [Arguments]    ${X}    ${Y}    ${w}    ${H}
+
+    Set Text To Textbox    ${X_XPATH}    ${X}
+    Set Text To Textbox    ${Y_XPATH}    ${Y}
+    Set Text To Textbox    ${WIDTH_XPATH}    ${w}
+    Set Text To Textbox    ${HEIGHT_XPATH}    ${H}
+
+    Click    ${CROP_OK_BUTTON_XPATH}
+    Sleep    1
+
+
+Click Calibrate Button
+    [Arguments]    ${calibrate_value}    ${measurementsUnits}
+
+    ${start_x}    ${start_y}    ${end_x}    ${end_y}    ${start_x1}    ${start_y1}    ${end_x1}    ${end_y1}    Get Current Location Of Image Viewer Polygon
+
+    Mouse Click    Right    ${start_x}    ${start_y}
+    Sleep    1
+    Click    ${CALIBRATE_TOOL_XPATH}
+    Sleep    1
+    Click    ${CALIBRATE_EDIT_XPATH}
+    Sleep    1
+    Send    {DELETE}
+    Sleep    1
+    Send    ${calibrate_value}
+    Sleep    1
+
+    Select Combobox Item By Name    /Window/ComboBox[@AutomationId="cmbMeasurementUnits"]    ${measurementsUnits}
+
+    Sleep    1
+    Click    ${CALIBRATE_OK_BUTTON_XPATH}
+    Sleep    1
