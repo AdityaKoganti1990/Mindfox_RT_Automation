@@ -22,6 +22,7 @@ ${IMAGE_VIEWER_XPATH}    /Window/Custom/Pane[@AutomationId="ImageScrollViewer"]
 ${IMAGE_NAME_XPATH}
 ${CLOSE_IMAGEVIEWER_BUTTON_XPATH}
 ${autoBNC_menu_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Btn_AutoBnC"]
+${RESET_VIEW_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_ResetView"]
 
 # ─────────────────── Paths ───────────────────
 
@@ -186,3 +187,9 @@ Click Calibrate Button
     Sleep    1
     Click    ${CALIBRATE_OK_BUTTON_XPATH}
     Sleep    1
+
+Reset View
+    Click    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${RESET_VIEW_BUTTON_XPATH}
+    Sleep    0.2s

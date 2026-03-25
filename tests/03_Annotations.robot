@@ -5,8 +5,6 @@ Library           AutoItLibrary
 Resource          ../resources/login.resource
 Resource          ../resources/General.resource
 Resource          ../resources/imageviewer.resource
-Resource          ../resources/Annotations.resource
-
 *** Test Cases ***
 MFRTANN01 - Verify whether able to add arrow annotation in image viewer
     [Documentation]    Verify whether able to add arrow annotation in image viewer

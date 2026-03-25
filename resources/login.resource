@@ -4,11 +4,6 @@ Library           Process
 Library           ../lib/image_comparator.py
 Library           ../lib/ironpy_remote_client.py
 Library           AutoItLibrary
-
-Documentation
-...    Login and application startup related keywords for ScanviewX.
-...    Covers authentication, version verification, window handling and startup behavior.
-
 *** Variables ***
 
 # ─────────────────── Application Info ───────────────────
