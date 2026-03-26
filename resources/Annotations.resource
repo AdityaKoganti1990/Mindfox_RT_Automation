@@ -6,8 +6,6 @@ Library           ../lib/ironpy_remote_client.py
 Library           AutoItLibrary
 Resource          ../resources/login.resource
 Resource          ../resources/General.resource
-Resource          ../resources/imageviewer.resource
-
 *** Variables ***
 ${arrow_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AnnotArrow"]
 ${delete_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_ClearAnnotations"]
