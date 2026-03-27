@@ -33,6 +33,7 @@ ${MAIN_MINIMIZE_BTN_XPATH}       /Window[@AutomationId="FoxRTProMainWindow"]/But
 ${MAIN_RESTORE_BTN_XPATH}        /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_MaximizeRestore"]
 ${MAIN_MAXIMIZE_BTN_XPATH}       /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_MaximizeRestore"]
 ${About_close_btn_XPATH}         //*[@AutomationId="About_Btn_CloseAbout"]
+${APP_PID}                       NONE
 
 *** Keywords ***
 
@@ -41,6 +42,7 @@ ${About_close_btn_XPATH}         //*[@AutomationId="About_Btn_CloseAbout"]
 Open FoxViewerDesktop Application
     ${pid}=    Launch Application    ${APP_PATH}
     Attach Application By Pid        ${pid}
+    Set Suite Variable    ${APP_PID}    ${pid}
     Sleep    1s
     Wait Until Element Is Enabled    ${LOGIN_BUTTON_XPATH}    5
     Sleep    1s

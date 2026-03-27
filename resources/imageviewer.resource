@@ -135,6 +135,23 @@ Compare Result Images for Comparison as False
     ${result}=    Compare Images    ${expected_full}    ${actual_full}
     Should Not Be True   ${result}
 
+Verify Control Exists in Image Viewer
+    [Arguments]    ${control_xpath}    ${timeout}=0.5
+    ${result}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${control_xpath}    ${timeout}
+    Should Be True    ${result}    Control should exist in Image Viewer: ${control_xpath}
+    Log    Control exists in Image Viewer as expected.
+    RETURN    ${result}
+
+Verify Control Not Exists in Image Viewer
+    [Arguments]    ${control_xpath}    ${timeout}=0.5
+
+    ${result}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${control_xpath}    ${timeout}
+    Should Not Be True    ${result}    Control should not exist in Image Viewer: ${control_xpath}
+    Log    Control does not exist in Image Viewer as expected.
+    RETURN    ${result}
+
 #─────────────────── Viewer Validation ───────────────────
 
 Verify Image Viewer Is Empty

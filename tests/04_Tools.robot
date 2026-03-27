@@ -200,40 +200,155 @@ MFRTT14 - Verify whether able to add wall-thickness measurement tool over the im
     [Documentation]    Verify whether able to add wall-thickness measurement tool over the image and measure the wall thickness.
     [Tags]    smoke    tools
 
-    # Click    ${window_XPATH}
-    # Apply Auto Best BNC
+    Click    ${window_XPATH}
+    Apply Auto Best BNC
     Add Wall Thickness Measurement tool over image    805    400    860    403
-    # Take Actual Screenshot    MFRTT14_1.png
-    # Take wall thickness measurement window Screenshot    MFRTT14_2.png
-    # Run Keyword And Continue On Failure    Compare Result Images    MFRTT14_1.png    MFRTT14_1.png
-    # Run Keyword And Continue On Failure    Compare Result Images    MFRTT14_2.png    MFRTT14_2.png
-    # Click    ${wall_thickness_measurement_tool_button_xpath}
-MFRTT - Test
+    Take Actual Screenshot    MFRTT14_1.png
+    Take wall thickness measurement window Screenshot    MFRTT14_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT14_1.png    MFRTT14_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT14_2.png    MFRTT14_2.png
 
-#     Open FoxViewerDesktop Application
-#     Login To FoxViewerDesktop    Sri    Sri
-#     Main Window Should Be Open
-#     Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
-    # Add SNR Measurement tool over image    845    405    1045    490    545    370    675    435
-    # Zoom Surface Plot 3D Image    3
-    # Click    ${window_XPATH}
-    # Apply Auto Best BNC
-    # Add Surface Plot 3D Tool over image    722    561    815    703
-    # Rotate Surface Plot 3D Image    788    871    1130    875
-    Rotate Surface Plot 3D Image    1130    875    788    871
+MFRTT15 - Verify whether able to adjust the wall thickness measurement line position and update the measurement result accordingly.
+    [Documentation]    Verify whether able to adjust the wall thickness measurement line position and update the measurement result accordingly.
+    [Tags]    smoke    tools
 
-
+    Click    ${window_XPATH}
+    Adjust Wall Thickness Measurement Line Position    620    848    575    864    1472    855    1427    864    
+    Take Actual Screenshot    MFRTT15_1.png
+    Take wall thickness measurement window Screenshot    MFRTT15_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT15_1.png    MFRTT15_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT15_2.png    MFRTT15_2.png
+    Click    ${wall_thickness_measurement_tool_button_xpath}
+MFRTT16 - Verify whether able to add multiple wall thickness measurement lines and adjust their positions independently.
+    [Documentation]    Verify whether able to add multiple wall thickness measurement lines and adjust their positions independently.
+    [Tags]    smoke    tools
     
+    Click    ${window_XPATH}
+    Add Wall Thickness Measurement tool over image    810    480    856    470
+    Adjust Wall Thickness Measurement Line Position    498    859    447    864    1494    865    1445    865
+    Take Actual Screenshot    MFRTT16_1.png
+    Take wall thickness measurement window Screenshot    MFRTT16_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT16_1.png    MFRTT16_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT16_2.png    MFRTT16_2.png
+    Verify Control Exists in Image Viewer    ${Manual_wall_thickness_detection_method_XPATH}
+MFRTT17 - Verify whether able to reset to auto wall thickness measurement line position by clicking on Reset View button.
+    [Documentation]    Verify whether able to reset to auto wall thickness measurement line position by clicking on Reset View button.
+    [Tags]    smoke    tools
 
+    Click    ${window_XPATH}
+    Click Reset Auto Wall Thickness Line Result
+    Take Actual Screenshot    MFRTT17_1.png
+    Take wall thickness measurement window Screenshot    MFRTT17_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT17_1.png    MFRTT17_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT17_2.png    MFRTT17_2.png
+    Verify Control Not Exists in Image Viewer    ${Manual_wall_thickness_detection_method_XPATH}
 
+MFRTT18 - Verify whether graph is getting updated when switching between different wall-thickness measurement annotations.
+    [Documentation]    Verify whether graph is getting updated when switching between different wall-thickness measurement annotations.
+    [Tags]    smoke    tools
 
+    Click    ${window_XPATH}
+    Select Wall Thickness Measurement Annotation    813    313
+    Take Actual Screenshot    MFRTT18_1.png
+    Take wall thickness measurement window Screenshot    MFRTT18_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT18_1.png    MFRTT18_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT18_2.png    MFRTT18_2.png
+    Select Wall Thickness Measurement Annotation    816    370
+    Take Actual Screenshot    MFRTT18_3.png
+    Take wall thickness measurement window Screenshot    MFRTT18_4.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT18_3.png    MFRTT18_3.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT18_4.png    MFRTT18_4.png
+MFRTT19 - Verify whether able to delete the wall thickness measurement annotation and its corresponding graph.
+    [Documentation]    Verify whether able to delete the wall thickness measurement annotation and its corresponding graph.
+    [Tags]    smoke    tools
 
+    Click    ${window_XPATH}
+    Click Delete Wall Thickness Measurement Annotation    813    313
+    Click Delete Wall Thickness Measurement Annotation    816    370    
+    Take Actual Screenshot    MFRTT19.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT19.png    MFRTT19.png
+    Reset View
+MFRTT20 - Verify whether able to add CNR measurement tool over the image and measure the CNR.
+    [Documentation]    Verify whether able to add CNR measurement tool over the image and measure the CNR.
+    [Tags]    smoke    tools
 
-    
+    Click    ${window_XPATH}
+    Apply Auto Best BNC
+    Add CNR Measurement tool over image    845    405    1045    490    545    370    675    435    
+    Take WindowScreenshot for Comparison    MFRTT20.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT20.png    MFRTT20.png
+    Click    ${cnr_measurement_tool_button_xpath}
+    Reset View
+MFRTT21 - Verify whether able to add MTF measurement tool over the image and measure the MTF.
+    [Documentation]    Verify whether able to add MTF measurement tool over the image and measure the MTF.
+    [Tags]    smoke    tools
 
-    
+    Click    ${window_XPATH}
+    Apply Auto Best BNC
+    Add MTF Measurement tool over image    845    405    1045    490
+    Take MTF Measurement window Screenshot    MFRTT21_1.png
+    Take Actual Screenshot    MFRTT21_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT21_1.png    MFRTT21_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT21_2.png    MFRTT21_2.png
+    Click    ${mtf_measurement_tool_button_xpath}
+    Reset View
+    Close Project
+MFRTT22 - Verify whether able to detect wirepair using Detect IQI wire phantom tool.
+    [Documentation]    Verify whether able to detect wirepair using Detect IQI wire phantom tool.
+    [Tags]    smoke    tools
 
+    Click    ${window_XPATH}
+    Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
+    Apply Auto Best BNC
+    Detect IQI Wire Phantom Tool
+    Take Actual Screenshot    MFRTT22_1.png
+    Take IQI Wire Phantom Tool window Screenshot    MFRTT22_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT22_1.png    MFRTT22_1.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTT22_2.png    MFRTT22_2.png
+    Click    ${IQI_wire_phantom_tool_button_xpath}
+    Reset View
+    Close Project
+MFRTT23 - Verify whether able to mark defects using defect marking & classification tool.
+    [Documentation]    Verify whether able to mark defects using defect marking & classification tool.
+    [Tags]    smoke    tools
 
+    Click    ${window_XPATH}
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Apply Auto Best BNC
+    Add Defect Marking and Classification Tool over image    Porosity    Rectangle    821    372    1008    416
+    Take Actual Screenshot    MFRTT23_1.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT23_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT23_1.png    MFRTT23_1.png
+    # Run Keyword And Continue On Failure   Compare Result Images    MFRTT23_2.png    MFRTT23_2.png
+MFRTT24 - Verify whether able to evaluate the defect marked using defect marking & classification tool.
+    [Documentation]    Verify whether able to evaluate the defect marked using defect marking & classification tool.
+    [Tags]    smoke    tools
+
+    Evaluate Defect Marked    1
+    Take Actual Screenshot    MFRTT24_1.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT24_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT24_1.png    MFRTT24_1.png
+    # Run Keyword And Continue On Failure   Compare Result Images    MFRTT24_2.png    MFRTT24_2.png
+    Click    ${defect_marking_tool_button_xpath}
+MFRTT25 - Verify whether able to delete the defect.
+    [Documentation]    Verify whether able to delete the defect.
+    [Tags]    smoke    tools
+
+    Add Defect Marking and Classification Tool over image    Crack    Ellipse    821    549    1009    631
+    Click    ${defect_marking_tool_button_xpath}
+    Add Defect Marking and Classification Tool over image    Undercut    Line    825    172    1012    239
+    Take Actual Screenshot    MFRTT25_1.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT25_2.png
+    Delete Selected Defect    3
+    Take Actual Screenshot    MFRTT25_3.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT25_4.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT25_1.png    MFRTT25_1.png
+    # Run Keyword And Continue On Failure   Compare Result Images    MFRTT25_2.png    MFRTT25_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT25_3.png    MFRTT25_3.png
+    # Run Keyword And Continue On Failure   Compare Result Images    MFRTT25_4.png    MFRTT25_4.png
+    Clear AllDefects
+    Click    ${defect_marking_tool_button_xpath}
+    Reset View
 
 
 

@@ -32,6 +32,29 @@ ${surface_plot_invert_button_xpath}    //*[@AutomationId="SurfacePlot_Tgl_Invert
 ${surface_plot_resetview_button_xpath}    //*[@AutomationId="SurfacePlot_Btn_FitView"]
 ${wall_thickness_measurement_tool_button_xpath}    //*[@AutomationId="Main_Tgl_WallThickness"]
 ${wall_thickness_measurement_window_xpath}    //*[@AutomationId="WallThicknessPanel"]
+${Manual_wall_thickness_detection_method_XPATH}    //*[@Name="MANUAL"]
+${Auto_Reset_wall_thickness_line_result_XPATH}    //*[@AutomationId="ResetAutoButton"]
+${delete_wall_thickness_measurement_annotation_menu_XPATH}    //*[@Name="Remove"]
+${cnr_measurement_tool_button_xpath}    //*[@AutomationId="Main_Tgl_Cnr"]
+${mtf_measurement_tool_button_xpath}    //*[@AutomationId="Main_Tgl_Mtf"]
+${mtf_measurement_window_xpath}    /Window/Tab[@AutomationId="BottomPanelTabs"]
+${IQI_wire_phantom_tool_button_xpath}    //*[@AutomationId="Main_Tgl_IqiDetect"]
+${IQI_wire_phantom_cancel_button_xpath}    //*[@AutomationId="Main_Btn_CancelIqiDetection"]
+${IQI_wire_phantom_detecting_text_xpath}    //*[contains(@Name,"Detecting IQI")]
+${IQI_wire_detected_text_xpath}    //*[@Name="IQI DETECTED"]
+${IQI_wire_detected_summary_xpath}    //*[contains(@Name,"IQI detected:")]
+${IQI_wire_pair_count_text_xpath}    //*[@AutomationId="WireCountText"]
+${IQI_wire_phantom_window_xpath}    /Window/Tab[2]/TabItem/Custom[@AutomationId="ProfilePanel"]
+${defect_marking_tool_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_DefectMarking"]
+${defect_marking_window_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom[@AutomationId="DefectPanel"]
+${Defect_Cmb_DefectType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/ComboBox[@AutomationId="Defect_Cmb_DefectType"]
+${defect_marking_radio_rectangle_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/RadioButton[@AutomationId="Defect_Rdo_ShapeRectangle"]
+${defect_marking_radio_line_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/RadioButton[@AutomationId="Defect_Rdo_ShapeLine"]
+${defect_marking_radio_ellipse_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/RadioButton[@AutomationId="Defect_Rdo_ShapeEllipse"]
+${clear_all_defects_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="Defect_Btn_ClearAll"]
+${defect_delete_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="Defect_Btn_Delete"]
+${evaluate_defect_marking_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Pane/Button[@AutomationId="Defect_Btn_Evaluate"]
+
 *** Keywords ***
 
 Add Line Profiler Tool
@@ -292,13 +315,166 @@ Take wall thickness measurement window Screenshot
     Log    Screenshot moved to: ${dest}
     RETURN    ${dest}
 
+Adjust Wall Thickness Measurement Line Position
+    [Arguments]    ${start_x1}    ${start_y1}    ${end_x1}    ${end_y1}    ${start_x2}    ${start_y2}    ${end_x2}    ${end_y2}
+    [Documentation]    Adjust wall thickness measurement line position by dragging the endpoints of the line using user-provided start and end coordinates.
 
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${wall_thickness_measurement_window_xpath}
+    Sleep    0.2s
+    AutoItLibrary.Mouse Click Drag    left    ${start_x1}    ${start_y1}    ${end_x1}    ${end_y1}
+    Sleep    0.2s
+    AutoItLibrary.Mouse Click Drag    left    ${start_x2}    ${start_y2}    ${end_x2}    ${end_y2}
 
+Click Reset Auto Wall Thickness Line Result
+    [Documentation]    Click the reset auto wall thickness line result button.
 
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${Auto_Reset_wall_thickness_line_result_XPATH}
+    Sleep    0.2s
 
+Select Wall Thickness Measurement Annotation
+    [Arguments]    ${x}    ${y}
+    [Documentation]    Select wall thickness measurement annotation by clicking on it using user-provided coordinates.
 
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    AutoItLibrary.Mouse Click    left    ${x}    ${y}
+    Sleep    0.2s
 
+Click Delete Wall Thickness Measurement Annotation
+    [Arguments]    ${x}    ${y}
+    [Documentation]    Delete wall thickness measurement annotation by right-clicking on it using user-provided coordinates and selecting delete option from the context menu.
 
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    AutoItLibrary.Mouse Click    right    ${x}    ${y}
+    Sleep    0.2s
+    Click    ${delete_wall_thickness_measurement_annotation_menu_XPATH}
+    Sleep    0.2s
 
+Add CNR Measurement tool over image
+    [Arguments]    ${x1}    ${y1}    ${x2}    ${y2}    ${x3}    ${y3}    ${x4}    ${y4}
 
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${cnr_measurement_tool_button_xpath}
+    Sleep    0.2s
+    AutoItLibrary.Mouse Click Drag    left    ${x1}    ${y1}    ${x2}    ${y2}
+    Sleep    0.2s
+    AutoItLibrary.Mouse Click Drag    left    ${x3}    ${y3}    ${x4}    ${y4}
+
+Add MTF Measurement tool over image
+    [Arguments]    ${x1}    ${y1}    ${x2}    ${y2}
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${mtf_measurement_tool_button_xpath}
+    Sleep    0.2s
+    AutoItLibrary.Mouse Click Drag    left    ${x1}    ${y1}    ${x2}    ${y2}
+    Sleep    0.5s
+
+Take MTF Measurement window Screenshot
+    [Arguments]    ${filename}
+    Wait Until Element Exist    ${mtf_measurement_window_xpath}    5
+    ${screenshot_path}=    Take Screenshot    ${mtf_measurement_window_xpath}
+    Log    Screenshot saved to (temporary): ${screenshot_path}
+
+    ${dest}=    Set Variable    ${actual_image}${filename}
+    Create Directory    ${actual_image}
+    Move File    ${screenshot_path}    ${dest}
+
+    Log    Screenshot moved to: ${dest}
+    RETURN    ${dest}
+
+Detect IQI Wire Phantom Tool
+    [Documentation]    Activate the IQI Wire Phantom Detection tool to detect the wires on the phantom and display the detection result on the viewer.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${IQI_wire_phantom_tool_button_xpath}
+    Sleep    0.2s
+    Wait Until Element Exist    ${IQI_wire_phantom_window_xpath}
+    Sleep    0.2s
+
+Take IQI Wire Phantom Tool window Screenshot
+    [Arguments]    ${filename}
+    Wait Until Element Exist    ${IQI_wire_phantom_window_xpath}    5
+    ${screenshot_path}=    Take Screenshot    ${IQI_wire_phantom_window_xpath}
+    Log    Screenshot saved to (temporary): ${screenshot_path}
+
+    ${dest}=    Set Variable    ${actual_image}${filename}
+    Create Directory    ${actual_image}
+    Move File    ${screenshot_path}    ${dest}
+
+    Log    Screenshot moved to: ${dest}
+    RETURN    ${dest}
     
+Add Defect Marking and Classification Tool over image
+    [Arguments]    ${DefectType}    ${radioButtonType}    ${x1}    ${y1}    ${x2}    ${y2}
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${defect_marking_tool_button_xpath}
+    Sleep    0.2s
+    Wait Until Element Exist    ${defect_marking_window_xpath}    5
+    Sleep    0.2s
+    Select Combobox Item By Name    ${Defect_Cmb_DefectType_XPATH}    ${DefectType}
+    Sleep    0.2s
+    Run Keyword If    '${radioButtonType}'=='Rectangle'    click    ${defect_marking_radio_rectangle_button_xpath}
+    Run Keyword If    '${radioButtonType}'=='Line'    click    ${defect_marking_radio_line_button_xpath}
+    Run Keyword If    '${radioButtonType}'=='Ellipse'    click    ${defect_marking_radio_ellipse_button_xpath}
+    Sleep    0.2s
+    AutoItLibrary.Mouse Click Drag    left    ${x1}    ${y1}    ${x2}    ${y2}
+    Sleep    0.5s
+
+Take Defect Marking and Classification Tool window Screenshot
+    [Arguments]    ${filename}
+    Wait Until Element Exist    ${defect_marking_window_xpath}    5
+    ${screenshot_path}=    Take Screenshot    ${defect_marking_window_xpath}
+    Log    Screenshot saved to (temporary): ${screenshot_path}
+
+    ${dest}=    Set Variable    ${actual_image}${filename}
+    Create Directory    ${actual_image}
+    Move File    ${screenshot_path}    ${dest}
+
+    Log    Screenshot moved to: ${dest}
+    RETURN    ${dest}
+
+Clear AllDefects
+    [Documentation]    Clear all the defects marked on the image by the Defect Marking and Classification tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Wait Until Element Exist    ${defect_marking_window_xpath}    5
+    Sleep    0.2s
+    Click    ${clear_all_defects_xpath}
+    Sleep    0.2s
+
+Delete Selected Defect
+    [Arguments]    ${listItemNo}
+    [Documentation]    Delete a defect marked on the image by the Defect Marking and Classification tool by clicking on it to select it and then pressing delete key.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Wait Until Element Exist    ${defect_marking_window_xpath}    5
+    Sleep    0.2s
+    Click    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/List/ListItem[${listItemNo}]  
+    Sleep    0.2s
+    Click    ${defect_delete_button_xpath}
+    Sleep    0.2s
+
+Evaluate Defect Marked
+    [Arguments]    ${listItemNo}
+    [Documentation]    Evaluate if the defect type of a defect marked on the image by the Defect Marking and Classification tool is correct by clicking on it to select it and then getting the defect type value from the combobox.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Wait Until Element Exist    ${defect_marking_window_xpath}    5
+    Sleep    0.2s
+    Click    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/List/ListItem[${listItemNo}]  
+    Sleep    0.2s
+    Click    ${evaluate_defect_marking_button_xpath}
+    Sleep    0.2s

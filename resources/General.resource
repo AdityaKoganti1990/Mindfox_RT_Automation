@@ -15,6 +15,11 @@ ${Button_Clear_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Tab/Ta
 ${OpenFolder_Button_XPATH}   /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_OpenFolder"]
 ${INPUT_FOLDER_DIALOG_XPATH}    /Window/Window/Edit
 ${Select_Folder_XPATH}         /Window/Window/Button[@Name="Select Folder"]
+${PROJECT_CLOSE_WARNING_MESSAGE_XPATH}    //*[@AutomationId="MessageText"]
+${PROJECT_CLOSE_WARNING_YES_BUTTON_XPATH}    /Window/Window/Button[@Name="Yes"]
+${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    /Window/Window/Button[@Name="No"]
+${PROJECT_CLOSE_WARNING_CANCEL_BUTTON_XPATH}    /Window/Window/Button[@Name="Cancel"]
+${PROJECT_WARNING_OK_BUTTON_XPATH}    /Window/Window/Button[@Name="OK"]
 ${User_Manual_Button_XPATH}    //*[@AutomationId="Main_Btn_UserManual"]
 ${open_about_menu_XPATH}          //*[@AutomationId="Main_Btn_About"]
 ${open_user_management_menu_XPATH}    //*[@AutomationId="Main_Btn_UserManagement"]
@@ -35,6 +40,13 @@ Open ProjectFile
     # Send    ${project_file_path}
     Sleep    1s
     Click    ${OPEN_BUTTON_XPATH}
+    Sleep    1s
+    ${warning_visible}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${PROJECT_WARNING_OK_BUTTON_XPATH}    2
+    Run Keyword If    ${warning_visible}
+    ...    Element Should Exist    ${PROJECT_CLOSE_WARNING_MESSAGE_XPATH}
+    Run Keyword If    ${warning_visible}
+    ...    Click    ${PROJECT_WARNING_OK_BUTTON_XPATH}
     Sleep    1s
     Wait Until Element Is Enabled    ${Button_Clear_XPATH}    3
 
@@ -121,7 +133,23 @@ Logout From FoxViewerDesktop
     Win Wait Active    FoXpert - Login    ${EMPTY}    2
 
 Close Project
+    [Arguments]    ${warning_action}=No
+    Should Match Regexp    ${warning_action}    ^(Yes|No|Cancel)$
+    ...    Unsupported close-project action: ${warning_action}. Use Yes, No or Cancel.
     Click    ${Button_Clear_XPATH}
+    Sleep    0.5s
+    ${warning_visible}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    2
+    Run Keyword If    ${warning_visible} and '${warning_action}' == 'Yes'
+    ...    Click    ${PROJECT_CLOSE_WARNING_YES_BUTTON_XPATH}
+    Run Keyword If    ${warning_visible} and '${warning_action}' == 'No'
+    ...    Click    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}
+    Run Keyword If    ${warning_visible} and '${warning_action}' == 'Cancel'
+    ...    Click    ${PROJECT_CLOSE_WARNING_CANCEL_BUTTON_XPATH}
+    Run Keyword If    ${warning_visible} and '${warning_action}' == 'Cancel'
+    ...    Wait Until Keyword Succeeds    5x    1s    Element Should Be Enabled    ${Button_Clear_XPATH}
+    Run Keyword If    not (${warning_visible} and '${warning_action}' == 'Cancel')
+    ...    Wait Until Keyword Succeeds    5x    1s    Element Should Be Disabled    ${Button_Clear_XPATH}
     Sleep    1s
 
 Verify window is Opened
