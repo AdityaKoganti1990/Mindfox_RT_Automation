@@ -136,7 +136,7 @@ Compare Result Images for Comparison as False
     Should Not Be True   ${result}
 
 Verify Control Exists in Image Viewer
-    [Arguments]    ${control_xpath}    ${timeout}=0.5
+    [Arguments]    ${control_xpath}    ${timeout}=1
     ${result}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${control_xpath}    ${timeout}
     Should Be True    ${result}    Control should exist in Image Viewer: ${control_xpath}
@@ -144,7 +144,7 @@ Verify Control Exists in Image Viewer
     RETURN    ${result}
 
 Verify Control Not Exists in Image Viewer
-    [Arguments]    ${control_xpath}    ${timeout}=0.5
+    [Arguments]    ${control_xpath}    ${timeout}=1
 
     ${result}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${control_xpath}    ${timeout}

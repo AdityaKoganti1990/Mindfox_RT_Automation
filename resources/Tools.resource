@@ -54,6 +54,12 @@ ${defect_marking_radio_ellipse_button_xpath}    /Window[@AutomationId="FoxRTProM
 ${clear_all_defects_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="Defect_Btn_ClearAll"]
 ${defect_delete_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="Defect_Btn_Delete"]
 ${evaluate_defect_marking_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Pane/Button[@AutomationId="Defect_Btn_Evaluate"]
+${Image_Filter_Tool_Button_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_ImageFilters"]
+${filter_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/ComboBox[@AutomationId="ImgFilters_Cmb_Filter"]
+${filter_apply_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Btn_ApplyFilter"]
+${filter_reset_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Btn_Reset"]
+${filter_apply_loading_bar_cancel_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_CancelFilter"]
+${persatile_brightness_contrast_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_PercentileBnC"]    
 
 *** Keywords ***
 
@@ -477,4 +483,55 @@ Evaluate Defect Marked
     Click    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/List/ListItem[${listItemNo}]  
     Sleep    0.2s
     Click    ${evaluate_defect_marking_button_xpath}
+    Sleep    0.2s
+
+Click Image Filter Tool
+    [Documentation]    Activate the Image Filter tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${Image_Filter_Tool_Button_XPATH}
+    Sleep    0.2s
+    Wait Until Element Exist    ${filter_combobox_xpath}    5
+    Sleep    0.2s
+
+Apply Image Filter
+    [Arguments]    ${filterName}
+    [Documentation]    Set an image filter by selecting the filter from the filter combobox in the Image Filter tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Select Combobox Item By Name    ${filter_combobox_xpath}    ${filterName}
+    Sleep    0.2s
+    Click    ${filter_apply_button_xpath}
+    Sleep    0.2s
+    Wait Until Element Is Offscreen    ${filter_apply_loading_bar_cancel_button_xpath}    5
+    Sleep    0.2s
+    Wait Until Element Is Enabled    ${project_menu_item_xpaths}
+    Sleep    0.2s
+
+Reset Image Filter
+    [Documentation]    Reset the image filter by clicking the reset button.
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${filter_reset_button_xpath}
+    Sleep    0.2s
+
+Rename Image Filter
+    [Arguments]    ${filterName}
+    [Documentation]    Rename the image filter by selecting the filter from the filter combobox in the Image Filter tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Select Combobox Item By Name    ${filter_combobox_xpath}    ${filterName}
+    Sleep    0.2s
+
+Apply Persatile Brightness and Contrast
+    [Documentation]    Apply Persatile Brightness and Contrast filter from the Image Filter tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${persatile_brightness_contrast_filter_button_xpath}
+    Sleep    0.2s
+    Wait Until Element Exist    ${persatile_brightness_contrast_filter_button_xpath}    5
     Sleep    0.2s
