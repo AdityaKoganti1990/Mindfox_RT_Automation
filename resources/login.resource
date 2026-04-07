@@ -64,10 +64,14 @@ Login To FoxViewerDesktop
     Sleep                 0.5s
     Click                 ${LOGIN_BUTTON_XPATH}
     Sleep                 1s
-    Focus                 ${MAIN_WINDOW_XPATH}
-    Sleep                 1s
-    Resize FoxRT Application Window    10    10    1850    1000
-    Sleep                 1s
+    ${main_window_exists}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${MAIN_WINDOW_XPATH}    2
+    IF    ${main_window_exists}
+        Focus    ${MAIN_WINDOW_XPATH}
+        Sleep                 1s
+        Resize FoxRT Application Window    10    10    1850    1000
+        Sleep                 1s
+    END
 
 Verify Invalid Warning Text
     ${warning}=    Get Name From Element    ${INVALID_LOGIN_WARNING_XPATH}
