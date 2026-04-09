@@ -4,8 +4,10 @@ Library           Process
 Library           ../lib/image_comparator.py
 Library           ../lib/ironpy_remote_client.py
 Library           AutoItLibrary
+Library           Dialogs
 Resource          ../resources/login.resource
 Resource          ../resources/General.resource
+Resource          ../resources/imageviewer.resource
 *** Variables ***
 ${arrow_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AnnotArrow"]
 ${delete_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_ClearAnnotations"]
@@ -15,6 +17,7 @@ ${rectangle_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindo
 ${circle_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AnnotCircle"]
 ${freehand_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AnnotRoi"]
 ${text_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AnnotText"]
+${point_intensity_annotation_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AnnotIntensityCursor"]
 ${delete_context_menu_item_xpath}    //*[@Name="Delete"]
 
 *** Keywords ***
@@ -352,3 +355,64 @@ Add Multiple Text Annotations
         ${item_number}=    Evaluate    ${index} + 1
         Add Text Annotation    ${text_prefix} ${item_number}    ${x_offset}    ${y_offset}
     END
+
+Add Point Intensity Annotation
+    [Arguments]    ${x_offset}=0    ${y_offset}=0
+    [Documentation]    Add a point intensity annotation by selecting the point tool and left-clicking on the image viewer.
+    Focus    ${window_XPATH}
+    Sleep    1s
+    Click    ${point_intensity_annotation_button_xpath}
+    Sleep    1s
+    ${x}    ${y}    ${width}    ${height}    Get Image Viewer Rectangle
+    ${point_x}=    Evaluate    int(${x} + (${width} / 2) + ${x_offset})
+    ${point_y}=    Evaluate    int(${y} + (${height} / 2) + ${y_offset})
+    AutoItLibrary.Mouse Click    left    ${point_x}    ${point_y}
+    Sleep    1s
+    Click    ${point_intensity_annotation_button_xpath}
+
+Add Point Intensity Annotation at custom position
+    [Arguments]    ${x}    ${y}    ${count}=${EMPTY}    ${vertical_spacing}=80    ${horizontal_spacing}=120
+    [Documentation]    Add point intensity annotations at user-provided coordinates with wide spacing (top-to-bottom first). If count is not passed, prompt user for count.
+    IF    '${count}' == '${EMPTY}'
+        ${count}=    Get Value From User    Enter number of point intensity annotations to add    1
+    END
+    ${count}=    Convert To Integer    ${count}
+    ${vertical_spacing}=    Convert To Integer    ${vertical_spacing}
+    ${horizontal_spacing}=    Convert To Integer    ${horizontal_spacing}
+    Should Be True    ${count} > 0    Annotation count must be greater than 0.
+    Should Be True    ${vertical_spacing} > 0    Vertical spacing must be greater than 0.
+    Should Be True    ${horizontal_spacing} > 0    Horizontal spacing must be greater than 0.
+
+    ${base_x}=    Convert To Integer    ${x}
+    ${base_y}=    Convert To Integer    ${y}
+
+    ${viewer_x}    ${viewer_y}    ${viewer_width}    ${viewer_height}    Get Image Viewer Rectangle
+    ${min_x}=    Evaluate    int(${viewer_x} + 20)
+    ${max_x}=    Evaluate    int(${viewer_x} + ${viewer_width} - 20)
+    ${min_y}=    Evaluate    int(${viewer_y} + 20)
+    ${max_y}=    Evaluate    int(${viewer_y} + ${viewer_height} - 20)
+
+    ${base_x}=    Evaluate    max(${min_x}, min(${base_x}, ${max_x}))
+    ${base_y}=    Evaluate    max(${min_y}, min(${base_y}, ${max_y}))
+
+    ${max_rows}=    Evaluate    max(1, int((${max_y} - ${base_y}) / ${vertical_spacing}) + 1)
+    ${max_columns}=    Evaluate    max(1, int((${max_x} - ${base_x}) / ${horizontal_spacing}) + 1)
+    ${capacity}=    Evaluate    ${max_rows} * ${max_columns}
+    Should Be True    ${count} <= ${capacity}    Requested ${count} points exceed available slots (${capacity}) with current spacing.
+
+    Focus    ${window_XPATH}
+    Sleep    1s
+    Click    ${point_intensity_annotation_button_xpath}
+    Sleep    1s
+
+    FOR    ${index}    IN RANGE    ${count}
+        ${column}=    Evaluate    int(${index} / ${max_rows})
+        ${row}=    Evaluate    ${index} % ${max_rows}
+        ${point_x}=    Evaluate    int(${base_x} + (${column} * ${horizontal_spacing}))
+        ${point_y}=    Evaluate    int(${base_y} + (${row} * ${vertical_spacing}))
+        AutoItLibrary.Mouse Click    left    ${point_x}    ${point_y}
+        Sleep    0.2s
+    END
+
+    Sleep    1s
+    Click    ${point_intensity_annotation_button_xpath}

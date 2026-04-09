@@ -8,18 +8,18 @@ Resource          ../resources/login.resource
 
 *** Variables ***
 ${project_menu_item_xpaths}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_OpenFile"]
-${INPUT_FILE_DIALOG_XPATH}    /Window/Window/ComboBox[1]/Edit[@Name="File name:"]
-${OPEN_BUTTON_XPATH}         /Window/Window/Button[@Name="Open"]
+${INPUT_FILE_DIALOG_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/ComboBox[1]/Edit[@Name="File name:"]
+${OPEN_BUTTON_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Open"]
 ${Button_Next_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_NextFile"]
 ${Button_Clear_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem/Button[@AutomationId="Main_Btn_ClearFiles"]
 ${OpenFolder_Button_XPATH}   /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_OpenFolder"]
-${INPUT_FOLDER_DIALOG_XPATH}    /Window/Window/Edit
-${Select_Folder_XPATH}         /Window/Window/Button[@Name="Select Folder"]
+${INPUT_FOLDER_DIALOG_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Edit
+${Select_Folder_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Select Folder"]
 ${PROJECT_CLOSE_WARNING_MESSAGE_XPATH}    //*[@AutomationId="MessageText"]
-${PROJECT_CLOSE_WARNING_YES_BUTTON_XPATH}    /Window/Window/Button[@Name="Yes"]
-${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    /Window/Window/Button[@Name="No"]
-${PROJECT_CLOSE_WARNING_CANCEL_BUTTON_XPATH}    /Window/Window/Button[@Name="Cancel"]
-${PROJECT_WARNING_OK_BUTTON_XPATH}    /Window/Window/Button[@Name="OK"]
+${PROJECT_CLOSE_WARNING_YES_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Yes"]
+${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="No"]
+${PROJECT_CLOSE_WARNING_CANCEL_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Cancel"]
+${PROJECT_WARNING_OK_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="OK"]
 ${User_Manual_Button_XPATH}    //*[@AutomationId="Main_Btn_UserManual"]
 ${open_about_menu_XPATH}          //*[@AutomationId="Main_Btn_About"]
 ${open_user_management_menu_XPATH}    //*[@AutomationId="Main_Btn_UserManagement"]

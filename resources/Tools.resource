@@ -32,8 +32,8 @@ ${surface_plot_invert_button_xpath}    //*[@AutomationId="SurfacePlot_Tgl_Invert
 ${surface_plot_resetview_button_xpath}    //*[@AutomationId="SurfacePlot_Btn_FitView"]
 ${wall_thickness_measurement_tool_button_xpath}    //*[@AutomationId="Main_Tgl_WallThickness"]
 ${wall_thickness_measurement_window_xpath}    //*[@AutomationId="WallThicknessPanel"]
-${Manual_wall_thickness_detection_method_XPATH}    //*[@Name="MANUAL"]
-${Auto_Reset_wall_thickness_line_result_XPATH}    //*[@AutomationId="ResetAutoButton"]
+${Manual_wall_thickness_detection_method_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Text[@Name="MANUAL"]
+${Auto_Reset_wall_thickness_line_result_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="ResetAutoButton"]
 ${delete_wall_thickness_measurement_annotation_menu_XPATH}    //*[@Name="Remove"]
 ${cnr_measurement_tool_button_xpath}    //*[@AutomationId="Main_Tgl_Cnr"]
 ${mtf_measurement_tool_button_xpath}    //*[@AutomationId="Main_Tgl_Mtf"]
@@ -59,12 +59,26 @@ ${filter_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabI
 ${filter_apply_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Btn_ApplyFilter"]
 ${filter_reset_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Btn_Reset"]
 ${filter_apply_loading_bar_cancel_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_CancelFilter"]
-${persatile_brightness_contrast_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_PercentileBnC"]    
+${percentile_brightness_contrast_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_PercentileBnC"]    
+${percentile_brightness_contrast_savePreset_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Save"]
+${percentile_brightness_contrast_savePreset_name_textbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Edit
+${percentile_brightness_contrast_preset_1_99_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[contains(@Name,"1–99")]
+${percentile_brightness_contrast_preset_5_95_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[contains(@Name,"5–95")]
+${percentile_brightness_contrast_preset_10_90_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[contains(@Name,"10–90")]
+${percentile_brightness_contrast_preset_20_80_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[contains(@Name,"20–80")]
+${percentile_brightness_contrast_low_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Slider[1]
+${percentile_brightness_contrast_high_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Slider[2]
+${percentile_brightness_contrast_low_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[3]
+${percentile_brightness_contrast_high_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[5]
+${percentile_brightness_contrast_load_preset_button}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/List/DataItem/Button[1]
+${selectNormalProfilerType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//Tab[2]/TabItem/Custom/RadioButton[@AutomationId="ModeNormal"]
+${selectIQIProfilerType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//Tab[2]/TabItem/Custom/RadioButton[@AutomationId="ModeIqi"]
+${fox_bleach_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_FoxBleach"]
 
 *** Keywords ***
 
 Add Line Profiler Tool
-    [Arguments]    ${x1}    ${y1}    ${x2}    ${y2}
+    [Arguments]    ${x1}    ${y1}    ${x2}    ${y2}    ${profilerType}=${EMPTY}
     [Documentation]    Activate the Line Profiler tool and draw it on the image viewer.
     Focus    ${window_XPATH}
     Sleep    0.2s
@@ -72,6 +86,9 @@ Add Line Profiler Tool
     Sleep    0.2s
     AutoItLibrary.Mouse Click Drag    left    ${x1}    ${y1}    ${x2}    ${y2}
     Sleep    0.5s
+    Run Keyword If    '${profilerType}'=='Normal'    click    ${selectNormalProfilerType_XPATH}
+    Run Keyword If    '${profilerType}'=='Iqi'    click    ${selectIQIProfilerType_XPATH}
+    Sleep    0.2s
 
 Take Line Profiler window Screenshot
     [Arguments]    ${filename}
@@ -236,6 +253,7 @@ Add Surface Plot 3D Tool over image
 Take surface plot window Screenshot
     [Arguments]    ${filename}
     Wait Until Element Exist    ${surface_plot_window_xpath}    5
+    Sleep    0.5s
     ${screenshot_path}=    Take Screenshot    ${surface_plot_window_xpath}
     Log    Screenshot saved to (temporary): ${screenshot_path}
 
@@ -526,12 +544,213 @@ Rename Image Filter
     Select Combobox Item By Name    ${filter_combobox_xpath}    ${filterName}
     Sleep    0.2s
 
-Apply Persatile Brightness and Contrast
-    [Documentation]    Apply Persatile Brightness and Contrast filter from the Image Filter tool.
+Set Percentile Brightness and Contrast Slider Value
+    [Arguments]    ${slider_xpath}    ${value}    ${value_text_xpath}
+    [Documentation]    Set a percentile slider to the requested value (0-100) by dragging the slider thumb.
+
+    ${value}=    Convert To Integer    ${value}
+    Should Be True    0 <= ${value} <= 100
+    ...    Percentile slider value must be between 0 and 100. Received: ${value}
+
+    ${slider_rect}=    Get Rectangle Bounding From Element    ${slider_xpath}    BoundingRectangle
+    ${thumb_xpath}=    Set Variable    ${slider_xpath}/Thumb
+    ${thumb_rect}=    Get Rectangle Bounding From Element    ${thumb_xpath}    BoundingRectangle
+
+    ${slider_x}=    Get From List    ${slider_rect}    0
+    ${slider_y}=    Get From List    ${slider_rect}    1
+    ${slider_width}=    Get From List    ${slider_rect}    2
+    ${slider_height}=    Get From List    ${slider_rect}    3
+    ${thumb_x}=    Get From List    ${thumb_rect}    0
+    ${thumb_y}=    Get From List    ${thumb_rect}    1
+    ${thumb_width}=    Get From List    ${thumb_rect}    2
+    ${thumb_height}=    Get From List    ${thumb_rect}    3
+
+    ${start_x}=    Evaluate    int(${thumb_x} + (${thumb_width} / 2))
+    ${start_y}=    Evaluate    int(${thumb_y} + (${thumb_height} / 2))
+    ${thumb_half}=    Evaluate    ${thumb_width} / 2
+    ${min_x}=    Evaluate    ${slider_x} + ${thumb_half}
+    ${max_x}=    Evaluate    ${slider_x} + ${slider_width} - ${thumb_half}
+    ${target_x}=    Evaluate    int(${min_x} + ((${max_x} - ${min_x}) * ${value} / 100))
+    ${target_y}=    Evaluate    int(${slider_y} + (${slider_height} / 2))
+
+    AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${target_x}    ${target_y}
+    Sleep    0.2s
+
+    ${current_text}=    Get Name From Element    ${value_text_xpath}
+    ${current}=    Convert To Integer    ${current_text}
+    ${pixels_per_unit}=    Evaluate    max(1.0, (${max_x} - ${min_x}) / 100.0)
+
+    FOR    ${attempt}    IN RANGE    60
+        IF    ${current} == ${value}
+            BREAK
+        END
+        ${delta}=    Evaluate    ${value} - ${current}
+        ${abs_delta}=    Evaluate    abs(${delta})
+        ${direction}=    Set Variable If    ${delta} > 0    1    -1
+        ${coarse_step}=    Evaluate    int(max(1, round(${abs_delta} * ${pixels_per_unit} * 0.6)))
+        ${step_pixels}=    Set Variable If    ${abs_delta} <= 2    1    ${coarse_step}
+        ${step_pixels}=    Evaluate    min(15, max(1, ${step_pixels}))
+
+        ${thumb_rect}=    Get Rectangle Bounding From Element    ${thumb_xpath}    BoundingRectangle
+        ${thumb_x}=    Get From List    ${thumb_rect}    0
+        ${thumb_y}=    Get From List    ${thumb_rect}    1
+        ${thumb_width}=    Get From List    ${thumb_rect}    2
+        ${thumb_height}=    Get From List    ${thumb_rect}    3
+        ${start_x}=    Evaluate    int(${thumb_x} + (${thumb_width} / 2))
+        ${start_y}=    Evaluate    int(${thumb_y} + (${thumb_height} / 2))
+        ${nudge_target_x}=    Evaluate    int(min(${max_x}, max(${min_x}, ${start_x} + (${direction} * ${step_pixels}))))
+        IF    ${nudge_target_x} == ${start_x}
+            BREAK
+        END
+
+        AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${nudge_target_x}    ${target_y}
+        Sleep    0.05s
+        ${current_text}=    Get Name From Element    ${value_text_xpath}
+        ${current}=    Convert To Integer    ${current_text}
+    END
+
+    Run Keyword If    ${current} != ${value}
+    ...    Log
+    ...    Could not reach requested ${value} after drag adjustments. Current value is ${current}.
+    ...    WARN
+    RETURN    ${current}
+
+Apply Percentile Brightness and Contrast
+    [Arguments]    ${low_percent}=20    ${high_percent}=80
+    [Documentation]    Apply Percentile Brightness and Contrast by setting Low % and High % trackbar values.
+
+    ${low_percent}=    Convert To Integer    ${low_percent}
+    ${high_percent}=    Convert To Integer    ${high_percent}
+    Should Be True    0 <= ${low_percent} <= 100
+    ...    Low % value must be between 0 and 100. Received: ${low_percent}
+    Should Be True    0 <= ${high_percent} <= 100
+    ...    High % value must be between 0 and 100. Received: ${high_percent}
+    Should Be True    ${low_percent} <= ${high_percent}
+    ...    Low % must be less than or equal to High %. Received Low=${low_percent}, High=${high_percent}
 
     Focus    ${window_XPATH}
     Sleep    0.2s
-    Click    ${persatile_brightness_contrast_filter_button_xpath}
+    ${popup_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    1
+    Run Keyword If    not ${popup_open}    Click    ${percentile_brightness_contrast_filter_button_xpath}
+    Run Keyword If    not ${popup_open}    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
     Sleep    0.2s
-    Wait Until Element Exist    ${persatile_brightness_contrast_filter_button_xpath}    5
+    ${actual_low}=    Set Percentile Brightness and Contrast Slider Value    ${percentile_brightness_contrast_low_slider_xpath}    ${low_percent}    ${percentile_brightness_contrast_low_value_text_xpath}
+    ${actual_high}=    Set Percentile Brightness and Contrast Slider Value    ${percentile_brightness_contrast_high_slider_xpath}    ${high_percent}    ${percentile_brightness_contrast_high_value_text_xpath}
+    Sleep    0.2s
+    Log    Requested Low/High: ${low_percent}/${high_percent}. Applied Low/High: ${actual_low}/${actual_high}
+    Should Be Equal As Integers    ${actual_low}    ${low_percent}
+    ...    Low % mismatch. Requested ${low_percent}, but applied ${actual_low}.
+    Should Be Equal As Integers    ${actual_high}    ${high_percent}
+    ...    High % mismatch. Requested ${high_percent}, but applied ${actual_high}.
+    Click    ${window_XPATH}
+    Wait Until Element Does Not Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+
+Apply Percentile Brightness and Contrast Preset
+    [Arguments]    ${preset}
+    [Documentation]    Apply Percentile Brightness and Contrast filter from the Image Filter tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${popup_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    1
+    Run Keyword If    not ${popup_open}    Click    ${percentile_brightness_contrast_filter_button_xpath}
+    Run Keyword If    not ${popup_open}    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+    Run Keyword If    '${preset}'=='1-99'    Click    ${percentile_brightness_contrast_preset_1_99_button_xpath}
+    Run Keyword If    '${preset}'=='5-95'    Click    ${percentile_brightness_contrast_preset_5_95_button_xpath}
+    Run Keyword If    '${preset}'=='10-90'    Click    ${percentile_brightness_contrast_preset_10_90_button_xpath}
+    Run Keyword If    '${preset}'=='20-80'    Click    ${percentile_brightness_contrast_preset_20_80_button_xpath}
+    Sleep    0.2s
+    Click    ${window_XPATH}
+    Wait Until Element Does Not Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+
+Save Percentile Brightness and Contrast Preset
+    [Arguments]    ${preset_name}
+    [Documentation]    Save a Percentile Brightness and Contrast preset with the provided preset name.
+
+    Should Not Be Empty    ${preset_name}    Preset name cannot be empty.
+    ${preset_name}=    Strip String    ${preset_name}
+    Should Not Be Empty    ${preset_name}    Preset name cannot be blank.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${popup_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    1
+    Run Keyword If    not ${popup_open}    Click    ${percentile_brightness_contrast_filter_button_xpath}
+    Run Keyword If    not ${popup_open}    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+
+    Set Text To Textbox    ${percentile_brightness_contrast_savePreset_name_textbox_xpath}    ${preset_name}
+    Sleep    0.2s
+    Click    ${percentile_brightness_contrast_savePreset_button_xpath}
+    Sleep    0.2s
+
+Load Percentile Brightness and Contrast Preset
+    [Arguments]    ${preset}
+    [Documentation]    Load a Percentile Brightness and Contrast preset by clicking on it in the preset list.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${popup_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    1
+    Run Keyword If    not ${popup_open}    Click    ${percentile_brightness_contrast_filter_button_xpath}
+    Run Keyword If    not ${popup_open}    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+    Click    /Window[@AutomationId="FoxRTProMainWindow"]/Window/List/DataItem/Button[@Name="${preset}"]
+    Sleep    0.2s
+    Click    ${window_XPATH}
+    Wait Until Element Does Not Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+
+Delete Percentile Brightness and Contrast Preset
+    [Arguments]    ${listItemNo}=1
+    [Documentation]    Delete a Percentile Brightness and Contrast preset with the provided preset name.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${popup_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    1
+    Run Keyword If    not ${popup_open}    Click    ${percentile_brightness_contrast_filter_button_xpath}
+    Run Keyword If    not ${popup_open}    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+    Click    /Window[@AutomationId="FoxRTProMainWindow"]/Window/List/DataItem[${listItemNo}]/Button[2]
+    Sleep    0.2s
+    Click    ${window_XPATH}
+    Wait Until Element Does Not Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+
+Verify Percentile Brightness and Contrast Preset Exists
+    [Arguments]    ${preset}
+    [Documentation]    Verify that a Percentile Brightness and Contrast preset with the provided preset name exists in the preset list.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${popup_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    1
+    Run Keyword If    not ${popup_open}    Click    ${percentile_brightness_contrast_filter_button_xpath}
+    Run Keyword If    not ${popup_open}    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+    ${preset_exists}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    /Window[@AutomationId="FoxRTProMainWindow"]/Window/List/DataItem/Button[@Name="${preset}"]    1
+    Click    ${window_XPATH}
+
+Apply Fox Bleach Filter
+    [Arguments]    ${action}=select
+    [Documentation]    Set Fox Bleach tool item state based on action: select/on/true to enable, unselect/off/false to disable.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${action}=    Evaluate    str($action).strip().lower()
+    IF    '${action}'=='select' or '${action}'=='on' or '${action}'=='true'
+        ${target_state}=    Set Variable    ON
+    ELSE IF    '${action}'=='unselect' or '${action}'=='off' or '${action}'=='false'
+        ${target_state}=    Set Variable    OFF
+    ELSE
+        Fail    Invalid action '${action}'. Use: select, unselect, on, off, True, or False.
+    END
+    ${fox_bleach_state}=    Get Toggle State    ${fox_bleach_filter_button_xpath}
+    Run Keyword If    '${fox_bleach_state}'!='${target_state}'    Click    ${fox_bleach_filter_button_xpath}
     Sleep    0.2s

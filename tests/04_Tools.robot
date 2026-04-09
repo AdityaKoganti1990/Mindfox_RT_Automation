@@ -9,8 +9,7 @@ Resource          ../resources/Tools.resource
 Resource      ../resources/Annotations.resource
 
 *** Test Cases ***
-
-MFRTT01 - Verify whether able to add line profiler tool in image viewer
+MFRTT01 - Verify whether able to add normal line profiler tool in image viewer
     [Documentation]    Verify whether able to open add line profiler tool in image viewer
     [Tags]    smoke    tools
 
@@ -18,14 +17,23 @@ MFRTT01 - Verify whether able to add line profiler tool in image viewer
     Login To FoxViewerDesktop    Sri    Sri
     Main Window Should Be Open
     Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
-    Add Line Profiler Tool    603    296    986    263
+    Add Line Profiler Tool    590    290    967    257    Normal
     Take Actual Screenshot    MFRTT01_1.png
     Take Line Profiler window Screenshot    MFRTT01_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT01_1.png    MFRTT01_1.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT01_2.png    MFRTT01_2.png
     Click    ${line_profiler_tool_button_xpath}
-    Close Project
+MFRTT01-2 - Verify whether able to add IQI line profiler tool in image viewer
+    [Documentation]    Verify whether able to open add line profiler tool in image viewer
+    [Tags]    smoke    tools
 
+    Add Line Profiler Tool    590    290    967    257    Iqi
+    Take Actual Screenshot    MFRTT01-2_1.png
+    Take Line Profiler window Screenshot    MFRTT01-2_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT01-2_1.png    MFRTT01-2_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT01-2_2.png    MFRTT01-2_2.png
+    Click    ${line_profiler_tool_button_xpath}
+    Close Project
 MFRTT02 - Verify whether able to add ROI statistics tool in image viewer
     [Documentation]    Verify whether able to open add ROI statistics tool in image viewer
     [Tags]    smoke    tools
@@ -81,8 +89,8 @@ MFRTT06 - Verify whether able to calibrate the image by adding calibration tool.
 
     Click    ${window_XPATH}   
     Apply Auto Best BNC
-    Add Annotation at custom position    Ruler    770    601    773    657
-    Add Calibration tool over image    770    476    808    474
+    Add Annotation at custom position    Ruler    760    600    760    657
+    Add Calibration tool over image    760    475    800    475
     Take Calibration Graph window Screenshot    MFRTT06_1.png
     Calibrate Image    5    mm
     Take Actual Screenshot    MFRTT06_2.png
@@ -111,7 +119,7 @@ MFRTT08 - Verify whether able to add surface plot 3D tool over the image and vie
 
     Click    ${window_XPATH}
     Apply Auto Best BNC
-    Add Surface Plot 3D Tool over image    722    561    815    703
+    Add Surface Plot 3D Tool over image    710    558    808    701
     Take Actual Screenshot    MFRTT08.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT08.png    MFRTT08.png
     Take surface plot window Screenshot    MFRTT08_2.png
@@ -125,7 +133,7 @@ MFRTT09 - Verify whether able to set colormap for the Surface Plot 3D tool.
 
     Click    ${window_XPATH}
     Apply Auto Best BNC
-    Add Surface Plot 3D Tool over image    722    561    815    703
+    Add Surface Plot 3D Tool over image    710    558    808    701
     Set Surface Plot Colormap    Jet
     Take surface plot window Screenshot    MFRTT09-1.png
     Set Surface Plot Colormap    Plasma
@@ -150,7 +158,7 @@ MFRTT09 - Verify whether able to set colormap for the Surface Plot 3D tool.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT09-6.png    MFRTT09-6.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT09-7.png    MFRTT09-7.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT09-8.png    MFRTT09-8.png
-
+    Set Surface Plot Colormap    Jet
 MFRTT10 - Verify whether able to apply invert over surface plot 3D image.
     [Documentation]    Verify whether able to apply invert over surface plot 3D image.
     [Tags]    smoke    tools
@@ -159,7 +167,6 @@ MFRTT10 - Verify whether able to apply invert over surface plot 3D image.
     Take surface plot window Screenshot    MFRTT10.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT10.png    MFRTT10.png
     Apply Invert on Surface Plot 3D Image
-
 MFRTT11 - Verify whether able to Reset zoom on surface plot 3D image to default state by clicking on Reset View button.
     [Documentation]    Verify whether able to Reset zoom on surface plot 3D image to default state by clicking on Reset View button.
     [Tags]    smoke    tools
@@ -213,24 +220,27 @@ MFRTT15 - Verify whether able to adjust the wall thickness measurement line posi
     [Tags]    smoke    tools
 
     Click    ${window_XPATH}
-    Adjust Wall Thickness Measurement Line Position    620    848    575    864    1472    855    1427    864    
+    Adjust Wall Thickness Measurement Line Position    360    845    300    845    1210    865    1145    865    
     Take Actual Screenshot    MFRTT15_1.png
     Take wall thickness measurement window Screenshot    MFRTT15_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT15_1.png    MFRTT15_1.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT15_2.png    MFRTT15_2.png
+    Run Keyword And Continue On Failure    Verify Control Exists in Image Viewer    ${Manual_wall_thickness_detection_method_XPATH}
+    Run Keyword And Continue On Failure    Verify Control Exists in Image Viewer    ${Auto_Reset_wall_thickness_line_result_XPATH}
     Click    ${wall_thickness_measurement_tool_button_xpath}
 MFRTT16 - Verify whether able to add multiple wall thickness measurement lines and adjust their positions independently.
     [Documentation]    Verify whether able to add multiple wall thickness measurement lines and adjust their positions independently.
     [Tags]    smoke    tools
     
     Click    ${window_XPATH}
-    Add Wall Thickness Measurement tool over image    810    480    856    470
-    Adjust Wall Thickness Measurement Line Position    498    859    447    864    1494    865    1445    865
+    Add Wall Thickness Measurement tool over image    805    465    840    465
+    Adjust Wall Thickness Measurement Line Position    395    860    325    860    1690    865    1595    865
     Take Actual Screenshot    MFRTT16_1.png
     Take wall thickness measurement window Screenshot    MFRTT16_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT16_1.png    MFRTT16_1.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT16_2.png    MFRTT16_2.png
-    Verify Control Exists in Image Viewer    ${Manual_wall_thickness_detection_method_XPATH}
+    Run Keyword And Continue On Failure    Verify Control Exists in Image Viewer    ${Manual_wall_thickness_detection_method_XPATH}
+    Run Keyword And Continue On Failure    Verify Control Exists in Image Viewer    ${Auto_Reset_wall_thickness_line_result_XPATH}
 MFRTT17 - Verify whether able to reset to auto wall thickness measurement line position by clicking on Reset View button.
     [Documentation]    Verify whether able to reset to auto wall thickness measurement line position by clicking on Reset View button.
     [Tags]    smoke    tools
@@ -248,12 +258,12 @@ MFRTT18 - Verify whether graph is getting updated when switching between differe
     [Tags]    smoke    tools
 
     Click    ${window_XPATH}
-    Select Wall Thickness Measurement Annotation    813    313
+    Select Wall Thickness Measurement Annotation    810    313
     Take Actual Screenshot    MFRTT18_1.png
     Take wall thickness measurement window Screenshot    MFRTT18_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT18_1.png    MFRTT18_1.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT18_2.png    MFRTT18_2.png
-    Select Wall Thickness Measurement Annotation    816    370
+    Select Wall Thickness Measurement Annotation    810    359
     Take Actual Screenshot    MFRTT18_3.png
     Take wall thickness measurement window Screenshot    MFRTT18_4.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT18_3.png    MFRTT18_3.png
@@ -263,8 +273,8 @@ MFRTT19 - Verify whether able to delete the wall thickness measurement annotatio
     [Tags]    smoke    tools
 
     Click    ${window_XPATH}
-    Click Delete Wall Thickness Measurement Annotation    813    313
-    Click Delete Wall Thickness Measurement Annotation    816    370    
+    Click Delete Wall Thickness Measurement Annotation    810    313
+    Click Delete Wall Thickness Measurement Annotation    810    359
     Take Actual Screenshot    MFRTT19.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT19.png    MFRTT19.png
     Reset View
@@ -431,6 +441,7 @@ MFRTT33 - Verify whether able to close filters tab.
     Click    ${Image_Filter_Tool_Button_XPATH}
     Run Keyword And Continue On Failure    Verify Control Not Exists in Image Viewer    ${filter_combobox_xpath}
     Run Keyword And Continue On Failure    Verify Control Not Exists in Image Viewer    ${filter_apply_button_xpath}
+
 MFRTT34 - Verify whether able to apply Auto Best BNC and view the changes in the image.
     [Documentation]    Verify whether able to apply Auto Best BNC and view the changes in the image.
     [Tags]    smoke    tools
@@ -446,12 +457,58 @@ MFRTT35 - Verify whether able to reset the applied Auto Best BNC by clicking on 
     Reset View
     Take Actual Screenshot    MFRTT35.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT35.png    MFRTT35.png
+MFRTT36 - Verify whether able to apply Persatile Brightness and Contrast and view the changes in the image.
+    [Documentation]    Verify whether able to apply Persatile Brightness and Contrast and view the changes in the image.
+    [Tags]    smoke    tools
 
-# MFRTT36 - Verify whether able to apply Persatile Brightness and Contrast and view the changes in the image.
-#     [Documentation]    Verify whether able to apply Persatile Brightness and Contrast and view the changes in the image.
-#     [Tags]    smoke    tools
+    Click    ${window_XPATH}
+    Apply Percentile Brightness and Contrast    35    55
+    Take Actual Screenshot    MFRTT36.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT36.png    MFRTT36.png
+    Reset View
 
-#     Click    ${window_XPATH}
-#     Apply Persatile Brightness and Contrast
-#     Take Actual Screenshot    MFRTT36.png
-#     Run Keyword And Continue On Failure    Compare Result Images    MFRTT36.png    MFRTT36.png
+MFRTT37 - Verify whether able to save Percentile Brightness and Contrast preset.
+    [Documentation]    Verify whether able to save and load Percentile Brightness and Contrast preset.
+    [Tags]    smoke    tools
+    Save Percentile Brightness and Contrast Preset    PBNC1
+    Run Keyword And Continue On Failure    Verify Percentile Brightness and Contrast Preset Exists    PBNC1
+MFRTT38 - Verify whether able to load Percentile Brightness and Contrast preset and view the changes in the image.
+    [Documentation]    Verify whether able to load Percentile Brightness and Contrast preset and view the changes in the image.
+    [Tags]    smoke    tools
+    Apply Percentile Brightness and Contrast    5    95
+    Save Percentile Brightness and Contrast Preset    PBNC2
+    Load Percentile Brightness and Contrast Preset    PBNC1
+    Take Actual Screenshot    MFRTT38_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT38_1.png    MFRTT38_1.png
+    Load Percentile Brightness and Contrast Preset    PBNC2
+    Take Actual Screenshot    MFRTT38_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT38_2.png    MFRTT38_2.png
+MFRTT39 - Verify whether able to delete Percentile Brightness and Contrast preset.
+    [Documentation]    Verify whether able to delete Percentile Brightness and Contrast preset.
+    [Tags]    smoke    tools
+
+    Delete Percentile Brightness and Contrast Preset
+    Delete Percentile Brightness and Contrast Preset
+    Run Keyword And Continue On Failure    Verify Percentile Brightness and Contrast Preset Exists    PBNC1
+    Run Keyword And Continue On Failure    Verify Percentile Brightness and Contrast Preset Exists    PBNC2
+    Reset View
+MFRTT40 - Verify whether able to apply Fox Bleach filter using the tool item.
+    [Documentation]    Verify whether able to apply Fox Bleach filter using the tool item.
+    [Tags]    smoke    tools
+    Click    ${window_XPATH}
+    Apply Fox Bleach Filter    True
+    Take Actual Screenshot    MFRTT40.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT40.png    MFRTT40.png
+MFRTT41 - Verify whether able to reset the applied Fox Bleach filter by un-checking the tool item.
+    [Documentation]    Verify whether able to reset the applied Fox Bleach filter by un-checking the tool item.
+    [Tags]    smoke    tools
+    Apply Fox Bleach Filter    False
+    Take Actual Screenshot    MFRTT41.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT41.png    MFRTT41.png
+    Reset View
+    Close Project
+    Close FoxRT Application Window
+
+
+
+

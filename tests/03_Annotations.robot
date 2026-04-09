@@ -5,6 +5,7 @@ Library           AutoItLibrary
 Resource          ../resources/login.resource
 Resource          ../resources/General.resource
 Resource          ../resources/imageviewer.resource
+Resource          ../resources/annotations.resource
 *** Test Cases ***
 MFRTANN01 - Verify whether able to add arrow annotation in image viewer
     [Documentation]    Verify whether able to add arrow annotation in image viewer
@@ -292,6 +293,44 @@ MFRTANN27 - Verify whether able to delete text annotation using context menu del
     Sleep    1s
     Take Actual Screenshot    MFRTANN27.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN27.png    MFRTANN27.png
+
+MFRTANN28 - Verify whether able to add point(intensity) annotation in image viewer
+    [Documentation]    Verify whether able to add point(intensity) annotation in image viewer
+    [Tags]    smoke    annotations
+    
+    Sleep    1s
+    Add Point Intensity Annotation
+    Sleep    1s
+    Take Actual Screenshot    MFRTANN28.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN28.png    MFRTANN28.png
+    Delete the annotation
+
+MFRTANN29 - Verify whether able to add point(intensity) annotation at custom position in image viewer
+    [Documentation]    Verify whether able to add point(intensity) annotation at custom position in image viewer
+    [Tags]    smoke    annotations    user-input
+
+    Sleep    1s
+    Add Point Intensity Annotation at custom position    930    385    1
+    Sleep    1s
+    Take Actual Screenshot    MFRTANN29.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN29.png    MFRTANN29.png
+MFRTANN30 - Verify whether able to delete point(intensity) annotation using context menu delete button
+    [Documentation]    Verify whether able to delete a point(intensity) annotation by right-clicking it and selecting Delete from the context menu.
+    [Tags]    smoke    annotations
+    Sleep    1s
+    Delete Annotation From Context Menu    930    385
+    Sleep    1s
+    Take Actual Screenshot    MFRTANN30.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN30.png    MFRTANN30.png
+
+MFRTANN31 - Verify whether able to add multiple point(intensity) annotations at custom positions in image viewer
+    [Documentation]    Verify whether able to add multiple point(intensity) annotations at custom positions in image viewer
+    [Tags]    smoke    annotations    user-input
+
+    Sleep    1s
+    Add Point Intensity Annotation at custom position    930    385    3
+    Sleep    1s
+    Take Actual Screenshot    MFRTANN31.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN31.png    MFRTANN31.png
+    Delete the annotation
     Close FoxRT Application Window
-
-
