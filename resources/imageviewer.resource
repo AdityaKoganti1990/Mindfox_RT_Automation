@@ -88,16 +88,59 @@ Take Actual Screenshot
     RETURN    ${dest}
 
 Compare Result Images
-    [Arguments]    ${expected_image_path}    ${actual_image_path}
+    [Arguments]    ${expected_image_path}    ${actual_image_path}    ${required_match_percentage}=100
+    [Documentation]    Compare two images and pass if match percentage is >= required percentage.
 
-    ${expected_full}=    Set Variable    ${expected_image}${expected_image_path}
-    ${actual_full}=      Set Variable    ${actual_image}${actual_image_path}
+    ${required_match_percentage}=    Convert To Number    ${required_match_percentage}
+    Should Be True
+    ...    0 <= ${required_match_percentage} <= 100
+    ...    Required match percentage must be between 0 and 100. Received: ${required_match_percentage}
 
+    ${expected_full}=    Resolve Compare File Path    ${expected_image}    ${expected_image_path}
+    ${actual_full}=      Resolve Compare File Path    ${actual_image}    ${actual_image_path}
+
+    File Should Exist    ${expected_full}
+    File Should Exist    ${actual_full}
     Log    Comparing ${expected_full} with ${actual_full}
 
-    ${result}=    Compare Images    ${expected_full}    ${actual_full}
-    Should Be True    ${result}
-    ...    Images do not match: ${expected_full} and ${actual_full}
+    ${match_percentage}=    File Match Percentage    ${expected_full}    ${actual_full}
+    ${match_percentage}=    Evaluate    round(float($match_percentage), 4)
+    Log    Image match percentage: ${match_percentage}%
+
+    Should Be True
+    ...    ${match_percentage} >= ${required_match_percentage}
+    ...    Match percentage ${match_percentage}% is below required ${required_match_percentage}% for images: ${expected_full} vs ${actual_full}
+    RETURN    ${match_percentage}
+
+Compare Result Files
+    [Arguments]    ${expected_file_path}    ${actual_file_path}    ${required_match_percentage}=100
+    [Documentation]    Compare two files and pass if match percentage is >= required percentage.
+
+    ${required_match_percentage}=    Convert To Number    ${required_match_percentage}
+    Should Be True
+    ...    0 <= ${required_match_percentage} <= 100
+    ...    Required match percentage must be between 0 and 100. Received: ${required_match_percentage}
+
+    ${expected_full}=    Resolve Compare File Path    ${expected_image}    ${expected_file_path}
+    ${actual_full}=      Resolve Compare File Path    ${actual_image}    ${actual_file_path}
+
+    File Should Exist    ${expected_full}
+    File Should Exist    ${actual_full}
+    Log    Comparing ${expected_full} with ${actual_full}
+
+    ${match_percentage}=    File Match Percentage    ${expected_full}    ${actual_full}
+    ${match_percentage}=    Evaluate    round(float($match_percentage), 4)
+    Log    File match percentage: ${match_percentage}%
+
+    Should Be True
+    ...    ${match_percentage} >= ${required_match_percentage}
+    ...    Match percentage ${match_percentage}% is below required ${required_match_percentage}% for files: ${expected_full} vs ${actual_full}
+    RETURN    ${match_percentage}
+
+Resolve Compare File Path
+    [Arguments]    ${base_dir}    ${file_path}
+    ${resolved}=    Evaluate    __import__('os').path.normpath($file_path if __import__('os').path.isabs($file_path) else __import__('os').path.join($base_dir, $file_path))
+    RETURN    ${resolved}
 
 Take WindowScreenshot for Comparison
     [Arguments]    ${filename}

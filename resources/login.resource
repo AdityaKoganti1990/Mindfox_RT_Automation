@@ -14,15 +14,15 @@ ${TECH_SUPPORT_EMAIL}            support@mindfox.in
 ${INVALID_WARNING_TEXT}          Invalid username or password
 
 # ─────────────────── Login Window ───────────────────
-${LOGIN_WINDOW_XPATH}            /Window[@Name="FoXpert - Login"]
-${LOGIN_CLOSE_BUTTON_XPATH}      /Window[@Name="FoXpert - Login"]/Button[@AutomationId="Login_Btn_Close"]
+${LOGIN_WINDOW_XPATH}            /Window[@Name="FoXpert RT - Login"]
+${LOGIN_CLOSE_BUTTON_XPATH}      /Window[@Name="FoXpert RT - Login"]/Button[@AutomationId="Login_Btn_Close"]
 ${USER_NAME_XPATH}               /Window/Edit[@AutomationId="Login_Txt_Username"]
 ${PASSWORD_XPATH}                /Window/Edit[@AutomationId="Login_Pwd_Password"]
-${LOGIN_BUTTON_XPATH}            /Window[@Name="FoXpert - Login"]/Button[@AutomationId="Login_Btn_Login"]
-${INVALID_LOGIN_WARNING_XPATH}   /Window[@Name="FoXpert - Login"]/Text[@Name="Invalid username or password"]
+${LOGIN_BUTTON_XPATH}            /Window[@Name="FoXpert RT - Login"]/Button[@AutomationId="Login_Btn_Login"]
+${INVALID_LOGIN_WARNING_XPATH}   /Window[@Name="FoXpert RT - Login"]/Text[@Name="Invalid username or password"]
 ${APP_VERSION_TEXT_XPATH}        //*[@AutomationId="VersionText"]
 ${APP_VERSION_loginscreen_TEXT_XPATH}    //*[normalize-space(@Name)='V E R S I O N 1 . 0']
-${User_Name_LABEL_XPATH}         /Window[@Name="FoXpert - Login"]/Text[@Name="USERNAME"]
+${User_Name_LABEL_XPATH}         /Window[@Name="FoXpert RT - Login"]/Text[@Name="USERNAME"]
 ${Sales_Id_TEXT_XPATH}           //*[@Name="Sales: sales@mindfox.in"]
 ${WebSite_TEXT_XPATH}            //*[@Name="Web: www.mindfox.in"]
 
