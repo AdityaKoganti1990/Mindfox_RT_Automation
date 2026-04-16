@@ -9,7 +9,13 @@ Resource          ../resources/login.resource
 *** Variables ***
 ${project_menu_item_xpaths}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_OpenFile"]
 ${INPUT_FILE_DIALOG_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/ComboBox[1]/Edit[@Name="File name:"]
-${OPEN_BUTTON_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Open"]
+${INPUT_FILE_DIALOG_FALLBACK_XPATH}    /Window/Window/ComboBox[1]/Edit[@Name="File name:"]
+${OPEN_BUTTON_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Window//*[@AutomationId="1" and @Name="Open"]
+${OPEN_BUTTON_AUTOMATION_ID_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window//SplitButton[@Name="Open"]
+${OPEN_BUTTON_FALLBACK_XPATH}    /Window/Window//*[@AutomationId="1" and @Name="Open"]
+${OPEN_BUTTON_AUTOMATION_ID_FALLBACK_XPATH}    /Window/Window//SplitButton[@Name="Open"]
+${OPEN_BUTTON_NAME_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window//Button[@Name="Open"]
+${OPEN_BUTTON_NAME_FALLBACK_XPATH}    /Window/Window//Button[@Name="Open"]
 ${Button_Next_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_NextFile"]
 ${Button_Clear_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem/Button[@AutomationId="Main_Btn_ClearFiles"]
 ${OpenFolder_Button_XPATH}   /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_OpenFolder"]
@@ -34,10 +40,11 @@ Open ProjectFile
     Sleep    1s
     Click    ${project_menu_item_xpaths}
     Sleep    1s
-    Set Text To Textbox    ${INPUT_FILE_DIALOG_XPATH}    ${project_file_path}
+    ${input_xpath}=    Get Open File Dialog Input Locator
+    Set Text To Textbox    ${input_xpath}    ${project_file_path}
     # Send    ${project_file_path}
     Sleep    1s
-    Click    ${OPEN_BUTTON_XPATH}
+    Click Open File Dialog Button
     Sleep    1s
     ${warning_visible}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${PROJECT_WARNING_OK_BUTTON_XPATH}    2
@@ -46,7 +53,7 @@ Open ProjectFile
     Run Keyword If    ${warning_visible}
     ...    Click    ${PROJECT_WARNING_OK_BUTTON_XPATH}
     Sleep    1s
-    Wait Until Element Is Enabled    ${Button_Clear_XPATH}    3
+    Wait Until Keyword Succeeds    45x    1s    Element Should Be Enabled    ${Button_Clear_XPATH}
 
 Open FolderSet
     [Arguments]    ${folder_set_path}
@@ -149,6 +156,41 @@ Close Project
     Run Keyword If    not (${warning_visible} and '${warning_action}' == 'Cancel')
     ...    Wait Until Keyword Succeeds    5x    1s    Element Should Be Disabled    ${Button_Clear_XPATH}
     Sleep    1s
+
+Get Open File Dialog Input Locator
+    ${dialog_input_found}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${INPUT_FILE_DIALOG_XPATH}    2
+    IF    ${dialog_input_found}
+        RETURN    ${INPUT_FILE_DIALOG_XPATH}
+    END
+    Wait Until Element Exist    ${INPUT_FILE_DIALOG_FALLBACK_XPATH}    2
+    RETURN    ${INPUT_FILE_DIALOG_FALLBACK_XPATH}
+
+Click Open File Dialog Button
+    [Arguments]    ${preferred_xpath}=${EMPTY}
+    ${open_clicked}=    Set Variable    ${False}
+    IF    str($preferred_xpath).strip() != ''
+        ${open_clicked}=    Run Keyword And Return Status    Click    ${preferred_xpath}
+    END
+    IF    not ${open_clicked}
+        ${open_clicked}=    Run Keyword And Return Status    Click    ${OPEN_BUTTON_XPATH}
+    END
+    IF    not ${open_clicked}
+        ${open_clicked}=    Run Keyword And Return Status    Click    ${OPEN_BUTTON_AUTOMATION_ID_XPATH}
+    END
+    IF    not ${open_clicked}
+        ${open_clicked}=    Run Keyword And Return Status    Click    ${OPEN_BUTTON_FALLBACK_XPATH}
+    END
+    IF    not ${open_clicked}
+        ${open_clicked}=    Run Keyword And Return Status    Click    ${OPEN_BUTTON_AUTOMATION_ID_FALLBACK_XPATH}
+    END
+    IF    not ${open_clicked}
+        ${open_clicked}=    Run Keyword And Return Status    Click    ${OPEN_BUTTON_NAME_XPATH}
+    END
+    IF    not ${open_clicked}
+        ${open_clicked}=    Run Keyword And Return Status    Click    ${OPEN_BUTTON_NAME_FALLBACK_XPATH}
+    END
+    Should Be True    ${open_clicked}    Could not find/click the Open button in the file dialog.
 
 Verify window is Opened
     [Arguments]    ${window_name}

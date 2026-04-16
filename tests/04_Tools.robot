@@ -44,7 +44,6 @@ MFRTT02 - Verify whether able to add ROI statistics tool in image viewer
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT02_1.png    MFRTT02_1.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT02_2.png    MFRTT02_2.png
     Click    ${roi_statistics_tool_button_xpath}
-
 MFRTT03 - Verify whether able to apply window level over the image.
     [Documentation]    Verify whether able to apply window level over the image.
     [Tags]    smoke    tools
@@ -53,7 +52,6 @@ MFRTT03 - Verify whether able to apply window level over the image.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT03.png    MFRTT03.png
     Click    ${window_level_tool_button_xpath}
     Reset View
-
 MFRTT04 - Verify whether able to open and apply window level from window level panel.
     [Documentation]    Verify whether able to open and apply window level from window level panel.
     [Tags]    smoke    tools
@@ -66,7 +64,6 @@ MFRTT04 - Verify whether able to open and apply window level from window level p
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT04_2.png    MFRTT04_2.png
     Click    ${window_Level_tool_panel_button_xpath}
     Reset View
-
 MFRTT05 - Verify whether able to open Pixel Intensity Histogram.
     [Documentation]    Verify whether able to open Pixel Intensity Histogram.
     [Tags]    smoke    tools
@@ -82,7 +79,6 @@ MFRTT05 - Verify whether able to open Pixel Intensity Histogram.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT05_2.png    MFRTT05_2.png
     Click    ${pixel_intensity_histogram_button_xpath}
     Reset View
-
 MFRTT06 - Verify whether able to calibrate the image by adding calibration tool.
     [Documentation]    Verify whether able to calibrate the image by adding calibration tool.
     [Tags]    smoke    tools
@@ -98,7 +94,6 @@ MFRTT06 - Verify whether able to calibrate the image by adding calibration tool.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT06_2.png    MFRTT06_2.png
     Delete the annotation
     Reset View
-
 MFRTT07 - Verify whether able to add SNR Measurement tool over the image.
     [Documentation]    Verify whether able to add SNR Measurement tool over the image.
     [Tags]    smoke    tools
@@ -112,7 +107,6 @@ MFRTT07 - Verify whether able to add SNR Measurement tool over the image.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT07.png    MFRTT07.png
     Click    ${snr_measurement_tool_button_xpath}
     Reset View
-
 MFRTT08 - Verify whether able to add surface plot 3D tool over the image and view the 3D surface plot.
     [Documentation]    Verify whether able to add surface plot 3D tool over the image and view the 3D surface plot.
     [Tags]    smoke    tools
@@ -126,7 +120,6 @@ MFRTT08 - Verify whether able to add surface plot 3D tool over the image and vie
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT08_2.png    MFRTT08_2.png
     Click    ${surface_plot_tool_button_xpath}
     Reset View
-
 MFRTT09 - Verify whether able to set colormap for the Surface Plot 3D tool.
     [Documentation]    Verify whether able to set colormap for the Surface Plot 3D tool.
     [Tags]    smoke    tools
@@ -177,7 +170,6 @@ MFRTT11 - Verify whether able to Reset zoom on surface plot 3D image to default 
     Click Surface Plot Window Fit View Button
     Take surface plot window Screenshot    MFRTT11_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT11_2.png    MFRTT11_2.png
-
 MFRTT12 - Verify whether able to Zoom in and Zoom out on surface plot 3D image.
     [Documentation]    Verify whether able to Zoom in and Zoom out on surface plot 3D image.
     [Tags]    smoke    tools
@@ -202,7 +194,6 @@ MFRTT13 - Verify whether able to Rotate surface plot 3D image.
     Click Surface Plot Window Fit View Button
     Click    ${surface_plot_tool_button_xpath}
     Reset View
-
 MFRTT14 - Verify whether able to add wall-thickness measurement tool over the image and measure the wall thickness.
     [Documentation]    Verify whether able to add wall-thickness measurement tool over the image and measure the wall thickness.
     [Tags]    smoke    tools
@@ -214,7 +205,6 @@ MFRTT14 - Verify whether able to add wall-thickness measurement tool over the im
     Take wall thickness measurement window Screenshot    MFRTT14_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT14_1.png    MFRTT14_1.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT14_2.png    MFRTT14_2.png
-
 MFRTT15 - Verify whether able to adjust the wall thickness measurement line position and update the measurement result accordingly.
     [Documentation]    Verify whether able to adjust the wall thickness measurement line position and update the measurement result accordingly.
     [Tags]    smoke    tools
@@ -252,7 +242,6 @@ MFRTT17 - Verify whether able to reset to auto wall thickness measurement line p
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT17_1.png    MFRTT17_1.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT17_2.png    MFRTT17_2.png
     Verify Control Not Exists in Image Viewer    ${Manual_wall_thickness_detection_method_XPATH}
-
 MFRTT18 - Verify whether graph is getting updated when switching between different wall-thickness measurement annotations.
     [Documentation]    Verify whether graph is getting updated when switching between different wall-thickness measurement annotations.
     [Tags]    smoke    tools

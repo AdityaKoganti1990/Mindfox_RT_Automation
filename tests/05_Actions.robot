@@ -13,12 +13,12 @@ Resource          ../resources/Actions.resource
 @{BATCH_EXPECTED_REPORT_FILES}    MLE_4_0.237_report.pdf    MLE_6_0.280_report.pdf    MLE_8''0.322_report.pdf
 @{BATCH_Stitch_TEST_FILES}    ${Stitch_Files_Directory_Path}frame_0110.dcm    ${Stitch_Files_Directory_Path}frame_0135.dcm    ${Stitch_Files_Directory_Path}frame_0160.dcm
 @{BATCH_Stitch_EXPECTED_OUTPUT_FILES}    frame_0110.dcm    frame_0135.dcm    frame_0160.dcm
-
+${stitch_output_directory}    ${CURDIR}\\..\\Exports\\StitchOutput\\
 *** Test Cases ***
-
 MFRTA01 - Verify whether able to open Report viewer.
     [Documentation]    Verify whether able to open Report viewer.
     [Tags]    MFRTA01
+
     Open FoxViewerDesktop Application
     Login To FoxViewerDesktop    Sri    Sri
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
@@ -142,7 +142,6 @@ MFRTA13 - Verify whether able to open Stitch window.
     Open Stitch Window
     Sleep    0.1s
     Run Keyword And Continue On Failure   Verify Stitch Window Is Open
-
 MFRTA14 - Verify whether able to add files into Stitch window.
     [Documentation]    Verify whether able to add files into Stitch window.
     [Tags]    MFRTA14
@@ -150,6 +149,69 @@ MFRTA14 - Verify whether able to add files into Stitch window.
     Add files to Stitch Window    @{BATCH_Stitch_TEST_FILES}
     Sleep    0.1s
     Run Keyword And Continue On Failure   Verify Files Added In Stitch Window    @{BATCH_Stitch_EXPECTED_OUTPUT_FILES}
+MFRTA15 - Verify whether able to run Stitch Process.
+    [Documentation]    Verify whether able to run Stitch Process.
+    [Tags]    MFRTA15
+
+    Run Stitch Process
+    ...    direction=Horizontal
+    ...    overlap=5
+    ...    blend_levels=5
+    ...    sub_pixel_refinement=yes
+    ...    min_confidence=6
+    ...    window_level=Auto Best Contrast
+    ...    invert_image=no
+    Sleep    0.1s
+    Take Stitch Image Screenshot    MFRTA15.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTA15.png    MFRTA15.png    95
+MFRTA16 - Verify whether able to Export Stich Images.
+    [Documentation]    Verify whether able to Export Stich Images.
+    [Tags]    MFRTA16
+
+    Export Stitch Images    ${stitch_output_directory}    PNG    MFRTA16
+    Sleep    0.1s
+    Run Keyword And Continue On Failure    File Should Exist    ${stitch_output_directory}MFRTA16.png
+    Export Stitch Images    ${stitch_output_directory}    JPEG    MFRTA16
+    Sleep    0.1s
+    Run Keyword And Continue On Failure    File Should Exist    ${stitch_output_directory}MFRTA16.jpg
+    Export Stitch Images    ${stitch_output_directory}    TIFF    MFRTA16
+    Sleep    0.1s
+    Run Keyword And Continue On Failure    File Should Exist    ${stitch_output_directory}MFRTA16.tiff
+    Export Stitch Images    ${stitch_output_directory}    BMP    MFRTA16
+    Sleep    0.1s
+    Run Keyword And Continue On Failure    File Should Exist    ${stitch_output_directory}MFRTA16.bmp
+MFRTA17 - Verify whether able to clear all files from Stitch window.
+    [Documentation]    Verify whether able to clear all files from Stitch window.
+    [Tags]    MFRTA17
+
+    Clear All Files From Stitch Window
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Verify No Files In Stitch Window
+
+MFRTA18 - Verify whether able to close Stitch window.
+    [Documentation]    Verify whether able to close Stitch window.
+    [Tags]    MFRTA18
+
+    Close Stitch Window
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Verify Stitch Window Is Closed
+
+MFRTA19 - Verify whether able to open RT simulator.
+    [Documentation]    Verify whether able to open RT simulator.
+    [Tags]    MFRTA19
+
+    Open RT Simulator
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Verify RT Simulator Window Is Open
+
+MFRTA20 - Verify whether able to close RT simulator.
+    [Documentation]    Verify whether able to close RT simulator.
+    [Tags]    MFRTA20
+
+    Close RT Simulator
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Verify RT Simulator Window Is Closed
+    Close FoxRT Application Window
 
     
 

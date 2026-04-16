@@ -43,7 +43,7 @@ ${batch_procession_window_Add_Files_Button_XPATH}    /Window[@AutomationId="FoxR
 ${batch_procession_window_Add_Files_Button_By_Name_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Button[@Name="Add Files"]
 ${batch_procession_window_Add_Files_Button_By_Name_Fallback_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Button[@Name="Add files"]
 ${batch_file_dialog_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Window/ComboBox[1]/Edit[@Name="File name:"]
-${batch_file_dialog_open_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Window/Button[@Name="Open"]
+${batch_file_dialog_open_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Window//*[@AutomationId="1" and @Name="Open"]
 ${batch_procession_window_clearall_button_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Button[@AutomationId="Batch_Btn_ClearAll"]
 ${batch_procession_window_run_batch_button_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Button[@AutomationId="Batch_Btn_RunBatch"]
 ${batch_operation_export_images_checkbox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Pane/CheckBox[@AutomationId="Batch_Chk_ExportImages"]
@@ -56,15 +56,46 @@ ${batch_window_level_invert_image_checkbox_XPATH}    /Window[@AutomationId="FoxR
 ${batch_export_format_combobox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Pane/ComboBox[@AutomationId="Batch_Cmb_ExportFormat"]
 ${batch_output_folder_textbox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Pane/Edit[@AutomationId="Batch_Txt_OutputFolder"]
 ${batch_output_folder_browse_button_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Pane/Button[@AutomationId="Batch_Btn_BrowseOutputFolder"]
-${batch_report_include_image_checkbox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]//CheckBox[@AutomationId="Batch_Chk_IncludeImageInReport"]
-${batch_report_output_folder_textbox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]//Edit[@AutomationId="Batch_Txt_ReportOutputFolder"]
-${batch_report_output_folder_browse_button_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]//Button[@AutomationId="Batch_Btn_BrowseReportFolder"]
-${batch_output_folder_dialog_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]//Edit[@Name="Folder:" and @AutomationId="1152"]
-${batch_output_folder_dialog_select_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]//Button[@Name="Select Folder" and @AutomationId="1"]   
+${batch_report_include_image_checkbox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Pane/CheckBox[@AutomationId="Batch_Chk_IncludeImageInReport"]
+${batch_report_output_folder_textbox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Window/Edit[@AutomationId="Batch_Txt_ReportOutputFolder"]
+${batch_report_output_folder_browse_button_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Pane/Button[@AutomationId="Batch_Btn_BrowseReportFolder"]
+${batch_output_folder_dialog_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Window/Edit[@Name="Folder:" and @AutomationId="1152"]
+${batch_output_folder_dialog_select_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Batch Processing"]/Window/Button[@Name="Select Folder" and @AutomationId="1"]   
 ${stitch_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Btn_ImageStitching"]    
 ${stitch_window_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]
-${stitch_window_close_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@AutomationId="Stitching_Btn_Close"]    
-
+${stitch_window_close_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@AutomationId="Stitching_Btn_Close"]
+${stitch_window_add_files_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@AutomationId="Stitching_Btn_AddFiles"]
+${stitch_window_add_files_button_by_name_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@Name="Add Files"]
+${stitch_window_add_files_button_by_name_fallback_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@Name="Add files"]
+${stitch_window_add_files_button_contains_name_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Button[contains(@Name,"Add")]
+${stitch_window_clearall_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@AutomationId="Stitching_Btn_ClearAll"]
+${stitch_file_dialog_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Window/ComboBox[1]/Edit[@Name="File name:"]
+${stitch_file_dialog_open_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Window//*[@AutomationId="1" and @Name="Open"]
+${stitch_configuration_scrollviewer_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Pane[2]
+${stitch_direction_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//ComboBox[@AutomationId="Stitching_Cmb_Direction"]
+${stitch_overlap_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Slider[@AutomationId="Stitching_Sld_Overlap"]
+${stitch_overlap_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Overlap:")]
+${stitch_blend_levels_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Slider[@AutomationId="Stitching_Sld_BlendLevels"]
+${stitch_blend_levels_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Blend Levels:")]
+${stitch_sub_pixel_checkbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//CheckBox[@AutomationId="Stitching_Chk_SubPixel"]
+${stitch_min_confidence_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Slider[@AutomationId="Stitching_Sld_MinConfidence"]
+${stitch_min_confidence_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Min Confidence:")]
+${stitch_window_level_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//ComboBox[@AutomationId="Stitching_Cmb_WindowLevel"]
+${stitch_invert_image_checkbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//CheckBox[@AutomationId="Stitching_Chk_InvertImage"]
+${stitch_window_stitch_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Button[@AutomationId="Stitching_Btn_Stitch"]
+${stitch_export_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@AutomationId="Stitching_Btn_Export"]
+${Stitch_IMAGE_VIEWER_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Pane[3]/Image    
+${stitch_export_dialog_title}    Export Stitched Image
+${stitch_export_filename_control}    [CLASS:Edit; INSTANCE:1]
+${stitch_export_filetype_control}    [CLASS:ComboBox; INSTANCE:2]
+${stitch_export_save_button_control}    [CLASS:Button; INSTANCE:2]
+${stitch_export_overwrite_dialog_title}    Confirm Save As
+${stitch_export_overwrite_yes_button_control}    [TEXT:&Yes]
+${stitch_export_overwrite_yes_button_fallback_control}    [TEXT:Yes]
+${stitch_export_overwrite_yes_button_instance_control}    [CLASS:Button; INSTANCE:1]
+${rt_simulator_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Btn_RtSimulator"]
+${rt_simulator_window_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="FoXpert RT Simulator"]
+${rt_simulator_window_close_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="FoXpert RT Simulator"]/Button[3]
 *** Keywords ***
 Open Report Viewer
     [Documentation]    Open Report Viewer
@@ -284,7 +315,7 @@ Add files to Batch Processing Window
 
     ${dialog_file_value}=    Evaluate    ' '.join([f'\"{p}\"' for p in $clean_file_paths])
     Set Text To Textbox    ${input_xpath}    ${dialog_file_value}
-    Click    ${open_xpath}
+    Click Open File Dialog Button    ${open_xpath}
 
     ${dialog_closed}=    Run Keyword And Return Status
     ...    Wait Until Element Does Not Exist    ${input_xpath}    2
@@ -301,7 +332,7 @@ Add files to Batch Processing Window
             ${input_xpath}    ${open_xpath}=    Get Batch Open File Dialog Locators
         END
         Set Text To Textbox    ${input_xpath}    ${file_path}
-        Click    ${open_xpath}
+        Click Open File Dialog Button    ${open_xpath}
         Wait Until Element Does Not Exist    ${input_xpath}    2
     END
 
@@ -542,4 +573,462 @@ Close Stitch Window
     Click    ${stitch_window_close_button_xpath}
     Sleep    0.5s
     Wait Until Element Does Not Exist    ${stitch_window_xpath}    5
+    Sleep    0.5s
+
+Add files to Stitch Window
+    [Arguments]    @{file_paths}
+    [Documentation]    Add one or more files to Stitch window. Uses a fast single-dialog multi-file selection with reliable fallback.
+
+    ${clean_file_paths}=    Evaluate    [str(p).strip() for p in $file_paths if str(p).strip()]
+    ${path_count}=    Evaluate    len($clean_file_paths)
+    Should Be True    ${path_count} > 0    Provide at least one file path to add in Stitch window.
+
+    FOR    ${file_path}    IN    @{clean_file_paths}
+        ${file_exists}=    Evaluate    __import__('os').path.exists($file_path)
+        Should Be True    ${file_exists}    File path does not exist: ${file_path}
+    END
+
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    Click Add Files In Stitch Window
+    ${input_xpath}    ${open_xpath}=    Get Stitch Open File Dialog Locators
+
+    ${dialog_file_value}=    Evaluate    ' '.join([f'\"{p}\"' for p in $clean_file_paths])
+    Set Text To Textbox    ${input_xpath}    ${dialog_file_value}
+    Click Open File Dialog Button    ${open_xpath}
+
+    ${dialog_closed}=    Run Keyword And Return Status
+    ...    Wait Until Element Does Not Exist    ${input_xpath}    2
+    IF    ${dialog_closed}
+        RETURN
+    END
+
+    # Fallback only when multi-file string is not accepted by the dialog.
+    ${remaining_files}=    Set Variable    @{clean_file_paths}
+    FOR    ${file_path}    IN    @{remaining_files}
+        ${dialog_still_open}=    Run Keyword And Return Status    Element Should Exist    ${input_xpath}
+        IF    not ${dialog_still_open}
+            Click Add Files In Stitch Window
+            ${input_xpath}    ${open_xpath}=    Get Stitch Open File Dialog Locators
+        END
+        Set Text To Textbox    ${input_xpath}    ${file_path}
+        Click Open File Dialog Button    ${open_xpath}
+        Wait Until Element Does Not Exist    ${input_xpath}    2
+    END
+
+Click Add Files In Stitch Window
+    ${add_clicked}=    Run Keyword And Return Status    Click    ${stitch_window_add_files_button_xpath}
+    IF    not ${add_clicked}
+        ${add_clicked}=    Run Keyword And Return Status    Click    ${stitch_window_add_files_button_by_name_xpath}
+    END
+    IF    not ${add_clicked}
+        ${add_clicked}=    Run Keyword And Return Status    Click    ${stitch_window_add_files_button_by_name_fallback_xpath}
+    END
+    IF    not ${add_clicked}
+        ${add_clicked}=    Run Keyword And Return Status    Click    ${stitch_window_add_files_button_contains_name_xpath}
+    END
+    Should Be True    ${add_clicked}    Could not find/click Add Files button in Stitch window.
+
+Get Stitch Open File Dialog Locators
+    ${input_found}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${stitch_file_dialog_input_xpath}    2
+    IF    ${input_found}
+        RETURN    ${stitch_file_dialog_input_xpath}    ${stitch_file_dialog_open_button_xpath}
+    END
+    ${generic_input_xpath}=    Get Open File Dialog Input Locator
+    RETURN    ${generic_input_xpath}    ${EMPTY}
+
+Verify Files Added In Stitch Window
+    [Arguments]    @{file_paths}
+    [Documentation]    Verify that each provided file is visible in the Stitch window.
+
+    ${clean_file_paths}=    Evaluate    [str(p).strip() for p in $file_paths if str(p).strip()]
+    ${path_count}=    Evaluate    len($clean_file_paths)
+    Should Be True    ${path_count} > 0    Provide at least one file path to verify in Stitch window.
+
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+
+    FOR    ${file_path}    IN    @{clean_file_paths}
+        ${file_name}=    Evaluate    __import__('os').path.basename($file_path)
+        ${exact_name_xpath}=    Set Variable    ${stitch_window_xpath}//*[@Name="${file_name}"]
+        ${contains_name_xpath}=    Set Variable    ${stitch_window_xpath}//*[contains(@Name,"${file_name}")]
+
+        ${found_exact}=    Run Keyword And Return Status
+        ...    Wait Until Element Exist    ${exact_name_xpath}    2
+
+        ${found_contains}=    Set Variable    ${False}
+        IF    not ${found_exact}
+            ${found_contains}=    Run Keyword And Return Status
+            ...    Wait Until Element Exist    ${contains_name_xpath}    2
+        END
+
+        Should Be True
+        ...    ${found_exact} or ${found_contains}
+        ...    File not found in Stitch window: ${file_name}
+    END
+
+Clear All Files From Stitch Window
+    [Documentation]    Remove all files from Stitch window.
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    Click    ${stitch_window_clearall_button_xpath}
+    Sleep    0.5s
+
+Verify No Files In Stitch Window
+    [Documentation]    Verify no files are listed in Stitch window.
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    ${dcm_entries_xpath}=    Set Variable
+    ...    ${stitch_window_xpath}//*[contains(@Name,'.dcm') or contains(@Name,'.DCM')]
+    ${files_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${dcm_entries_xpath}    1
+    Should Not Be True
+    ...    ${files_present}
+    ...    Expected no files in Stitch window, but one or more file entries are still visible.
+
+Run Stitch Process
+    [Arguments]    ${direction}=Horizontal    ${overlap}=30    ${blend_levels}=5
+    ...    ${sub_pixel_refinement}=yes    ${min_confidence}=15
+    ...    ${window_level}=Auto Best Contrast    ${invert_image}=no
+    [Documentation]    Set Stitch options from arguments and then click Stitch.
+
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    Focus    ${stitch_window_xpath}
+    Sleep    0.2s
+
+    ${direction_options}=    Get All Names From Combobox    ${stitch_direction_combobox_xpath}
+    ${direction_valid}=    Evaluate    $direction in $direction_options
+    Should Be True
+    ...    ${direction_valid}
+    ...    Unsupported Direction: ${direction}. Available options: ${direction_options}
+
+    ${window_level_options}=    Get All Names From Combobox    ${stitch_window_level_combobox_xpath}
+    ${window_level_valid}=    Evaluate    $window_level in $window_level_options
+    Should Be True
+    ...    ${window_level_valid}
+    ...    Unsupported Window Level: ${window_level}. Available options: ${window_level_options}
+
+    Select Combobox Item By Name    ${stitch_direction_combobox_xpath}    ${direction}
+    Sleep    0.2s
+    Set Stitch Slider Value    ${stitch_overlap_slider_xpath}    ${overlap}    ${stitch_overlap_value_text_xpath}    5    80
+    Set Stitch Slider Value    ${stitch_blend_levels_slider_xpath}    ${blend_levels}    ${stitch_blend_levels_value_text_xpath}    1    8
+
+    ${sub_pixel_refinement_bool}=    Convert User Input To Boolean    ${sub_pixel_refinement}    Sub-pixel Refinement
+    Set Checkbox State    ${stitch_sub_pixel_checkbox_xpath}    ${sub_pixel_refinement_bool}
+    Sleep    0.2s
+
+    Set Stitch Slider Value
+    ...    ${stitch_min_confidence_slider_xpath}
+    ...    ${min_confidence}
+    ...    ${stitch_min_confidence_value_text_xpath}
+    ...    5
+    ...    50
+    Select Combobox Item By Name    ${stitch_window_level_combobox_xpath}    ${window_level}
+    Sleep    0.2s
+
+    Scroll Stitch Configuration To Bottom
+    ${invert_image_bool}=    Convert User Input To Boolean    ${invert_image}    Invert Image
+    Set Checkbox State    ${stitch_invert_image_checkbox_xpath}    ${invert_image_bool}
+    Sleep    0.2s
+
+    Click    ${stitch_window_stitch_button_xpath}
+    Sleep    1s
+    Wait Until Element Exist    ${stitch_export_button_xpath}    30
+    Sleep    0.5s
+
+Export Stitch Images
+    [Arguments]    ${output_folder}    ${export_format}=PNG    ${file_name}=${EMPTY}
+    [Documentation]    Export the stitched image to the requested output folder and format.
+
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    Wait Until Element Exist    ${stitch_export_button_xpath}    5
+
+    ${format_label}    ${file_extension}=    Get Stitch Export Format Details    ${export_format}
+
+    Should Not Be Empty    ${output_folder}    Output folder is required for Stitch export.
+    Create Directory    ${output_folder}
+
+    IF    str($file_name).strip() == ''
+        ${file_name}=    Evaluate    __import__('datetime').datetime.now().strftime('StitchExport_%Y%m%d_%H%M%S')
+    ELSE
+        ${file_name}=    Evaluate    __import__('os').path.splitext(str($file_name).strip())[0]
+    END
+
+    ${export_file_name}=    Set Variable    ${file_name}.${file_extension}
+    ${export_file_path}=    Join Path    ${output_folder}    ${export_file_name}
+    ${file_already_exists}=    Evaluate    __import__('os').path.exists($export_file_path)
+
+    Click    ${stitch_export_button_xpath}
+    Win Wait Active    ${stitch_export_dialog_title}    ${EMPTY}    5
+
+    Control Command
+    ...    ${stitch_export_dialog_title}
+    ...    ${EMPTY}
+    ...    ${stitch_export_filetype_control}
+    ...    SelectString
+    ...    ${format_label}
+    ${selected_format}=    Control Command
+    ...    ${stitch_export_dialog_title}
+    ...    ${EMPTY}
+    ...    ${stitch_export_filetype_control}
+    ...    GetCurrentSelection
+    ...    ${EMPTY}
+    Should Be Equal As Strings
+    ...    ${selected_format}
+    ...    ${format_label}
+    ...    Stitch export format was not applied. Requested ${format_label}, but dialog shows ${selected_format}.
+
+    Control Set Text
+    ...    ${stitch_export_dialog_title}
+    ...    ${EMPTY}
+    ...    ${stitch_export_filename_control}
+    ...    ${export_file_path}
+    Sleep    0.2s
+    Control Click
+    ...    ${stitch_export_dialog_title}
+    ...    ${EMPTY}
+    ...    ${stitch_export_save_button_control}
+    Handle Stitch Export Overwrite Warning If Present    ${file_already_exists}
+    Win Wait Close    ${stitch_export_dialog_title}    ${EMPTY}    10
+
+    Wait Until Keyword Succeeds    30x    1s    File Should Exist    ${export_file_path}
+    RETURN    ${export_file_path}
+
+Handle Stitch Export Overwrite Warning If Present
+    [Arguments]    ${overwrite_expected}=${False}
+    [Documentation]    If an overwrite confirmation appears during Stitch export, confirm it by clicking Yes.
+
+    IF    not ${overwrite_expected}
+        RETURN
+    END
+
+    ${overwrite_visible}=    Run Keyword And Return Status
+    ...    Win Wait Active    ${stitch_export_overwrite_dialog_title}    ${EMPTY}    2
+
+    ${yes_clicked}=    Set Variable    ${False}
+    IF    ${overwrite_visible}
+        ${yes_clicked}=    Run Keyword And Return Status
+        ...    Control Click
+        ...    ${stitch_export_overwrite_dialog_title}
+        ...    ${EMPTY}
+        ...    ${stitch_export_overwrite_yes_button_control}
+    END
+    IF    not ${yes_clicked}
+        ${yes_clicked}=    Run Keyword And Return Status
+        ...    Control Click
+        ...    [ACTIVE]
+        ...    ${EMPTY}
+        ...    ${stitch_export_overwrite_yes_button_control}
+    END
+    IF    not ${yes_clicked}
+        ${yes_clicked}=    Run Keyword And Return Status
+        ...    Control Click
+        ...    [ACTIVE]
+        ...    ${EMPTY}
+        ...    ${stitch_export_overwrite_yes_button_fallback_control}
+    END
+    IF    not ${yes_clicked}
+        ${yes_clicked}=    Run Keyword And Return Status
+        ...    Control Click
+        ...    [ACTIVE]
+        ...    ${EMPTY}
+        ...    ${stitch_export_overwrite_yes_button_instance_control}
+    END
+    IF    not ${yes_clicked}
+        ${alt_y_sent}=    Run Keyword And Return Status    Send    !y
+        Sleep    0.2s
+        ${yes_clicked}=    Set Variable    ${alt_y_sent}
+    END
+
+    Should Be True    ${yes_clicked}    Stitch export overwrite warning was expected, but the Yes confirmation could not be completed.
+    Sleep    0.2s
+
+Get Stitch Export Format Details
+    [Arguments]    ${export_format}
+    [Documentation]    Return the native Save dialog label and file extension for the requested Stitch export format.
+
+    ${normalized_format}=    Evaluate    str($export_format).strip().lower()
+
+    IF    '${normalized_format}' == 'png'
+        RETURN    PNG (*.png)    png
+    END
+    IF    '${normalized_format}' == 'jpeg' or '${normalized_format}' == 'jpg'
+        RETURN    JPEG (*.jpg)    jpg
+    END
+    IF    '${normalized_format}' == 'tiff' or '${normalized_format}' == 'tif'
+        RETURN    TIFF (*.tiff)    tiff
+    END
+    IF    '${normalized_format}' == 'bmp' or '${normalized_format}' == 'bitmap'
+        RETURN    BMP (*.bmp)    bmp
+    END
+
+    Fail    Unsupported Stitch export format: ${export_format}. Use PNG, JPEG, TIFF, or BMP.
+
+Get Stitch Slider Display Value
+    [Arguments]    ${value_text_xpath}
+
+    ${label_text}=    Get Name From Element    ${value_text_xpath}
+    ${has_value}=    Evaluate    __import__('re').search(r'\\d+', $label_text) is not None
+    Should Be True    ${has_value}    Could not extract a numeric value from: ${label_text}
+    ${value}=    Evaluate    int(__import__('re').search(r'\\d+', $label_text).group())
+    RETURN    ${value}
+
+Set Stitch Slider Value
+    [Arguments]    ${slider_xpath}    ${value}    ${value_text_xpath}    ${minimum}    ${maximum}
+    [Documentation]    Set a stitch slider value by dragging its thumb and verifying the displayed label.
+
+    ${value}=    Convert To Integer    ${value}
+    ${minimum}=    Convert To Integer    ${minimum}
+    ${maximum}=    Convert To Integer    ${maximum}
+    Should Be True
+    ...    ${minimum} <= ${value} <= ${maximum}
+    ...    Slider value must be between ${minimum} and ${maximum}. Received: ${value}
+
+    ${current}=    Get Stitch Slider Display Value    ${value_text_xpath}
+    IF    ${current} == ${value}
+        RETURN
+    END
+
+    ${slider_rect}=    Get Rectangle Bounding From Element    ${slider_xpath}    BoundingRectangle
+    ${thumb_xpath}=    Set Variable    ${slider_xpath}/Thumb
+    ${thumb_rect}=    Get Rectangle Bounding From Element    ${thumb_xpath}    BoundingRectangle
+
+    ${slider_x}=    Get From List    ${slider_rect}    0
+    ${slider_y}=    Get From List    ${slider_rect}    1
+    ${slider_width}=    Get From List    ${slider_rect}    2
+    ${slider_height}=    Get From List    ${slider_rect}    3
+    ${thumb_x}=    Get From List    ${thumb_rect}    0
+    ${thumb_y}=    Get From List    ${thumb_rect}    1
+    ${thumb_width}=    Get From List    ${thumb_rect}    2
+    ${thumb_height}=    Get From List    ${thumb_rect}    3
+
+    ${start_x}=    Evaluate    int(${thumb_x} + (${thumb_width} / 2))
+    ${start_y}=    Evaluate    int(${thumb_y} + (${thumb_height} / 2))
+    ${thumb_half}=    Evaluate    ${thumb_width} / 2
+    ${min_x}=    Evaluate    ${slider_x} + ${thumb_half}
+    ${max_x}=    Evaluate    ${slider_x} + ${slider_width} - ${thumb_half}
+    ${target_ratio}=    Evaluate    (${value} - ${minimum}) / (${maximum} - ${minimum})
+    ${target_x}=    Evaluate    int(${min_x} + ((${max_x} - ${min_x}) * ${target_ratio}))
+    ${target_y}=    Evaluate    int(${slider_y} + (${slider_height} / 2))
+
+    AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${target_x}    ${target_y}
+    Sleep    0.1s
+
+    ${current}=    Get Stitch Slider Display Value    ${value_text_xpath}
+    ${pixels_per_unit}=    Evaluate    max(1.0, (${max_x} - ${min_x}) / (${maximum} - ${minimum}))
+
+    FOR    ${attempt}    IN RANGE    60
+        IF    ${current} == ${value}
+            BREAK
+        END
+        ${delta}=    Evaluate    ${value} - ${current}
+        ${abs_delta}=    Evaluate    abs(${delta})
+        ${direction}=    Set Variable If    ${delta} > 0    1    -1
+        ${coarse_step}=    Evaluate    int(max(1, round(${abs_delta} * ${pixels_per_unit} * 0.6)))
+        ${step_pixels}=    Set Variable If    ${abs_delta} <= 1    1    ${coarse_step}
+        ${step_pixels}=    Evaluate    min(15, max(1, ${step_pixels}))
+
+        ${thumb_rect}=    Get Rectangle Bounding From Element    ${thumb_xpath}    BoundingRectangle
+        ${thumb_x}=    Get From List    ${thumb_rect}    0
+        ${thumb_y}=    Get From List    ${thumb_rect}    1
+        ${thumb_width}=    Get From List    ${thumb_rect}    2
+        ${thumb_height}=    Get From List    ${thumb_rect}    3
+        ${start_x}=    Evaluate    int(${thumb_x} + (${thumb_width} / 2))
+        ${start_y}=    Evaluate    int(${thumb_y} + (${thumb_height} / 2))
+        ${nudge_target_x}=    Evaluate    int(min(${max_x}, max(${min_x}, ${start_x} + (${direction} * ${step_pixels}))))
+        IF    ${nudge_target_x} == ${start_x}
+            BREAK
+        END
+
+        AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${nudge_target_x}    ${target_y}
+        Sleep    0.03s
+        ${current}=    Get Stitch Slider Display Value    ${value_text_xpath}
+    END
+
+    Should Be Equal As Integers    ${current}    ${value}
+    ...    Slider mismatch. Requested ${value}, but applied ${current}.
+
+Scroll Stitch Configuration To Bottom
+    [Documentation]    Scroll the Stitch configuration pane down so the Invert Image checkbox is visible.
+
+    Focus    ${stitch_configuration_scrollviewer_xpath}
+    ${invert_visible}=    Is Stitch Configuration Element Visible    ${stitch_invert_image_checkbox_xpath}
+    IF    ${invert_visible}
+        RETURN
+    END
+
+    FOR    ${index}    IN RANGE    10
+        Scroll Down    ${stitch_configuration_scrollviewer_xpath}    1
+        Sleep    0.05s
+        ${invert_visible}=    Is Stitch Configuration Element Visible    ${stitch_invert_image_checkbox_xpath}
+        IF    ${invert_visible}
+            BREAK
+        END
+    END
+
+    Should Be True    ${invert_visible}    Invert Image checkbox is not visible after scrolling the Stitch configuration pane.
+    Sleep    0.1s
+
+Is Stitch Configuration Element Visible
+    [Arguments]    ${element_xpath}
+
+    ${container_rect}=    Get Rectangle Bounding From Element    ${stitch_configuration_scrollviewer_xpath}    BoundingRectangle
+    ${element_rect}=    Get Rectangle Bounding From Element    ${element_xpath}    BoundingRectangle
+
+    ${container_x}=    Get From List    ${container_rect}    0
+    ${container_y}=    Get From List    ${container_rect}    1
+    ${container_width}=    Get From List    ${container_rect}    2
+    ${container_height}=    Get From List    ${container_rect}    3
+
+    ${element_x}=    Get From List    ${element_rect}    0
+    ${element_y}=    Get From List    ${element_rect}    1
+    ${element_width}=    Get From List    ${element_rect}    2
+    ${element_height}=    Get From List    ${element_rect}    3
+
+    ${container_right}=    Evaluate    int(${container_x} + ${container_width})
+    ${container_bottom}=    Evaluate    int(${container_y} + ${container_height})
+    ${element_right}=    Evaluate    int(${element_x} + ${element_width})
+    ${element_bottom}=    Evaluate    int(${element_y} + ${element_height})
+
+    ${is_visible}=    Evaluate
+    ...    ${element_width} > 0 and ${element_height} > 0 and ${element_x} >= ${container_x} and ${element_y} >= ${container_y} and ${element_right} <= ${container_right} and ${element_bottom} <= ${container_bottom}
+    RETURN    ${is_visible}
+
+Take Stitch Image Screenshot
+    [Arguments]    ${filename}
+
+    ${screenshot_path}=    Take Screenshot    ${Stitch_IMAGE_VIEWER_XPATH}
+    Log    Screenshot saved to (temporary): ${screenshot_path}
+
+    ${dest}=    Set Variable    ${actual_image}${filename}
+    Create Directory    ${actual_image}
+    Move File    ${screenshot_path}    ${dest}
+
+    Log    Screenshot moved to: ${dest}
+    RETURN    ${dest}
+
+Verify Stitch Window Is Closed
+    Wait Until Element Does Not Exist    ${stitch_window_xpath}    5
+    Sleep    0.5s
+
+Open RT Simulator
+    [Documentation]    Open RT Simulator window.
+
+    Click    ${MAIN_WINDOW_XPATH}
+    Sleep    0.2s
+    Click    ${rt_simulator_button_xpath}
+    Sleep    0.2s
+    Wait Until Element Exist    ${rt_simulator_window_xpath}    5
+    Sleep    1s
+
+Verify RT Simulator Window Is Open
+    [Documentation]    Verify RT Simulator Window Is Open
+
+    Element Should Exist    ${rt_simulator_window_xpath}
+
+Close RT Simulator
+    Click    ${rt_simulator_window_close_button_xpath}
+    Sleep    0.5s
+    Wait Until Element Does Not Exist    ${rt_simulator_window_xpath}    5
+    Sleep    0.5s
+
+Verify RT Simulator Window Is Closed
+    Wait Until Element Does Not Exist    ${rt_simulator_window_xpath}    5
     Sleep    0.5s
