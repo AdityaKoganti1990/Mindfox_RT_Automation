@@ -2,11 +2,11 @@
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
+Library           OperatingSystem
 Resource          ../resources/login.resource
 Resource          ../resources/General.resource
 Resource          ../resources/imageviewer.resource
 Resource          ../resources/Actions.resource
-
 *** Variables ***
 @{BATCH_TEST_FILES}    ${project_Directory_Path}MLE_4_0.237.dcm    ${project_Directory_Path}MLE_6_0.280.dcm    ${project_Directory_Path}MLE_8''0.322.dcm
 @{BATCH_EXPECTED_OUTPUT_FILES}    MLE_4_0.237.png    MLE_6_0.280.png    MLE_8''0.322.png
@@ -118,7 +118,6 @@ MFRTA10 - Verify whether able to run Batch Process.
     ...    Verify Batch Process Completed Successfully
     ...    ${CURDIR}\\..\\Exports\\BatchReportOutput
     ...    @{BATCH_EXPECTED_REPORT_FILES}
-
 MFRTA11 - Verify whether able to remove files from Batch Processing window.
     [Documentation]    Verify whether able to remove files from Batch Processing window.
     [Tags]    MFRTA11

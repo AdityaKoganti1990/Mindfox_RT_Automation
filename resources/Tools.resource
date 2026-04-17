@@ -59,6 +59,18 @@ ${filter_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabI
 ${filter_apply_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Btn_ApplyFilter"]
 ${filter_reset_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Btn_Reset"]
 ${filter_apply_loading_bar_cancel_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_CancelFilter"]
+${filter_auto_best_contrast_checkbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/CheckBox[@AutomationId="ImgFilters_Chk_AutoBestContrast"]
+${filter_sigma_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_Sigma"]
+${filter_kernel_radius_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_KernelRadius"]
+${filter_canny_low_ratio_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_CannyLow"]
+${filter_canny_high_ratio_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_CannyHigh"]
+${filter_morph_radius_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_MorphRadius"]
+${filter_butterworth_cutoff_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ButterworthCutoff"]
+${filter_butterworth_order_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ButterworthOrder"]
+${filter_unsharp_amount_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_UnsharpAmount"]
+${filter_unsharp_sigma_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_UnsharpSigma"]
+${filter_clahe_tile_size_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ClaheTileSize"]
+${filter_clahe_clip_limit_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ClaheClipLimit"]
 ${percentile_brightness_contrast_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_PercentileBnC"]    
 ${percentile_brightness_contrast_savePreset_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Save"]
 ${percentile_brightness_contrast_savePreset_name_textbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Edit
@@ -74,7 +86,10 @@ ${percentile_brightness_contrast_load_preset_button}    /Window[@AutomationId="F
 ${selectNormalProfilerType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//Tab[2]/TabItem/Custom/RadioButton[@AutomationId="ModeNormal"]
 ${selectIQIProfilerType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//Tab[2]/TabItem/Custom/RadioButton[@AutomationId="ModeIqi"]
 ${fox_bleach_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_FoxBleach"]
-
+${filter_rename_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[1]
+${filter_rename_textbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Edit[@AutomationId="RenameTextBox"]   
+${filter_reset_to_default_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@Name="Reset to default"]
+${filter_save_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@Name="Save"]    
 *** Keywords ***
 
 Add Line Profiler Tool
@@ -153,6 +168,8 @@ Set Window Level Parameters
     
     Set Text To Textbox    ${window_level_center_input_xpath}    ${center_value}
     Set Text To Textbox    ${window_level_width_input_xpath}    ${width_value}
+    Sleep    0.2s
+    Send    {TAB}
     Sleep    0.2s
 
 Take Window Level Panel Screenshot
@@ -248,7 +265,7 @@ Add Surface Plot 3D Tool over image
     Click    ${surface_plot_tool_button_xpath}
     Sleep    0.2s
     AutoItLibrary.Mouse Click Drag    left    ${x1}    ${y1}    ${x2}    ${y2}
-    Sleep    0.5s
+    Sleep    1s
 
 Take surface plot window Screenshot
     [Arguments]    ${filename}
@@ -521,12 +538,7 @@ Apply Image Filter
     Sleep    0.2s
     Select Combobox Item By Name    ${filter_combobox_xpath}    ${filterName}
     Sleep    0.2s
-    Click    ${filter_apply_button_xpath}
-    Sleep    0.2s
-    Wait Until Element Is Offscreen    ${filter_apply_loading_bar_cancel_button_xpath}    5
-    Sleep    0.2s
-    Wait Until Element Is Enabled    ${project_menu_item_xpaths}
-    Sleep    0.2s
+    Click Apply Image Filter
 
 Reset Image Filter
     [Documentation]    Reset the image filter by clicking the reset button.
@@ -535,13 +547,19 @@ Reset Image Filter
     Click    ${filter_reset_button_xpath}
     Sleep    0.2s
 
-Rename Image Filter
-    [Arguments]    ${filterName}
-    [Documentation]    Rename the image filter by selecting the filter from the filter combobox in the Image Filter tool.
+Click Apply Image Filter
+    [Documentation]    Click the Apply Filter button in the Image Filter tool.
 
     Focus    ${window_XPATH}
     Sleep    0.2s
-    Select Combobox Item By Name    ${filter_combobox_xpath}    ${filterName}
+    ${filter_tool_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${filter_apply_button_xpath}    1
+    Run Keyword If    not ${filter_tool_open}    Click Image Filter Tool
+    Click    ${filter_apply_button_xpath}
+    Sleep    0.2s
+    Wait Until Element Is Offscreen    ${filter_apply_loading_bar_cancel_button_xpath}    5
+    Sleep    0.2s
+    Wait Until Element Is Enabled    ${project_menu_item_xpaths}
     Sleep    0.2s
 
 Set Percentile Brightness and Contrast Slider Value
@@ -754,3 +772,380 @@ Apply Fox Bleach Filter
     ${fox_bleach_state}=    Get Toggle State    ${fox_bleach_filter_button_xpath}
     Run Keyword If    '${fox_bleach_state}'!='${target_state}'    Click    ${fox_bleach_filter_button_xpath}
     Sleep    0.2s
+
+Rename Image Filter
+    [Arguments]    ${filterName}    ${newFilterName}
+    [Documentation]    Rename the image filter by selecting the filter from the filter combobox in the Image Filter tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${filter_tool_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${filter_combobox_xpath}    1
+    Run Keyword If    not ${filter_tool_open}    Click Image Filter Tool
+    Select Combobox Item By Name    ${filter_combobox_xpath}    ${filterName}
+    Sleep    0.2s
+    Click    ${filter_rename_button_xpath}
+    Sleep    0.2s
+    Set Text To Textbox    ${filter_rename_textbox_xpath}    ${newFilterName}
+    Sleep    0.2s
+    Click    ${filter_save_button_xpath}
+    Sleep    0.2s
+
+Verify Filter Exists in Filters List
+    [Arguments]    ${filterName}
+    [Documentation]    Verify that a filter with the provided name exists in the filters list of the Image Filter tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${filter_tool_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${filter_combobox_xpath}    1
+    Run Keyword If    not ${filter_tool_open}    Click Image Filter Tool
+    ${available_filter_names}=    Get All Names From Combobox    ${filter_combobox_xpath}
+    ${available_filter_texts}=    Get All Texts From Combobox    ${filter_combobox_xpath}
+    Log    Available filter names: ${available_filter_names}
+    Log    Available filter texts: ${available_filter_texts}
+    Combobox Should Contain    ${filter_combobox_xpath}    ${filterName}
+    Log    Filter exists in the Image Filter list as expected.
+    RETURN    ${TRUE}
+
+Reset Filter Name to Default
+    [Arguments]    ${filterName}
+    [Documentation]    Reset the selected image filter name to its default value from the Image Filter tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${filter_tool_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${filter_combobox_xpath}    1
+    Run Keyword If    not ${filter_tool_open}    Click Image Filter Tool
+    Select Combobox Item By Name    ${filter_combobox_xpath}    ${filterName}
+    Sleep    0.2s
+    Click    ${filter_rename_button_xpath}
+    Sleep    0.2s
+    Wait Until Element Exist    ${filter_rename_textbox_xpath}    5
+    Wait Until Element Exist    ${filter_reset_to_default_button_xpath}    5
+    Click    ${filter_reset_to_default_button_xpath}
+    Sleep    0.2s
+
+Verify Filter Not Exists in Filters List
+    [Arguments]    ${filterName}
+    [Documentation]    Verify that a filter with the provided name does not exist in the filters list of the Image Filter tool.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${filter_tool_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${filter_combobox_xpath}    1
+    Run Keyword If    not ${filter_tool_open}    Click Image Filter Tool
+    ${available_filter_names}=    Get All Names From Combobox    ${filter_combobox_xpath}
+    ${available_filter_texts}=    Get All Texts From Combobox    ${filter_combobox_xpath}
+    Log    Available filter names: ${available_filter_names}
+    Log    Available filter texts: ${available_filter_texts}
+    Should Not Contain    ${available_filter_names}    ${filterName}
+    Should Not Contain    ${available_filter_texts}    ${filterName}
+    Log    Filter does not exist in the Image Filter list as expected.
+    RETURN    ${TRUE}
+
+Set Image Filter Parameters
+    [Arguments]    ${filterName}    @{parameterPairs}
+    [Documentation]    Select an image filter and set supported parameters using Parameter=Value pairs.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${filter_tool_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${filter_combobox_xpath}    1
+    Run Keyword If    not ${filter_tool_open}    Click Image Filter Tool
+
+    ${filter_display_name}=    Resolve Image Filter Display Name    ${filterName}
+    Select Combobox Item By Name    ${filter_combobox_xpath}    ${filter_display_name}
+    Sleep    0.5s
+    ${selected_filter_texts}=    Get All Selected Texts From Combobox    ${filter_combobox_xpath}
+    Should Contain    ${selected_filter_texts}    ${filter_display_name}
+    ...    Selected filter should be '${filter_display_name}'.
+
+    ${parameter_count}=    Get Length    ${parameterPairs}
+    IF    ${parameter_count} == 0
+        Log    No parameters provided for '${filter_display_name}'. Filter selection completed.
+        RETURN    ${TRUE}
+    END
+
+    FOR    ${parameter_pair}    IN    @{parameterPairs}
+        ${separator_index}=    Evaluate    str($parameter_pair).find('=')
+        Should Be True    ${separator_index} > 0
+        ...    Invalid image filter parameter format '${parameter_pair}'. Use Parameter=Value.
+        ${parameter_name}=    Evaluate    str($parameter_pair)[:${separator_index}].strip()
+        ${parameter_value}=    Evaluate    str($parameter_pair)[${separator_index}+1:].strip()
+        Should Not Be Empty    ${parameter_name}    Image filter parameter name cannot be empty.
+        Should Not Be Empty    ${parameter_value}    Image filter parameter value cannot be empty for '${parameter_name}'.
+        Set Image Filter Parameter    ${filter_display_name}    ${parameter_name}    ${parameter_value}
+    END
+
+    RETURN    ${TRUE}
+
+Normalize Image Filter Name
+    [Arguments]    ${filterName}
+
+    Should Not Be Empty    ${filterName}    Image filter name cannot be empty.
+    ${filter_key}=    Evaluate    ''.join(ch.lower() for ch in str($filterName).strip() if ch.isalnum())
+    Should Not Be Empty    ${filter_key}    Image filter name cannot be blank.
+
+    IF    '${filter_key}'=='none' or '${filter_key}'=='nofilter'
+        RETURN    nofilter
+    ELSE IF    '${filter_key}'=='cannyedge' or '${filter_key}'=='edgedetection'
+        RETURN    cannyedge
+    ELSE IF    '${filter_key}'=='vectorgradientmagnitude' or '${filter_key}'=='gradientmagnitude'
+        RETURN    vectorgradientmagnitude
+    ELSE IF    '${filter_key}'=='morphologicalgradient' or '${filter_key}'=='morphologicalcontour'
+        RETURN    morphologicalgradient
+    ELSE IF    '${filter_key}'=='sobeledge' or '${filter_key}'=='edgegradient'
+        RETURN    sobeledge
+    ELSE IF    '${filter_key}'=='butterworthhighpass' or '${filter_key}'=='highpasssharpen'
+        RETURN    butterworthhighpass
+    ELSE IF    '${filter_key}'=='butterworthlowpass' or '${filter_key}'=='lowpasssmooth'
+        RETURN    butterworthlowpass
+    ELSE IF    '${filter_key}'=='normalization' or '${filter_key}'=='normalize'
+        RETURN    normalization
+    ELSE IF    '${filter_key}'=='unsharpmask' or '${filter_key}'=='sharpnessboost'
+        RETURN    unsharpmask
+    ELSE IF    '${filter_key}'=='histogramequalization' or '${filter_key}'=='autoequalise'
+        RETURN    histogramequalization
+    ELSE IF    '${filter_key}'=='gaussiansmooth' or '${filter_key}'=='gaussianblur'
+        RETURN    gaussiansmooth
+    ELSE IF    '${filter_key}'=='clahe' or '${filter_key}'=='foxbleach'
+        RETURN    clahe
+    END
+
+    Fail    Unsupported image filter '${filterName}'. Supported filters: No Filter, Edge Detection, Gradient Magnitude, Morphological Contour, Edge Gradient, High-Pass Sharpen, Low-Pass Smooth, Normalize, Sharpness Boost, Auto Equalise, Gaussian Blur, Fox Bleach.
+
+Resolve Image Filter Display Name
+    [Arguments]    ${filterName}
+
+    ${filter_key}=    Normalize Image Filter Name    ${filterName}
+    IF    '${filter_key}'=='nofilter'
+        RETURN    No Filter
+    ELSE IF    '${filter_key}'=='cannyedge'
+        RETURN    Edge Detection
+    ELSE IF    '${filter_key}'=='vectorgradientmagnitude'
+        RETURN    Gradient Magnitude
+    ELSE IF    '${filter_key}'=='morphologicalgradient'
+        RETURN    Morphological Contour
+    ELSE IF    '${filter_key}'=='sobeledge'
+        RETURN    Edge Gradient
+    ELSE IF    '${filter_key}'=='butterworthhighpass'
+        RETURN    High-Pass Sharpen
+    ELSE IF    '${filter_key}'=='butterworthlowpass'
+        RETURN    Low-Pass Smooth
+    ELSE IF    '${filter_key}'=='normalization'
+        RETURN    Normalize
+    ELSE IF    '${filter_key}'=='unsharpmask'
+        RETURN    Sharpness Boost
+    ELSE IF    '${filter_key}'=='histogramequalization'
+        RETURN    Auto Equalise
+    ELSE IF    '${filter_key}'=='gaussiansmooth'
+        RETURN    Gaussian Blur
+    END
+    RETURN    Fox Bleach
+
+Normalize Image Filter Parameter Name
+    [Arguments]    ${parameterName}
+
+    Should Not Be Empty    ${parameterName}    Image filter parameter name cannot be empty.
+    ${parameter_key}=    Evaluate    ''.join(ch.lower() for ch in str($parameterName).strip() if ch.isalnum())
+    Should Not Be Empty    ${parameter_key}    Image filter parameter name cannot be blank.
+    IF    '${parameter_key}'=='autocalculatebestbnc' or '${parameter_key}'=='autobnc' or '${parameter_key}'=='bestbnc'
+        RETURN    autobestcontrast
+    ELSE IF    '${parameter_key}'=='kernalradius'
+        RETURN    kernelradius
+    END
+    RETURN    ${parameter_key}
+
+Convert Image Filter Parameter To Boolean
+    [Arguments]    ${value}    ${field_name}=value
+
+    ${normalized}=    Evaluate    str($value).strip().lower()
+    ${is_true}=    Evaluate    $normalized in ('true','1','yes','y','on')
+    ${is_false}=    Evaluate    $normalized in ('false','0','no','n','off')
+    IF    ${is_true}
+        RETURN    ${True}
+    END
+    IF    ${is_false}
+        RETURN    ${False}
+    END
+    Fail    Invalid input for ${field_name}: ${value}. Use yes/no, true/false, or 1/0.
+
+Get Supported Image Filter Parameters
+    [Arguments]    ${filterName}
+
+    ${filter_key}=    Normalize Image Filter Name    ${filterName}
+    IF    '${filter_key}'=='nofilter' or '${filter_key}'=='vectorgradientmagnitude' or '${filter_key}'=='sobeledge' or '${filter_key}'=='normalization' or '${filter_key}'=='histogramequalization'
+        RETURN    none
+    ELSE IF    '${filter_key}'=='cannyedge'
+        RETURN    Auto Best Contrast, Sigma, Kernel Radius, Canny Low Ratio, Canny High Ratio
+    ELSE IF    '${filter_key}'=='morphologicalgradient'
+        RETURN    Auto Best Contrast, Morph Radius
+    ELSE IF    '${filter_key}'=='butterworthhighpass' or '${filter_key}'=='butterworthlowpass'
+        RETURN    Auto Best Contrast, Butterworth Cutoff, Butterworth Order
+    ELSE IF    '${filter_key}'=='unsharpmask'
+        RETURN    Auto Best Contrast, Unsharp Amount, Unsharp Sigma
+    ELSE IF    '${filter_key}'=='gaussiansmooth'
+        RETURN    Auto Best Contrast, Sigma, Kernel Radius
+    END
+    RETURN    Auto Best Contrast, Fox Bleach Tile Size, Fox Bleach Clip Limit
+
+Get Image Filter Parameter Control
+    [Arguments]    ${filterName}    ${parameterName}
+
+    ${filter_key}=    Normalize Image Filter Name    ${filterName}
+    ${parameter_key}=    Normalize Image Filter Parameter Name    ${parameterName}
+    ${supported_parameters}=    Get Supported Image Filter Parameters    ${filterName}
+    ${filter_display_name}=    Resolve Image Filter Display Name    ${filterName}
+
+    IF    '${parameter_key}'=='autobestcontrast'
+        IF    '${filter_key}'=='cannyedge' or '${filter_key}'=='morphologicalgradient' or '${filter_key}'=='butterworthhighpass' or '${filter_key}'=='butterworthlowpass' or '${filter_key}'=='unsharpmask' or '${filter_key}'=='gaussiansmooth' or '${filter_key}'=='clahe'
+            RETURN    checkbox    ${filter_auto_best_contrast_checkbox_xpath}
+        END
+    ELSE IF    '${filter_key}'=='cannyedge'
+        IF    '${parameter_key}'=='sigma'
+            RETURN    slider    ${filter_sigma_slider_xpath}
+        ELSE IF    '${parameter_key}'=='kernelradius'
+            RETURN    slider    ${filter_kernel_radius_slider_xpath}
+        ELSE IF    '${parameter_key}'=='cannylowratio'
+            RETURN    slider    ${filter_canny_low_ratio_slider_xpath}
+        ELSE IF    '${parameter_key}'=='cannyhighratio'
+            RETURN    slider    ${filter_canny_high_ratio_slider_xpath}
+        END
+    ELSE IF    '${filter_key}'=='morphologicalgradient'
+        IF    '${parameter_key}'=='morphradius'
+            RETURN    slider    ${filter_morph_radius_slider_xpath}
+        END
+    ELSE IF    '${filter_key}'=='butterworthhighpass' or '${filter_key}'=='butterworthlowpass'
+        IF    '${parameter_key}'=='butterworthcutoff'
+            RETURN    slider    ${filter_butterworth_cutoff_slider_xpath}
+        ELSE IF    '${parameter_key}'=='butterworthorder'
+            RETURN    slider    ${filter_butterworth_order_slider_xpath}
+        END
+    ELSE IF    '${filter_key}'=='unsharpmask'
+        IF    '${parameter_key}'=='unsharpamount'
+            RETURN    slider    ${filter_unsharp_amount_slider_xpath}
+        ELSE IF    '${parameter_key}'=='unsharpsigma'
+            RETURN    slider    ${filter_unsharp_sigma_slider_xpath}
+        END
+    ELSE IF    '${filter_key}'=='gaussiansmooth'
+        IF    '${parameter_key}'=='sigma'
+            RETURN    slider    ${filter_sigma_slider_xpath}
+        ELSE IF    '${parameter_key}'=='kernelradius'
+            RETURN    slider    ${filter_kernel_radius_slider_xpath}
+        END
+    ELSE IF    '${filter_key}'=='clahe'
+        IF    '${parameter_key}'=='foxbleachtilesize' or '${parameter_key}'=='clahetilesize' or '${parameter_key}'=='tilesize'
+            RETURN    slider    ${filter_clahe_tile_size_slider_xpath}
+        ELSE IF    '${parameter_key}'=='foxbleachcliplimit' or '${parameter_key}'=='clahecliplimit' or '${parameter_key}'=='cliplimit'
+            RETURN    slider    ${filter_clahe_clip_limit_slider_xpath}
+        END
+    END
+
+    Fail    Unsupported parameter '${parameterName}' for filter '${filter_display_name}'. Supported parameters: ${supported_parameters}.
+
+Set Image Filter Slider Value
+    [Arguments]    ${slider_xpath}    ${target_value}    ${tolerance}=0.01
+    [Documentation]    Set a filter slider to the requested numeric value using its range metadata.
+
+    Focus    ${window_XPATH}
+    Sleep    0.05s
+    ${target_value}=    Evaluate    float($target_value)
+    ${tolerance}=    Evaluate    float($tolerance)
+    ${minimum_value}=    Get Property From Element    ${slider_xpath}    RANGEMINIMUM
+    ${maximum_value}=    Get Property From Element    ${slider_xpath}    RANGEMAXIMUM
+    ${current_value}=    Get Property From Element    ${slider_xpath}    RANGEVALUE
+    ${minimum_value}=    Evaluate    float($minimum_value)
+    ${maximum_value}=    Evaluate    float($maximum_value)
+    ${current_value}=    Evaluate    float($current_value)
+    Should Be True    ${minimum_value} <= ${target_value} <= ${maximum_value}
+    ...    Slider target ${target_value} must be between ${minimum_value} and ${maximum_value}.
+    ${difference}=    Evaluate    abs(${current_value} - ${target_value})
+    IF    ${difference} <= ${tolerance}
+        RETURN    ${current_value}
+    END
+
+    ${slider_rect}=    Get Rectangle Bounding From Element    ${slider_xpath}    BoundingRectangle
+    ${thumb_xpath}=    Set Variable    ${slider_xpath}/Thumb
+    ${thumb_rect}=    Get Rectangle Bounding From Element    ${thumb_xpath}    BoundingRectangle
+    ${slider_x}=    Get From List    ${slider_rect}    0
+    ${slider_y}=    Get From List    ${slider_rect}    1
+    ${slider_width}=    Get From List    ${slider_rect}    2
+    ${slider_height}=    Get From List    ${slider_rect}    3
+    ${thumb_x}=    Get From List    ${thumb_rect}    0
+    ${thumb_y}=    Get From List    ${thumb_rect}    1
+    ${thumb_width}=    Get From List    ${thumb_rect}    2
+    ${thumb_height}=    Get From List    ${thumb_rect}    3
+
+    ${start_x}=    Evaluate    int(${thumb_x} + (${thumb_width} / 2))
+    ${start_y}=    Evaluate    int(${thumb_y} + (${thumb_height} / 2))
+    ${thumb_half}=    Evaluate    ${thumb_width} / 2
+    ${min_x}=    Evaluate    ${slider_x} + ${thumb_half}
+    ${max_x}=    Evaluate    ${slider_x} + ${slider_width} - ${thumb_half}
+    ${range_span}=    Evaluate    ${maximum_value} - ${minimum_value}
+    IF    ${range_span} == 0
+        RETURN    ${current_value}
+    END
+    ${target_ratio}=    Evaluate    (${target_value} - ${minimum_value}) / ${range_span}
+    ${target_x}=    Evaluate    int(${min_x} + ((${max_x} - ${min_x}) * ${target_ratio}))
+    ${target_y}=    Evaluate    int(${slider_y} + (${slider_height} / 2))
+
+    AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${target_x}    ${target_y}
+    Sleep    0.08s
+    ${pixels_per_unit}=    Evaluate    max(1.0, (${max_x} - ${min_x}) / ${range_span})
+
+    FOR    ${attempt}    IN RANGE    10
+        ${current_value}=    Get Property From Element    ${slider_xpath}    RANGEVALUE
+        ${current_value}=    Evaluate    float($current_value)
+        ${difference}=    Evaluate    abs(${current_value} - ${target_value})
+        IF    ${difference} <= ${tolerance}
+            BREAK
+        END
+
+        ${delta_value}=    Evaluate    ${target_value} - ${current_value}
+        ${direction}=    Set Variable If    ${delta_value} > 0    1    -1
+        ${abs_delta}=    Evaluate    abs(${delta_value})
+        ${fine_threshold}=    Evaluate    ${tolerance} * 2
+        ${coarse_step}=    Evaluate    int(max(1, round(${abs_delta} * ${pixels_per_unit} * 0.6)))
+        ${step_pixels}=    Set Variable If    ${abs_delta} <= ${fine_threshold}    1    ${coarse_step}
+        ${step_pixels}=    Evaluate    min(15, max(1, ${step_pixels}))
+        ${thumb_rect}=    Get Rectangle Bounding From Element    ${thumb_xpath}    BoundingRectangle
+        ${thumb_x}=    Get From List    ${thumb_rect}    0
+        ${thumb_y}=    Get From List    ${thumb_rect}    1
+        ${thumb_width}=    Get From List    ${thumb_rect}    2
+        ${thumb_height}=    Get From List    ${thumb_rect}    3
+        ${start_x}=    Evaluate    int(${thumb_x} + (${thumb_width} / 2))
+        ${start_y}=    Evaluate    int(${thumb_y} + (${thumb_height} / 2))
+        ${nudge_target_x}=    Evaluate    int(min(${max_x}, max(${min_x}, ${start_x} + (${direction} * ${step_pixels}))))
+        IF    ${nudge_target_x} == ${start_x}
+            BREAK
+        END
+
+        AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${nudge_target_x}    ${target_y}
+        Sleep    0.03s
+    END
+
+    ${current_value}=    Get Property From Element    ${slider_xpath}    RANGEVALUE
+    ${current_value}=    Evaluate    float($current_value)
+    ${difference}=    Evaluate    abs(${current_value} - ${target_value})
+    Should Be True    ${difference} <= ${tolerance}
+    ...    Could not set slider ${slider_xpath} to ${target_value}. Current value is ${current_value}.
+    RETURN    ${current_value}
+
+Set Image Filter Parameter
+    [Arguments]    ${filterName}    ${parameterName}    ${parameterValue}
+
+    ${control_type}    ${control_xpath}=    Get Image Filter Parameter Control    ${filterName}    ${parameterName}
+    Wait Until Element Exist    ${control_xpath}    2
+    IF    '${control_type}'=='checkbox'
+        ${bool_value}=    Convert Image Filter Parameter To Boolean    ${parameterValue}    ${parameterName}
+        Set Checkbox State    ${control_xpath}    ${bool_value}
+        ${applied_value}=    Set Variable    ${bool_value}
+    ELSE IF    '${control_type}'=='slider'
+        ${applied_value}=    Set Image Filter Slider Value    ${control_xpath}    ${parameterValue}
+    ELSE
+        Fail    Unsupported control type '${control_type}' for image filter parameter '${parameterName}'.
+    END
+    Sleep    0.05s
+    Log    Set filter '${filterName}' parameter '${parameterName}' to ${applied_value}.
+    RETURN    ${applied_value}

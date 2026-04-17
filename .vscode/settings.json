@@ -1,11 +1,11 @@
 {
     "workbench.colorTheme": "Dark Modern",
-    "python.defaultInterpreterPath": "python",
+    "python.defaultInterpreterPath": "C:/Users/kogan/AppData/Local/Programs/Python/Python311/python.exe",
     "robot.pythonpath": [
         "${workspaceFolder}/lib",
         "${workspaceFolder}/resources"
     ],
-    "robot.python.executable": "python",
+    "robot.python.executable": "C:/Users/kogan/AppData/Local/Programs/Python/Python311/python.exe",
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.pythonProjects": []
 }

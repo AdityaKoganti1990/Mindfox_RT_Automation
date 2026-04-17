@@ -8,6 +8,7 @@ Library           AutoItLibrary
 Resource          ../resources/login.resource
 Resource          ../resources/General.resource
 Resource          ../resources/imageviewer.resource
+Resource    Tools.resource
 
 *** Variables ***
 ${REPORT_VIEWER_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Btn_GenerateReport"]
