@@ -8,7 +8,7 @@ Library           AutoItLibrary
 
 # ─────────────────── Application Info ───────────────────
 ${APPLICATION_NAME}              FoXpert
-${APPLICATION_VERSION}           Version 1.0.2.12
+${APPLICATION_VERSION}           Version 1.0.2.14
 ${APP_PATH}                      C:\\Program Files\\MindFox Software Solutions\\FoxRT Pro\\FoxViewerDesktop.exe
 ${TECH_SUPPORT_EMAIL}            support@mindfox.in
 ${INVALID_WARNING_TEXT}          Invalid username or password

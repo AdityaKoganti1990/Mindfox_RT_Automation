@@ -8,6 +8,7 @@ Resource          ../resources/imageviewer.resource
 
 *** Variables ***
 ${names}
+${Login_window_name}    FoXpert RT - Login
 
 *** Test Cases ***
 
@@ -184,7 +185,7 @@ MFRTG25 - Verify whether able to logout from application.
     [Documentation]    Verify whether able to logout from application
     [Tags]    smoke    general
     Logout From FoxViewerDesktop
-    Verify window is Opened    FoXpert - Login
+    Verify window is Opened    ${Login_window_name}
 
 MFRTG26 - Verify whether able to re-login to application after logout.
     [Documentation]    Verify whether able to re-login to application after logout

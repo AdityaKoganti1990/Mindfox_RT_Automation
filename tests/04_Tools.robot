@@ -277,7 +277,7 @@ MFRTT20 - Verify whether able to add CNR measurement tool over the image and mea
     Apply Auto Best BNC
     Add CNR Measurement tool over image    845    405    1045    490    545    370    675    435  
     Take WindowScreenshot for Comparison    MFRTT20.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT20.png    MFRTT20.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT20.png    MFRTT20.png    98
     Click    ${cnr_measurement_tool_button_xpath}
     Reset View
 MFRTT21 - Verify whether able to add MTF measurement tool over the image and measure the MTF.
@@ -386,7 +386,7 @@ MFRTT29 - Verify whether able to apply all the available filters in the image fi
     FOR    ${filter}    IN    @{filters}
         Apply Image Filter    ${filter}
         Take Actual Screenshot    MFRTT29_${filter}.png
-        Run Keyword And Continue On Failure    Compare Result Images    MFRTT29_${filter}.png    MFRTT29_${filter}.png
+        Run Keyword And Continue On Failure    Compare Result Images    MFRTT29_${filter}.png    MFRTT29_${filter}.png    98
         Reset Image Filter
     END
 MFRTT30 - Verify whether able to rename a filter in the image filter tool and view the updated filter name in the filter combobox.

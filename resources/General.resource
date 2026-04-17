@@ -32,6 +32,7 @@ ${open_user_management_menu_XPATH}    //*[@AutomationId="Main_Btn_UserManagement
 ${project_Directory_Path}    ${CURDIR}\\..\\test_Images\\
 ${folder_Directory_Path}     ${CURDIR}\\..\\test_Images\\Project Folder_Set1
 ${Stitch_Files_Directory_Path}     ${CURDIR}\\..\\test_Images\\StitchTestData\\
+${Login_window_name}    FoXpert RT - Login
 *** Keywords ***
 
 Open ProjectFile
@@ -135,7 +136,7 @@ Logout From FoxViewerDesktop
     Sleep    1s
     Click    /Window/Window/Button[@Name="Yes"]
     Sleep    1s
-    Win Wait Active    FoXpert - Login    ${EMPTY}    2
+    Win Wait Active    ${Login_window_name}    ${EMPTY}    2
 
 Close Project
     [Arguments]    ${warning_action}=No
