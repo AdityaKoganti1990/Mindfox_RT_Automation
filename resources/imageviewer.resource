@@ -16,7 +16,8 @@ ${INPUT_FILE_DIALOG_XPATH}              /Window/Window/ComboBox[1]/Edit
 # ─────────────────── Image Viewer Core ───────────────────
 
 ${window_XPATH}                    /Window[@AutomationId="FoxRTProMainWindow"]
-${IMAGE_VIEWER_XPATH}    /Window/Custom/Pane[@AutomationId="ImageScrollViewer"]    
+${IMAGE_VIEWER_XPATH}    /Window/Custom/Pane[@AutomationId="ImageScrollViewer"]
+${IMAGE_VIEWER_XPATH WITH SCALES}    /Window[@AutomationId="FoxRTProMainWindow"]/Custom[@AutomationId="PrimaryViewer"]
 ${IMAGE_NAME_XPATH}
 ${CLOSE_IMAGEVIEWER_BUTTON_XPATH}
 ${autoBNC_menu_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Btn_AutoBnC"]
@@ -75,9 +76,9 @@ Take window Screenshot
     RETURN    ${dest}
 
 Take Actual Screenshot
-    [Arguments]    ${filename}
+    [Arguments]    ${filename}    ${xpath}=${IMAGE_VIEWER_XPATH}
 
-    ${screenshot_path}=    Take Screenshot    ${IMAGE_VIEWER_XPATH}
+    ${screenshot_path}=    Take Screenshot    ${xpath}
     Log    Screenshot saved to (temporary): ${screenshot_path}
 
     ${dest}=    Set Variable    ${actual_image}${filename}

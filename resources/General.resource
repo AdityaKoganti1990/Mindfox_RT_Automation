@@ -36,34 +36,29 @@ ${Login_window_name}    FoXpert RT - Login
 *** Keywords ***
 
 Open ProjectFile
-    [Arguments]    ${project_file_path}
+    [Arguments]    @{project_file_paths}
+    ${project_file_path}=    Evaluate    ' '.join(['"' + p + '"' for p in $project_file_paths]) if len($project_file_paths) > 1 else $project_file_paths[0]
     Wait Until Element Exist    ${project_menu_item_xpaths}    2
-    Sleep    1s
     Click    ${project_menu_item_xpaths}
-    Sleep    1s
     ${input_xpath}=    Get Open File Dialog Input Locator
     Set Text To Textbox    ${input_xpath}    ${project_file_path}
-    # Send    ${project_file_path}
-    Sleep    1s
     Click Open File Dialog Button
-    Sleep    1s
     ${warning_visible}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${PROJECT_WARNING_OK_BUTTON_XPATH}    2
     Run Keyword If    ${warning_visible}
     ...    Element Should Exist    ${PROJECT_CLOSE_WARNING_MESSAGE_XPATH}
     Run Keyword If    ${warning_visible}
     ...    Click    ${PROJECT_WARNING_OK_BUTTON_XPATH}
-    Sleep    1s
-    Wait Until Keyword Succeeds    45x    1s    Element Should Be Enabled    ${Button_Clear_XPATH}
+    Wait Until Keyword Succeeds    45x    0.2s    Element Should Be Enabled    ${Button_Clear_XPATH}
 
 Open FolderSet
     [Arguments]    ${folder_set_path}
     Click    ${OpenFolder_Button_XPATH}
-    Sleep    1s
+    Sleep    0.2s
     Set Text To Textbox    ${INPUT_FOLDER_DIALOG_XPATH}    ${folder_set_path}
-    sleep   1s
+    sleep   0.2s
     Click    ${Select_Folder_XPATH}
-    Sleep    1s
+    Sleep    0.2s
     Wait Until Element Is Enabled    ${Button_Next_XPATH}    3
 
 Select Files From Files Tab
@@ -143,9 +138,8 @@ Close Project
     Should Match Regexp    ${warning_action}    ^(Yes|No|Cancel)$
     ...    Unsupported close-project action: ${warning_action}. Use Yes, No or Cancel.
     Click    ${Button_Clear_XPATH}
-    Sleep    0.5s
     ${warning_visible}=    Run Keyword And Return Status
-    ...    Wait Until Element Exist    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    2
+    ...    Wait Until Element Exist    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    0.5
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'Yes'
     ...    Click    ${PROJECT_CLOSE_WARNING_YES_BUTTON_XPATH}
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'No'
@@ -153,14 +147,13 @@ Close Project
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'Cancel'
     ...    Click    ${PROJECT_CLOSE_WARNING_CANCEL_BUTTON_XPATH}
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'Cancel'
-    ...    Wait Until Keyword Succeeds    5x    1s    Element Should Be Enabled    ${Button_Clear_XPATH}
+    ...    Wait Until Keyword Succeeds    25x    0.2s    Element Should Be Enabled    ${Button_Clear_XPATH}
     Run Keyword If    not (${warning_visible} and '${warning_action}' == 'Cancel')
-    ...    Wait Until Keyword Succeeds    5x    1s    Element Should Be Disabled    ${Button_Clear_XPATH}
-    Sleep    1s
+    ...    Wait Until Keyword Succeeds    25x    0.2s    Element Should Be Disabled    ${Button_Clear_XPATH}
 
 Get Open File Dialog Input Locator
     ${dialog_input_found}=    Run Keyword And Return Status
-    ...    Wait Until Element Exist    ${INPUT_FILE_DIALOG_XPATH}    2
+    ...    Wait Until Element Exist    ${INPUT_FILE_DIALOG_XPATH}    0.5
     IF    ${dialog_input_found}
         RETURN    ${INPUT_FILE_DIALOG_XPATH}
     END
