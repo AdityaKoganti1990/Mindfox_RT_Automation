@@ -17,7 +17,7 @@ ${INPUT_FILE_DIALOG_XPATH}              /Window/Window/ComboBox[1]/Edit
 
 ${window_XPATH}                    /Window[@AutomationId="FoxRTProMainWindow"]
 ${IMAGE_VIEWER_XPATH}    /Window/Custom/Pane[@AutomationId="ImageScrollViewer"]
-${IMAGE_VIEWER_XPATH WITH SCALES}    /Window[@AutomationId="FoxRTProMainWindow"]/Custom[@AutomationId="PrimaryViewer"]
+${IMAGE_VIEWER_XPATH_WITH_SCALES}    /Window[@AutomationId="FoxRTProMainWindow"]/Custom[@AutomationId="PrimaryViewer"]
 ${IMAGE_NAME_XPATH}
 ${CLOSE_IMAGEVIEWER_BUTTON_XPATH}
 ${autoBNC_menu_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Btn_AutoBnC"]

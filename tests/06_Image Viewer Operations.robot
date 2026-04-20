@@ -5,13 +5,12 @@ Library           AutoItLibrary
 Library           OperatingSystem
 Resource          ../resources/login.resource
 Resource          ../resources/General.resource
-Resource          ../resources/imageviewer.resource
 Resource          ../resources/Actions.resource
 Resource          ../resources/Annotations.resource
 Resource          ../resources/Tools.resource
 Resource          ../resources/Online.resource
 Resource          ../resources/Image Viewer Operations.resource
-
+Resource          ../resources/imageviewer.resource
 *** Variables ***
 
 *** Test Cases ***
@@ -141,7 +140,7 @@ MFRTIV07 - Verify whether able to apply scales to image viewer.
 
     Apply Scale To Image Viewer    True
     Sleep    0.1s
-    Take Actual Screenshot    MFRTIV07.png    ${IMAGE_VIEWER_XPATH WITH SCALES}
+    Take Actual Screenshot    MFRTIV07.png    ${IMAGE_VIEWER_XPATH_WITH_SCALES}
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV07.png    MFRTIV07.png
     Sleep    0.1s
 
@@ -151,7 +150,7 @@ MFRTIV08 - Verify whether able to remove scales from image viewer.
 
     Apply Scale To Image Viewer    False
     Sleep    0.1s
-    Take Actual Screenshot    MFRTIV08.png    ${IMAGE_VIEWER_XPATH WITH SCALES}
+    Take Actual Screenshot    MFRTIV08.png    ${IMAGE_VIEWER_XPATH_WITH_SCALES}
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV08.png    MFRTIV08.png
     Sleep    0.1s
 
@@ -205,7 +204,7 @@ MFRTIV12 - Verify whether able to change the units across the application.
     Sleep    0.1s
     Apply Scale To Image Viewer    True
     Sleep    0.1s
-    Take Actual Screenshot    MFRTIV12-1.png    ${IMAGE_VIEWER_XPATH WITH SCALES}
+    Take Actual Screenshot    MFRTIV12-1.png    ${IMAGE_VIEWER_XPATH_WITH_SCALES}
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV12-1.png    MFRTIV12-1.png
     Apply Scale To Image Viewer    False
     Sleep    0.1s
@@ -227,7 +226,7 @@ MFRTIV13 - Verify whether able to change the units across the application using 
     Sleep    0.1s
     Apply Scale To Image Viewer    True
     Sleep    0.1s
-    Take Actual Screenshot    MFRTIV13-1.png    ${IMAGE_VIEWER_XPATH WITH SCALES}
+    Take Actual Screenshot    MFRTIV13-1.png    ${IMAGE_VIEWER_XPATH_WITH_SCALES}
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV13-1.png    MFRTIV13-1.png
     Apply Scale To Image Viewer    False
     Sleep    0.1s
