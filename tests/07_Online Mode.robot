@@ -10,7 +10,6 @@ Resource          ../resources/Actions.resource
 Resource          ../resources/Annotations.resource
 Resource          ../resources/Tools.resource
 Resource          ../resources/Online.resource
-
 *** Variables ***
 
 *** Test Cases ***
