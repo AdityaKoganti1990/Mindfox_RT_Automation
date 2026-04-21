@@ -38,18 +38,18 @@ ${RESUME_ACQUISITION_WINDOW_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="Resume 
 ${RESUME_ACQUISITION_CANCEL_BUTTON_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="Resume Component"]/Button[@Name="Cancel"]
 *** Keywords ***
 
-Toggle Online/Offline Mode
+Toggle Online Or Offline Mode
     [Arguments]    ${mode}
-    ${target_mode}=    Normalize Online/Offline Mode    ${mode}
+    ${target_mode}=    Normalize Online Or Offline Mode    ${mode}
     Wait Until Element Exist    ${MAIN_WINDOW_XPATH}    5
     Focus    ${MAIN_WINDOW_XPATH}
-    ${current_mode}=    Get Current Online/Offline Mode
+    ${current_mode}=    Get Current Online Or Offline Mode
     Log    Current mode: ${current_mode}. Requested mode: ${target_mode}.
     IF    '${current_mode}' == '${target_mode}'
         Log    Application is already in ${target_mode} mode.
         RETURN
     END
-    Click Online/Offline Toggle Control    ${current_mode}
+    Click Online Or Offline Toggle Control    ${current_mode}
     Wait Until Keyword Succeeds    10x    500ms    Application Mode Should Be    ${target_mode}
     Log    Application mode changed from ${current_mode} to ${target_mode}.
 
@@ -59,7 +59,7 @@ Verify Online Mode Is Enabled
 Verify Offline Mode Is Enabled
     Application Mode Should Be    OFFLINE
 
-Normalize Online/Offline Mode
+Normalize Online Or Offline Mode
     [Arguments]    ${mode}
     ${normalized_mode}=    Evaluate    str($mode).strip().upper()
     IF    '${normalized_mode}' == 'ON'
@@ -73,14 +73,14 @@ Normalize Online/Offline Mode
 
 Application Mode Should Be
     [Arguments]    ${mode}
-    ${expected_mode}=    Normalize Online/Offline Mode    ${mode}
-    ${actual_mode}=    Get Current Online/Offline Mode
+    ${expected_mode}=    Normalize Online Or Offline Mode    ${mode}
+    ${actual_mode}=    Get Current Online Or Offline Mode
     Should Be Equal As Strings
     ...    ${actual_mode}
     ...    ${expected_mode}
     ...    Expected application mode ${expected_mode}, but found ${actual_mode}.
 
-Get Current Online/Offline Mode
+Get Current Online Or Offline Mode
     Wait Until Element Exist    ${MAIN_WINDOW_XPATH}    5
     ${is_online}=    Is Visible Mode Indicator    ${ONLINE_MODE_TEXT_XPATH}
     IF    ${is_online}
@@ -124,7 +124,7 @@ Get Current Online/Offline Mode
     END
     Fail    Could not determine whether the application is in ONLINE or OFFLINE mode.
 
-Click Online/Offline Toggle Control
+Click Online Or Offline Toggle Control
     [Arguments]    ${current_mode}=${EMPTY}
     Focus    ${MAIN_WINDOW_XPATH}
     ${clicked}=    Set Variable    ${False}
@@ -226,7 +226,7 @@ Normalize Control State
     END
     Fail    Unsupported control state '${state}'. Use enabled, disabled, exists, or not exists.
 
-Show/Hide XRay Controller
+Show or Hide XRay Controller
     [Arguments]    ${state}
 
     Focus    ${MAIN_WINDOW_XPATH}

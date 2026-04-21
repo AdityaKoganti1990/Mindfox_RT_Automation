@@ -9,6 +9,7 @@ Resource          ../resources/imageviewer.resource
 Resource          ../resources/Actions.resource
 Resource          ../resources/Annotations.resource
 Resource          ../resources/Tools.resource
+Resource          ../resources/Image Viewer Operations.resource
 Resource          ../resources/Online.resource
 *** Variables ***
 
@@ -20,14 +21,14 @@ MFRTO01 - Verify whether able to open RT application in online mode.
 
     Open FoxViewerDesktop Application
     Login To FoxViewerDesktop    Sri    Sri
-    Toggle Online/Offline Mode    Online
+    Toggle Online Or Offline Mode    Online
     Verify Online Mode Is Enabled
 
 MFRTO02 - Verify the default display when switched to Online mode.
     [Documentation]    Verify the default display when switched to Online mode.
     [Tags]    MFRTO02
 
-    Toggle Online/Offline Mode    Online
+    Toggle Online Or Offline Mode    Online
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${ONLINE_START_ACQUISITION_BUTTON_XPATH}    expected_state=enabled    timeout=5
     Run Keyword And Continue On Failure    VerifyControlState    control_name=${ONLINE_STOP_ACQUISITION_BUTTON_XPATH}    expected_state=disabled    timeout=5
     Run Keyword And Continue On Failure    VerifyControlState    control_name=${Component_Create_Button_XPATH}    expected_state=enabled    timeout=5
@@ -44,21 +45,21 @@ MFRTO03 - Verify whether detector tab is opened when switched to online mode.
     [Documentation]    Verify whether detector tab is opened when switched to online mode.
     [Tags]    MFRTO03
 
-    Toggle Online/Offline Mode    Online
+    Toggle Online Or Offline Mode    Online
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${DETECTOR_TAB_XPATH}    expected_state=enabled    timeout=1
 
 MFRTO04 - Verify whether able to Hide the X - Ray controller in online mode.
     [Documentation]    Verify whether able to Hide the X - Ray controller in online mode.
     [Tags]    MFRTO04
 
-    Toggle Online/Offline Mode    Online
-    Show/Hide XRay Controller    hide
+    Toggle Online Or Offline Mode    Online
+    Show or Hide XRay Controller    hide
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${XRay_Controller_Window_Tab_XPATH}    expected_state=not exists    timeout=1
 MFRTO05 - Verify whether able to open Components window in online mode.
     [Documentation]    Verify whether able to open Components window in online mode.
     [Tags]    MFRTO05
 
-    Toggle Online/Offline Mode    Online
+    Toggle Online Or Offline Mode    Online
     Open Component Window
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${COMPONENT_WINDOW_XPATH}    expected_state=exists    timeout=1
 
