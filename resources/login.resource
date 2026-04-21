@@ -43,9 +43,7 @@ Open FoxViewerDesktop Application
     ${pid}=    Launch Application    ${APP_PATH}
     Attach Application By Pid        ${pid}
     Set Suite Variable    ${APP_PID}    ${pid}
-    Sleep    1s
     Wait Until Element Is Enabled    ${LOGIN_BUTTON_XPATH}    5
-    Sleep    1s
     RETURN    ${pid}
     
     
@@ -55,22 +53,16 @@ Close FoxViewerDesktop Application
 
 # ─────────────────── Login Actions ───────────────────
 Login To FoxViewerDesktop
-    [Arguments]    ${username}    ${password}   
-    Sleep                 1s
-    Wait Until Element Exist          ${LOGIN_WINDOW_XPATH}    2
+    [Arguments]    ${username}    ${password}
+    Wait Until Element Exist          ${LOGIN_WINDOW_XPATH}    5
     Set Text To Textbox    ${USER_NAME_XPATH}    ${username}
-    Sleep                 0.5s
     Set Text To Textbox    ${PASSWORD_XPATH}     ${password}
-    Sleep                 0.5s
     Click                 ${LOGIN_BUTTON_XPATH}
-    Sleep                 1s
     ${main_window_exists}=    Run Keyword And Return Status
-    ...    Wait Until Element Exist    ${MAIN_WINDOW_XPATH}    2
+    ...    Wait Until Element Exist    ${MAIN_WINDOW_XPATH}    5
     IF    ${main_window_exists}
         Focus    ${MAIN_WINDOW_XPATH}
-        Sleep                 1s
         Resize FoxRT Application Window    10    10    1850    1000
-        Sleep                 1s
     END
 
 Verify Invalid Warning Text

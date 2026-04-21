@@ -64,73 +64,62 @@ Open FolderSet
 Select Files From Files Tab
     [Arguments]    ${list_item_name}
     Click    //*[@Name="${list_item_name}"]
-    Sleep    1s
+    Sleep    0.2s
 
 Open Reference Radiograph Atlas
     Click    //*[@AutomationId="Main_Btn_ReferenceAtlas"]
-    Sleep    1s
     Win Wait Active    Reference Radiograph Atlas    ${EMPTY}    2
 
 Close Reference Radiograph Atlas
-    Win Activate   Reference Radiograph Atlas 
+    Win Activate   Reference Radiograph Atlas
     Win Close    Reference Radiograph Atlas
-    Sleep    1s
     Win Wait Close    Reference Radiograph Atlas    ${EMPTY}    2
 
 Open audit Logs
     Click    //*[@AutomationId="Main_Btn_AuditLog"]
-    Sleep    1s
     Win Wait Active    Audit Log    ${EMPTY}    2
 
 Close audit Logs
     Win Close    Audit Log
-    Sleep    1s
     Win Wait Close    Audit Log    ${EMPTY}    2
 
 Open Service Support
     Click    //*[@AutomationId="Main_Btn_ServiceSupport"]
-    Sleep    1s
     Win Wait Active    Service Support    ${EMPTY}    2
 
 Close Service Support
     Win Close    Service Support
-    Sleep    1s
     Win Wait Close    Service Support    ${EMPTY}    2
 
 Switch Between Window Theme
     Click    //*[@AutomationId="Main_Btn_Theme"]
-    Sleep    1s
+    Sleep    0.3s
 
 Minimize/Maximize Application Window
     Click    //*[@AutomationId="Main_Btn_MaximizeRestore"]
-    Sleep    1s
+    Sleep    0.3s
 
 Open Help Menu
     Click    ${open_about_menu_XPATH}
-    Sleep    1s
     Win Wait Active    About FoXpert    ${EMPTY}    2
 
 Close Help Menu
     Win Close    About FoXpert
-    Sleep    1s
     Win Wait Close    About FoXpert    ${EMPTY}    2
 
 Open UserManagement Window
     Click    ${open_user_management_menu_XPATH}
-    Sleep    1s
     Win Wait Active    User Management    ${EMPTY}    2
 
 
 Close UserManagement Window
     Win Close    User Management
-    Sleep    1s
     Win Wait Close    User Management    ${EMPTY}    2
 
 Logout From FoxViewerDesktop
     Click    //*[@AutomationId="Main_Btn_Logout"]
-    Sleep    1s
+    Sleep    0.3s
     Click    /Window/Window/Button[@Name="Yes"]
-    Sleep    1s
     Win Wait Active    ${Login_window_name}    ${EMPTY}    2
 
 Close Project
@@ -200,21 +189,15 @@ Add New User In UserManagement Window
     [Arguments]    ${userName}    ${password}    ${level}    ${certificateId}    ${company}
 
     Click    //*[@AutomationId="UserMgmt_Btn_NewUser"]
-    Sleep    1s
+    Sleep    0.2s
     Set Text To Textbox    //*[@AutomationId="UserMgmt_Txt_Username"]    ${userName}
-    Sleep    1s
     Set Text To Textbox    //*[@AutomationId="UserMgmt_Pwd_Password"]    ${password}
-    sleep    1s
     Click    //*[@AutomationId="UserMgmt_Chk_Admin"]
-    Sleep    1s
     Select Combobox Item By Name    //*[@AutomationId="UserMgmt_Cmb_Qualification"]    ${level}
-    Sleep    1s
     Set Text To Textbox    //*[@AutomationId="UserMgmt_Txt_CertId"]    ${certificateId}
-    Sleep    1s
     Set Text To Textbox    //*[@AutomationId="UserMgmt_Txt_Company"]    ${company}
-    Sleep    1s
     Click    //*[@AutomationId="UserMgmt_Btn_AddUser"]
-    Sleep    1s
+    Sleep    0.2s
 
 Verify New User Added In UserManagement Window
     [Arguments]    ${userName}
@@ -227,9 +210,9 @@ Delete User From UserManagement Window
     [Arguments]    ${userName}
 
     Click    //*[@Name="${userName}"]
-    Sleep    1s
+    Sleep    0.2s
     Click    //*[@AutomationId="UserMgmt_Btn_DeleteUser"]
-    Sleep    1s
+    Sleep    0.2s
 
 Verify User Deleted From UserManagement Window
     [Arguments]    ${userName}
