@@ -17,7 +17,7 @@ MFRTG01 - Verify whether able to open projection window from main window
     [Tags]    smoke    general
 
     Open FoxViewerDesktop Application
-    Login To FoxViewerDesktop    Sri    Sri
+    Login To FoxViewerDesktop    admin    admin
     Main Window Should Be Open
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
 
@@ -190,7 +190,7 @@ MFRTG25 - Verify whether able to logout from application.
 MFRTG26 - Verify whether able to re-login to application after logout.
     [Documentation]    Verify whether able to re-login to application after logout
     [Tags]    smoke    general
-    Login To FoxViewerDesktop    Sri    Sri
+    Login To FoxViewerDesktop    admin    admin
     Main Window Should Be Open
 
 MFRTG27 - Verify whether able to close application window.

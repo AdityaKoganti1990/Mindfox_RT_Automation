@@ -43,13 +43,20 @@ Open ProjectFile
     ${input_xpath}=    Get Open File Dialog Input Locator
     Set Text To Textbox    ${input_xpath}    ${project_file_path}
     Click Open File Dialog Button
-    ${warning_visible}=    Run Keyword And Return Status
-    ...    Wait Until Element Exist    ${PROJECT_WARNING_OK_BUTTON_XPATH}    2
-    Run Keyword If    ${warning_visible}
-    ...    Element Should Exist    ${PROJECT_CLOSE_WARNING_MESSAGE_XPATH}
-    Run Keyword If    ${warning_visible}
-    ...    Click    ${PROJECT_WARNING_OK_BUTTON_XPATH}
-    Wait Until Keyword Succeeds    45x    0.2s    Element Should Be Enabled    ${Button_Clear_XPATH}
+    Set Retry Timeout    0
+    ${loaded}=    Set Variable    ${False}
+    FOR    ${i}    IN RANGE    90
+        ${clear_enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Clear_XPATH}
+        IF    ${clear_enabled}
+            ${loaded}=    Set Variable    ${True}
+            BREAK
+        END
+        ${warning_visible}=    Run Keyword And Return Status    Element Should Exist    ${PROJECT_WARNING_OK_BUTTON_XPATH}
+        IF    ${warning_visible}    Click    ${PROJECT_WARNING_OK_BUTTON_XPATH}
+        Sleep    0.2s
+    END
+    Reset Retry Timeout
+    Should Be True    ${loaded}    Project did not load within expected time.
 
 Open FolderSet
     [Arguments]    ${folder_set_path}

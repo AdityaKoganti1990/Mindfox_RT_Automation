@@ -72,12 +72,12 @@ ${filter_unsharp_sigma_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindo
 ${filter_clahe_tile_size_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ClaheTileSize"]
 ${filter_clahe_clip_limit_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ClaheClipLimit"]
 ${percentile_brightness_contrast_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_PercentileBnC"]    
-${percentile_brightness_contrast_savePreset_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Save"]
-${percentile_brightness_contrast_savePreset_name_textbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Edit
-${percentile_brightness_contrast_preset_1_99_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[contains(@Name,"1–99")]
-${percentile_brightness_contrast_preset_5_95_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[contains(@Name,"5–95")]
-${percentile_brightness_contrast_preset_10_90_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[contains(@Name,"10–90")]
-${percentile_brightness_contrast_preset_20_80_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[contains(@Name,"20–80")]
+${percentile_brightness_contrast_savePreset_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="Pct_Btn_SavePreset"]
+${percentile_brightness_contrast_savePreset_name_textbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Edit[@AutomationId="Pct_Txb_NewPresetName"]
+${percentile_brightness_contrast_preset_1_99_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="Pct_Btn_Preset_1_99"]
+${percentile_brightness_contrast_preset_5_95_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="Pct_Btn_Preset_5_95"]
+${percentile_brightness_contrast_preset_10_90_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="Pct_Btn_Preset_10_90"]
+${percentile_brightness_contrast_preset_20_80_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="Pct_Btn_Preset_20_80"]
 ${percentile_brightness_contrast_low_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Slider[1]
 ${percentile_brightness_contrast_high_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Slider[2]
 ${percentile_brightness_contrast_low_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[3]
@@ -87,9 +87,9 @@ ${selectNormalProfilerType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]
 ${selectIQIProfilerType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//Tab[2]/TabItem/Custom/RadioButton[@AutomationId="ModeIqi"]
 ${fox_bleach_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_FoxBleach"]
 ${filter_rename_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[1]
-${filter_rename_textbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Edit[@AutomationId="RenameTextBox"]   
-${filter_reset_to_default_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@Name="Reset to default"]
-${filter_save_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@Name="Save"]    
+${filter_rename_textbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Edit[@AutomationId="ImgFilters_Rename_TxtName"]   
+${filter_reset_to_default_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Rename_BtnResetDefault"]
+${filter_save_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Rename_BtnSave"]    
 *** Keywords ***
 
 Add Line Profiler Tool
@@ -563,7 +563,7 @@ Click Apply Image Filter
     Sleep    0.2s
 
 Set Percentile Brightness and Contrast Slider Value
-    [Arguments]    ${slider_xpath}    ${value}    ${value_text_xpath}
+    [Arguments]    ${slider_xpath}    ${value}
     [Documentation]    Set a percentile slider to the requested value (0-100) by dragging the slider thumb.
 
     ${value}=    Convert To Integer    ${value}
@@ -594,8 +594,7 @@ Set Percentile Brightness and Contrast Slider Value
     AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${target_x}    ${target_y}
     Sleep    0.2s
 
-    ${current_text}=    Get Name From Element    ${value_text_xpath}
-    ${current}=    Convert To Integer    ${current_text}
+    ${current}=    Get Percentile Slider Current Value    ${slider_xpath}
     ${pixels_per_unit}=    Evaluate    max(1.0, (${max_x} - ${min_x}) / 100.0)
 
     FOR    ${attempt}    IN RANGE    60
@@ -623,14 +622,20 @@ Set Percentile Brightness and Contrast Slider Value
 
         AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${nudge_target_x}    ${target_y}
         Sleep    0.05s
-        ${current_text}=    Get Name From Element    ${value_text_xpath}
-        ${current}=    Convert To Integer    ${current_text}
+        ${current}=    Get Percentile Slider Current Value    ${slider_xpath}
     END
 
     Run Keyword If    ${current} != ${value}
     ...    Log
     ...    Could not reach requested ${value} after drag adjustments. Current value is ${current}.
     ...    WARN
+    RETURN    ${current}
+
+Get Percentile Slider Current Value
+    [Arguments]    ${slider_xpath}
+    [Documentation]    Read the current numeric value of a slider via its RangeValue pattern.
+    ${raw}=    Get Property From Element    ${slider_xpath}    RANGEVALUE
+    ${current}=    Evaluate    int(round(float($raw)))
     RETURN    ${current}
 
 Apply Percentile Brightness and Contrast
@@ -653,8 +658,8 @@ Apply Percentile Brightness and Contrast
     Run Keyword If    not ${popup_open}    Click    ${percentile_brightness_contrast_filter_button_xpath}
     Run Keyword If    not ${popup_open}    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
     Sleep    0.2s
-    ${actual_low}=    Set Percentile Brightness and Contrast Slider Value    ${percentile_brightness_contrast_low_slider_xpath}    ${low_percent}    ${percentile_brightness_contrast_low_value_text_xpath}
-    ${actual_high}=    Set Percentile Brightness and Contrast Slider Value    ${percentile_brightness_contrast_high_slider_xpath}    ${high_percent}    ${percentile_brightness_contrast_high_value_text_xpath}
+    ${actual_low}=    Set Percentile Brightness and Contrast Slider Value    ${percentile_brightness_contrast_low_slider_xpath}    ${low_percent}
+    ${actual_high}=    Set Percentile Brightness and Contrast Slider Value    ${percentile_brightness_contrast_high_slider_xpath}    ${high_percent}
     Sleep    0.2s
     Log    Requested Low/High: ${low_percent}/${high_percent}. Applied Low/High: ${actual_low}/${actual_high}
     Should Be Equal As Integers    ${actual_low}    ${low_percent}
@@ -717,7 +722,7 @@ Load Percentile Brightness and Contrast Preset
     Run Keyword If    not ${popup_open}    Click    ${percentile_brightness_contrast_filter_button_xpath}
     Run Keyword If    not ${popup_open}    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
     Sleep    0.2s
-    Click    /Window[@AutomationId="FoxRTProMainWindow"]/Window/List/DataItem/Button[@Name="${preset}"]
+    Click    /Window[@AutomationId="FoxRTProMainWindow"]/Window/List//Button[@Name="Apply preset ${preset}"]
     Sleep    0.2s
     Click    ${window_XPATH}
     Wait Until Element Does Not Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5

@@ -35,7 +35,7 @@ MFRTL04 - Verify valid login credentials allow access to the application
 
     Click Login Close Button
     Open FoxViewerDesktop Application
-    Login To FoxViewerDesktop    Sri    Sri
+    Login To FoxViewerDesktop    admin    admin
     Main Window Should Be Open
 
     Log    Valid login validation completed

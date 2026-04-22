@@ -10,7 +10,6 @@ Resource          ../resources/Annotations.resource
 Resource          ../resources/Tools.resource
 Resource          ../resources/Online.resource
 Resource          ../resources/Image Viewer Operations.resource
-Resource          ../resources/imageviewer.resource
 *** Variables ***
 
 *** Test Cases ***
@@ -21,7 +20,7 @@ MFRTIVO1 - Verify whether able to switch between images using Next/Previous butt
     [Tags]    MFRTIVO1
 
     Open FoxViewerDesktop Application
-    Login To FoxViewerDesktop    Sri    Sri
+    Login To FoxViewerDesktop    admin    admin
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm    
     ...    ${project_Directory_Path}MLE_6_0.280.dcm    
     ...    ${project_Directory_Path}MLE_8''0.322.dcm
@@ -93,7 +92,7 @@ MFRTIVO3 - Verify whether able to Zoom Image viewer using zoom controls.
     Sleep    0.1s
     Zoom Image Viewer    ZoomOut    5
     Sleep    0.1s
-    Take Actual Screenshot    MFRTIVV03_2.png
+    Take Actual Screenshot    MFRTIV03_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV03_2.png    MFRTIV03_2.png
     Sleep    0.1s
 

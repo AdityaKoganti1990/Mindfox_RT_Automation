@@ -12,7 +12,7 @@ MFRTANN01 - Verify whether able to add arrow annotation in image viewer
     [Tags]    smoke    annotations
     
     Open FoxViewerDesktop Application
-    Login To FoxViewerDesktop    Sri    Sri
+    Login To FoxViewerDesktop    admin    admin
     Main Window Should Be Open
     Focus    ${MAIN_WINDOW_XPATH}
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm

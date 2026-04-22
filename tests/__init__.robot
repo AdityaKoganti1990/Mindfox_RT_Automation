@@ -19,7 +19,7 @@ Open Application For Suite
         ${app_pid}=    Open FoxViewerDesktop Application
         Set Suite Variable    ${pid}    ${app_pid}
         Sleep    2s
-        Login To FoxViewerDesktop    Sri    Sri
+        Login To FoxViewerDesktop    admin    admin
         Main Window Should Be Open
     ELSE
         ${existing_pid}=    Get Process Id    FoxViewerDesktop.exe

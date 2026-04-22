@@ -20,7 +20,7 @@ MFRTO01 - Verify whether able to open RT application in online mode.
     [Tags]    MFRTO01
 
     Open FoxViewerDesktop Application
-    Login To FoxViewerDesktop    Sri    Sri
+    Login To FoxViewerDesktop    admin    admin
     Toggle Online Or Offline Mode    Online
     Verify Online Mode Is Enabled
 

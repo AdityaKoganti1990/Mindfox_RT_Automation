@@ -20,7 +20,7 @@ MFRTA01 - Verify whether able to open Report viewer.
     [Tags]    MFRTA01
 
     Open FoxViewerDesktop Application
-    Login To FoxViewerDesktop    Sri    Sri
+    Login To FoxViewerDesktop    admin    admin
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
     Open Report Viewer
     Verify Report Viewer Window Is Open

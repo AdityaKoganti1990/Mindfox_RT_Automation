@@ -15,7 +15,7 @@ MFRTT01 - Verify whether able to add normal line profiler tool in image viewer
     [Tags]    smoke    tools
 
     Open FoxViewerDesktop Application
-    Login To FoxViewerDesktop    Sri    Sri
+    Login To FoxViewerDesktop    admin    admin
     Main Window Should Be Open
     Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
     Add Line Profiler Tool    590    290    967    257    Normal
