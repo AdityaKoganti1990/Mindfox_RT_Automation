@@ -38,9 +38,9 @@ MFRTO02 - Verify the default display when switched to Online mode.
     Run Keyword And Continue On Failure    VerifyControlState    control_name=${line_profiler_tool_button_xpath}    expected_state=disabled    timeout=5
     Run Keyword And Continue On Failure    VerifyControlState    control_name=${line_profiler_tool_button_xpath}    expected_state=disabled    timeout=5
     Take Actual Screenshot    MFRTO02_1.png
-    Run Keyword And Continue On Failure   Compare Result Images for Comparison    MFRTO02_1.png    MFRTO02_1.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTO02_1.png    MFRTO02_1.png
     Take WindowScreenshot for Comparison    MFRTO02_2.png
-    Run Keyword And Continue On Failure   Compare Result Images for Comparison    MFRTO02_2.png    MFRTO02_2.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTO02_2.png    MFRTO02_2.png
 MFRTO03 - Verify whether detector tab is opened when switched to online mode.
     [Documentation]    Verify whether detector tab is opened when switched to online mode.
     [Tags]    MFRTO03

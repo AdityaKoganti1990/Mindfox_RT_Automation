@@ -102,16 +102,41 @@ MFRTG12 - Verify whether able to switch to light theme.
     [Tags]    smoke    general
     Switch Between Window Theme
     Take WindowScreenshot for Comparison    MFRTG12.png
-    Compare Result Images for Comparison    MFRTG12.png    MFRTG12.png
+    Compare Result Images    MFRTG12.png    MFRTG12.png
 
 MFRTG13 - Verify whether able to switch to dark theme.
     [Documentation]    Verify whether able to switch to dark theme
     [Tags]    smoke    general
     Switch Between Window Theme
     Take WindowScreenshot for Comparison    MFRTG13.png
-    Compare Result Images for Comparison    MFRTG13.png    MFRTG13.png
+    Compare Result Images    MFRTG13.png    MFRTG13.png
+MFRTG14 - Verify whether able to set UI scale for RT application.
+    [Documentation]    Verify whether able to set UI scale for RT application
+    [Tags]    smoke    general
+    Set UI Scale For RT Application    125%
+    Take WindowScreenshot for Comparison    MFRTG14_1.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG14_1.png    MFRTG14_1.png
+    Set UI Scale For RT Application    100%
+    Take WindowScreenshot for Comparison    MFRTG14_2.png
+    Compare Result Images    MFRTG14_2.png    MFRTG14_2.png
 
-MFRTG14 - Verify whether able to minimize application window.
+MFRTG15 - Verify the UI scale options available in the application.
+    [Documentation]    Verify the UI scale options available in the application
+    [Tags]    smoke    general
+    
+    ${options}=    Get All Names From Combobox      ${UI_Scale_Combobox_XPATH}
+    List Should Contain Value    ${options}    75
+    List Should Contain Value    ${options}    80
+    List Should Contain Value    ${options}    90
+    List Should Contain Value    ${options}    100
+    List Should Contain Value    ${options}    125
+    List Should Contain Value    ${options}    150
+    List Should Contain Value    ${options}    175
+    List Should Contain Value    ${options}    200
+    List Should Contain Value    ${options}    225
+    List Should Contain Value    ${options}    250
+    List Should Contain Value    ${options}    300
+MFRTG16 - Verify whether able to minimize application window.
         [Documentation]    Verify window can be minimized
     [Tags]    smoke    login    window-state
 
@@ -120,7 +145,7 @@ MFRTG14 - Verify whether able to minimize application window.
 
     Log    Window maximize validation completed
 
-MFRTG15 - Verify Window Can Be Restored From Minmized State
+MFRTG17 - Verify Window Can Be Restored From Minmized State
     [Documentation]    Verify window can be restored from Minmized state
     [Tags]    smoke    login    window-state
 
@@ -129,71 +154,71 @@ MFRTG15 - Verify Window Can Be Restored From Minmized State
 
     Log    Window restore validation completed
 
-MFRTG16 - Verify whether able to open Help Window.
+MFRTG19 - Verify whether able to open Help Window.
     [Documentation]    Verify whether able to open Help Window
     [Tags]    smoke    general
     Open Help Menu
     Verify window is Opened    About FoXpert
 
-MFRTG17 - Verify whether the version is shown in the about menu.
+MFRTG20 - Verify whether the version is shown in the about menu.
     [Documentation]    Verify whether the version is shown in the about menu
     [Tags]    smoke    general
     App Version Text Should Present
     Assert the Version
 
-MFRTG18 - Verify whether sales id is shown in the about menu.
+MFRTG21 - Verify whether sales id is shown in the about menu.
     [Documentation]    Verify whether sales id is shown in the about menu
     [Tags]    smoke    general
     Sales Id Text Should Present
 
-MFRTG19 - Verify whether Web site address is shown in the about menu.
+MFRTG22 - Verify whether Web site address is shown in the about menu.
     [Documentation]    Verify whether Web site address is shown in the about menu
     [Tags]    smoke    general
     WebSite Text Should Present
 
-MFRTG20 - Verify whether able to close Help Window.
+MFRTG23 - Verify whether able to close Help Window.
     [Documentation]    Verify whether able to close Help Window
     [Tags]    smoke    general
     Close Help Menu
     Verify window is Closed    About FoXpert
 
-MFRTG21 - Verify whether able to open UserManagement Window.
+MFRTG24 - Verify whether able to open UserManagement Window.
     [Documentation]    Verify whether able to open UserManagement Window
     [Tags]    smoke    general
     Open UserManagement Window
     Verify window is Opened    User Management
 
-MFRTG22 - Verify whether able to add a new user in UserManagement Window.
+MFRTG25 - Verify whether able to add a new user in UserManagement Window.
     [Documentation]    Verify whether able to add a new user in UserManagement Window
     [Tags]    smoke    general
     Add New User In UserManagement Window    User1    User1    Level I    5555    Mindfox
     Verify New User Added In UserManagement Window    User1
 
-MFRTG23 - Verify whether able to delete a user from UserManagement Window.
+MFRTG26 - Verify whether able to delete a user from UserManagement Window.
     [Documentation]    Verify whether able to delete a user from UserManagement Window
     [Tags]    smoke    general
     Delete User From UserManagement Window    User1
     Verify User Deleted From UserManagement Window    User1
 
-MFRTG24 - Verify whether able to close UserManagement Window.
+MFRTG27 - Verify whether able to close UserManagement Window.
     [Documentation]    Verify whether able to close UserManagement Window
     [Tags]    smoke    general
     Close UserManagement Window
     Verify window is Closed    User Management
 
-MFRTG25 - Verify whether able to logout from application.
+MFRTG28 - Verify whether able to logout from application.
     [Documentation]    Verify whether able to logout from application
     [Tags]    smoke    general
     Logout From FoxViewerDesktop
     Verify window is Opened    ${Login_window_name}
 
-MFRTG26 - Verify whether able to re-login to application after logout.
+MFRTG29 - Verify whether able to re-login to application after logout.
     [Documentation]    Verify whether able to re-login to application after logout
     [Tags]    smoke    general
     Login To FoxViewerDesktop    admin    admin
     Main Window Should Be Open
 
-MFRTG27 - Verify whether able to close application window.
+MFRTG30 - Verify whether able to close application window.
     [Documentation]    Verify whether able to close application window
     [Tags]    smoke    general
     Close FoxRT Application Window

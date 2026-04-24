@@ -29,6 +29,7 @@ ${PROJECT_WARNING_OK_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"
 ${User_Manual_Button_XPATH}    //*[@AutomationId="Main_Btn_UserManual"]
 ${open_about_menu_XPATH}          //*[@AutomationId="Main_Btn_About"]
 ${open_user_management_menu_XPATH}    //*[@AutomationId="Main_Btn_UserManagement"]
+${UI_Scale_Combobox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//ComboBox[@AutomationId="Main_Cmb_UiScale"]
 ${project_Directory_Path}    ${CURDIR}\\..\\test_Images\\
 ${folder_Directory_Path}     ${CURDIR}\\..\\test_Images\\Project Folder_Set1
 ${Stitch_Files_Directory_Path}     ${CURDIR}\\..\\test_Images\\StitchTestData\\
@@ -228,4 +229,7 @@ Verify User Deleted From UserManagement Window
     Should Be Equal As Strings    ${user_deleted}    None
     Element Should Exist    //*[@Name="User '${userName}' deleted"]
     
-
+Set UI Scale For RT Application
+    [Arguments]    ${scale_value}
+    Select Combobox Item By Name    ${UI_Scale_Combobox_XPATH}    ${scale_value}
+    Sleep    0.3s

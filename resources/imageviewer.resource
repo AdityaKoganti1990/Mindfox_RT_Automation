@@ -161,24 +161,6 @@ Take Screenshot for Comparison
     Create Directory    ${actual_image}
     Move File    ${screenshot_path}    ${dest}
 
-Compare Result Images for Comparison
-    [Arguments]    ${expected_image_path}    ${actual_image_path}
-
-    ${expected_full}=    Set Variable    ${expected_image}${expected_image_path}
-    ${actual_full}=      Set Variable    ${actual_image}${actual_image_path}
-
-    ${result}=    Compare Images    ${expected_full}    ${actual_full}
-    Should Be True    ${result}
-
-Compare Result Images for Comparison as False
-    [Arguments]    ${expected_image_path}    ${actual_image_path}
-
-    ${expected_full}=    Set Variable    ${expected_image}${expected_image_path}
-    ${actual_full}=      Set Variable    ${actual_image}${actual_image_path}
-
-    ${result}=    Compare Images    ${expected_full}    ${actual_full}
-    Should Not Be True   ${result}
-
 Verify Control Exists in Image Viewer
     [Arguments]    ${control_xpath}    ${timeout}=1
     ${result}=    Run Keyword And Return Status
