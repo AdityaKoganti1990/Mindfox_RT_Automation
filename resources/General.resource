@@ -10,6 +10,14 @@ Resource          ../resources/login.resource
 ${project_menu_item_xpaths}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_OpenFile"]
 ${INPUT_FILE_DIALOG_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/ComboBox[1]/Edit[@Name="File name:"]
 ${INPUT_FILE_DIALOG_FALLBACK_XPATH}    /Window/Window/ComboBox[1]/Edit[@Name="File name:"]
+${INPUT_FILE_DIALOG_FILENAME_CONTROL_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window//ComboBox[@AutomationId="FileNameControlHost"]//Edit
+${INPUT_FILE_DIALOG_FILENAME_CONTROL_FALLBACK_XPATH}    /Window/Window//ComboBox[@AutomationId="FileNameControlHost"]//Edit
+${INPUT_FILE_DIALOG_AUTOMATION_ID_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window//Edit[@AutomationId="1001"]
+${INPUT_FILE_DIALOG_AUTOMATION_ID_FALLBACK_XPATH}    /Window/Window//Edit[@AutomationId="1001"]
+${INPUT_FILE_DIALOG_BY_NAME_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window//Edit[@Name="File name:"]
+${INPUT_FILE_DIALOG_BY_NAME_FALLBACK_XPATH}    /Window/Window//Edit[@Name="File name:"]
+${OPEN_BUTTON_PRIMARY_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window//*[@AutomationId="1"]
+${OPEN_BUTTON_PRIMARY_FALLBACK_XPATH}    /Window/Window//*[@AutomationId="1"]
 ${OPEN_BUTTON_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Window//*[@AutomationId="1" and @Name="Open"]
 ${OPEN_BUTTON_AUTOMATION_ID_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window//SplitButton[@Name="Open"]
 ${OPEN_BUTTON_FALLBACK_XPATH}    /Window/Window//*[@AutomationId="1" and @Name="Open"]
@@ -26,6 +34,11 @@ ${PROJECT_CLOSE_WARNING_YES_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMain
 ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="No"]
 ${PROJECT_CLOSE_WARNING_CANCEL_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Cancel"]
 ${PROJECT_WARNING_OK_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="OK"]
+${PROJECT_WARNING_OK_BUTTON_FALLBACK_XPATH}    /Window/Window/Button[@Name="OK"]
+${PROJECT_DUPLICATE_FILES_WINDOW_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Duplicate Files"]
+${PROJECT_DUPLICATE_FILES_WINDOW_FALLBACK_XPATH}    /Window/Window[@Name="Duplicate Files"]
+${PROJECT_DUPLICATE_FILES_OK_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Duplicate Files"]/Button[@Name="OK"]
+${PROJECT_DUPLICATE_FILES_OK_BUTTON_FALLBACK_XPATH}    /Window/Window[@Name="Duplicate Files"]/Button[@Name="OK"]
 ${User_Manual_Button_XPATH}    //*[@AutomationId="Main_Btn_UserManual"]
 ${open_about_menu_XPATH}          //*[@AutomationId="Main_Btn_About"]
 ${open_user_management_menu_XPATH}    //*[@AutomationId="Main_Btn_UserManagement"]
@@ -39,25 +52,68 @@ ${Login_window_name}    FoXpert RT - Login
 Open ProjectFile
     [Arguments]    @{project_file_paths}
     ${project_file_path}=    Evaluate    ' '.join(['"' + p + '"' for p in $project_file_paths]) if len($project_file_paths) > 1 else $project_file_paths[0]
+    ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
+    ${clear_enabled_before_open}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Clear_XPATH}
     Wait Until Element Exist    ${project_menu_item_xpaths}    2
     Click    ${project_menu_item_xpaths}
+    ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
     ${input_xpath}=    Get Open File Dialog Input Locator
     Set Text To Textbox    ${input_xpath}    ${project_file_path}
     Click Open File Dialog Button
     Set Retry Timeout    0
     ${loaded}=    Set Variable    ${False}
     FOR    ${i}    IN RANGE    90
-        ${clear_enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Clear_XPATH}
-        IF    ${clear_enabled}
+        ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
+        IF    ${warning_clicked} and ${duplicate_warning}
             ${loaded}=    Set Variable    ${True}
             BREAK
         END
-        ${warning_visible}=    Run Keyword And Return Status    Element Should Exist    ${PROJECT_WARNING_OK_BUTTON_XPATH}
-        IF    ${warning_visible}    Click    ${PROJECT_WARNING_OK_BUTTON_XPATH}
+        ${clear_enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Clear_XPATH}
+        IF    ${clear_enabled} and not ${clear_enabled_before_open}
+            ${loaded}=    Set Variable    ${True}
+            BREAK
+        END
+        ${dialog_still_open}=    Run Keyword And Return Status    Element Should Exist    ${input_xpath}
+        IF    ${clear_enabled_before_open} and not ${dialog_still_open}
+            ${loaded}=    Set Variable    ${True}
+            BREAK
+        END
         Sleep    0.2s
     END
     Reset Retry Timeout
     Should Be True    ${loaded}    Project did not load within expected time.
+
+Dismiss Project Open Warning Popup If Present
+    Set Retry Timeout    0
+    ${duplicate_warning_visible}=    Run Keyword And Return Status
+    ...    Element Should Exist    ${PROJECT_DUPLICATE_FILES_WINDOW_XPATH}
+    IF    not ${duplicate_warning_visible}
+        ${duplicate_warning_visible}=    Run Keyword And Return Status
+        ...    Element Should Exist    ${PROJECT_DUPLICATE_FILES_WINDOW_FALLBACK_XPATH}
+    END
+    IF    ${duplicate_warning_visible}
+        ${warning_clicked}=    Run Keyword And Return Status    Click    ${PROJECT_DUPLICATE_FILES_OK_BUTTON_XPATH}
+        IF    not ${warning_clicked}
+            ${warning_clicked}=    Run Keyword And Return Status    Click    ${PROJECT_DUPLICATE_FILES_OK_BUTTON_FALLBACK_XPATH}
+        END
+        Reset Retry Timeout
+        RETURN    ${warning_clicked}    ${True}
+    END
+    ${warning_visible}=    Run Keyword And Return Status
+    ...    Element Should Exist    ${PROJECT_WARNING_OK_BUTTON_XPATH}
+    ${warning_clicked}=    Set Variable    ${False}
+    IF    ${warning_visible}
+        ${warning_clicked}=    Run Keyword And Return Status    Click    ${PROJECT_WARNING_OK_BUTTON_XPATH}
+    END
+    IF    not ${warning_clicked}
+        ${warning_visible}=    Run Keyword And Return Status
+        ...    Element Should Exist    ${PROJECT_WARNING_OK_BUTTON_FALLBACK_XPATH}
+        IF    ${warning_visible}
+            ${warning_clicked}=    Run Keyword And Return Status    Click    ${PROJECT_WARNING_OK_BUTTON_FALLBACK_XPATH}
+        END
+    END
+    Reset Retry Timeout
+    RETURN    ${warning_clicked}    ${False}
 
 Open FolderSet
     [Arguments]    ${folder_set_path}
@@ -149,13 +205,30 @@ Close Project
     ...    Wait Until Keyword Succeeds    25x    0.2s    Element Should Be Disabled    ${Button_Clear_XPATH}
 
 Get Open File Dialog Input Locator
-    ${dialog_input_found}=    Run Keyword And Return Status
-    ...    Wait Until Element Exist    ${INPUT_FILE_DIALOG_XPATH}    0.5
-    IF    ${dialog_input_found}
-        RETURN    ${INPUT_FILE_DIALOG_XPATH}
+    ${primary_input_found}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${INPUT_FILE_DIALOG_BY_NAME_XPATH}    5
+    IF    ${primary_input_found}
+        RETURN    ${INPUT_FILE_DIALOG_BY_NAME_XPATH}
     END
-    Wait Until Element Exist    ${INPUT_FILE_DIALOG_FALLBACK_XPATH}    2
-    RETURN    ${INPUT_FILE_DIALOG_FALLBACK_XPATH}
+    @{input_candidates}=    Create List
+    ...    ${INPUT_FILE_DIALOG_BY_NAME_FALLBACK_XPATH}
+    ...    ${INPUT_FILE_DIALOG_FILENAME_CONTROL_XPATH}
+    ...    ${INPUT_FILE_DIALOG_FILENAME_CONTROL_FALLBACK_XPATH}
+    ...    ${INPUT_FILE_DIALOG_AUTOMATION_ID_XPATH}
+    ...    ${INPUT_FILE_DIALOG_AUTOMATION_ID_FALLBACK_XPATH}
+    Set Retry Timeout    0
+    FOR    ${attempt}    IN RANGE    25
+        FOR    ${input_xpath}    IN    @{input_candidates}
+            ${dialog_input_found}=    Run Keyword And Return Status    Element Should Exist    ${input_xpath}
+            IF    ${dialog_input_found}
+                Reset Retry Timeout
+                RETURN    ${input_xpath}
+            END
+        END
+        Sleep    0.2s
+    END
+    Reset Retry Timeout
+    Fail    Could not find the file name input in the Open file dialog.
 
 Click Open File Dialog Button
     [Arguments]    ${preferred_xpath}=${EMPTY}
@@ -180,6 +253,12 @@ Click Open File Dialog Button
     END
     IF    not ${open_clicked}
         ${open_clicked}=    Run Keyword And Return Status    Click    ${OPEN_BUTTON_NAME_FALLBACK_XPATH}
+    END
+    IF    not ${open_clicked}
+        ${open_clicked}=    Run Keyword And Return Status    Click    ${OPEN_BUTTON_PRIMARY_XPATH}
+    END
+    IF    not ${open_clicked}
+        ${open_clicked}=    Run Keyword And Return Status    Click    ${OPEN_BUTTON_PRIMARY_FALLBACK_XPATH}
     END
     Should Be True    ${open_clicked}    Could not find/click the Open button in the file dialog.
 

@@ -75,11 +75,14 @@ ${stitch_file_dialog_open_button_xpath}    /Window[@AutomationId="FoxRTProMainWi
 ${stitch_configuration_scrollviewer_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Pane[2]
 ${stitch_direction_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//ComboBox[@AutomationId="Stitching_Cmb_Direction"]
 ${stitch_overlap_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Slider[@AutomationId="Stitching_Sld_Overlap"]
-${stitch_overlap_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Overlap:")]
+${stitch_overlap_nud_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Edit[@AutomationId="Stitching_Overlap_Num"]
+${stitch_overlap_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Overlap")]
 ${stitch_blend_levels_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Slider[@AutomationId="Stitching_Sld_BlendLevels"]
+${stitch_blend_levels_nud_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Edit[@AutomationId="Stitching_BlendLevels_Num"]
 ${stitch_blend_levels_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Blend Levels:")]
 ${stitch_sub_pixel_checkbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//CheckBox[@AutomationId="Stitching_Chk_SubPixel"]
 ${stitch_min_confidence_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Slider[@AutomationId="Stitching_Sld_MinConfidence"]
+${stitch_min_confidence_nud_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Edit[@AutomationId="Stitching_MinConfidence_Num"]
 ${stitch_min_confidence_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Min Confidence:")]
 ${stitch_window_level_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//ComboBox[@AutomationId="Stitching_Cmb_WindowLevel"]
 ${stitch_invert_image_checkbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//CheckBox[@AutomationId="Stitching_Chk_InvertImage"]
@@ -353,8 +356,8 @@ Get Batch Open File Dialog Locators
     IF    ${input_found}
         RETURN    ${batch_file_dialog_input_xpath}    ${batch_file_dialog_open_button_xpath}
     END
-    Wait Until Element Exist    ${INPUT_FILE_DIALOG_XPATH}    2
-    RETURN    ${INPUT_FILE_DIALOG_XPATH}    ${OPEN_BUTTON_XPATH}
+    ${generic_input_xpath}=    Get Open File Dialog Input Locator
+    RETURN    ${generic_input_xpath}    ${EMPTY}
 
 Verify Files Added In Batch Processing Window
     [Arguments]    @{file_paths}
@@ -686,7 +689,7 @@ Verify No Files In Stitch Window
 
 Run Stitch Process
     [Arguments]    ${direction}=Horizontal    ${overlap}=30    ${blend_levels}=5
-    ...    ${sub_pixel_refinement}=yes    ${min_confidence}=15
+    ...    ${sub_pixel_refinement}=yes    ${min_confidence}=0.15
     ...    ${window_level}=Auto Best Contrast    ${invert_image}=no
     [Documentation]    Set Stitch options from arguments and then click Stitch.
 
@@ -708,19 +711,14 @@ Run Stitch Process
 
     Select Combobox Item By Name    ${stitch_direction_combobox_xpath}    ${direction}
     Sleep    0.2s
-    Set Stitch Slider Value    ${stitch_overlap_slider_xpath}    ${overlap}    ${stitch_overlap_value_text_xpath}    5    80
-    Set Stitch Slider Value    ${stitch_blend_levels_slider_xpath}    ${blend_levels}    ${stitch_blend_levels_value_text_xpath}    1    8
+    Set Stitch Numeric Input Value    ${stitch_overlap_nud_input_xpath}    ${overlap}    5    80    Overlap
+    Set Stitch Numeric Input Value    ${stitch_blend_levels_nud_input_xpath}    ${blend_levels}    1    8    Blend Levels
 
     ${sub_pixel_refinement_bool}=    Convert User Input To Boolean    ${sub_pixel_refinement}    Sub-pixel Refinement
     Set Checkbox State    ${stitch_sub_pixel_checkbox_xpath}    ${sub_pixel_refinement_bool}
     Sleep    0.2s
 
-    Set Stitch Slider Value
-    ...    ${stitch_min_confidence_slider_xpath}
-    ...    ${min_confidence}
-    ...    ${stitch_min_confidence_value_text_xpath}
-    ...    5
-    ...    50
+    Set Stitch Numeric Input Value    ${stitch_min_confidence_nud_input_xpath}    ${min_confidence}    0.05    0.50    Min Confidence
     Select Combobox Item By Name    ${stitch_window_level_combobox_xpath}    ${window_level}
     Sleep    0.2s
 
@@ -733,6 +731,31 @@ Run Stitch Process
     Sleep    1s
     Wait Until Element Exist    ${stitch_export_button_xpath}    30
     Sleep    0.5s
+
+Set Stitch Numeric Input Value
+    [Arguments]    ${input_xpath}    ${value}    ${minimum}    ${maximum}    ${field_name}
+    [Documentation]    Set a stitch numeric value through the NUD text input and verify the applied value.
+
+    ${value}=    Convert To Number    ${value}
+    ${minimum}=    Convert To Number    ${minimum}
+    ${maximum}=    Convert To Number    ${maximum}
+    Should Be True
+    ...    ${minimum} <= ${value} <= ${maximum}
+    ...    ${field_name} must be between ${minimum} and ${maximum}. Received: ${value}
+
+    ${value_text}=    Evaluate    str($value).rstrip('0').rstrip('.') if '.' in str($value) else str($value)
+    Wait Until Element Exist    ${input_xpath}    2
+    Set Text To Textbox    ${input_xpath}    ${value_text}
+    Sleep    0.05s
+
+    ${applied_text}=    Get Text From Textbox    ${input_xpath}
+    ${has_value}=    Evaluate    __import__('re').search(r'-?\\d+(?:\\.\\d+)?', str($applied_text)) is not None
+    Should Be True    ${has_value}    Could not read numeric value from ${field_name} input: ${applied_text}
+    ${applied_value}=    Evaluate    float(__import__('re').search(r'-?\\d+(?:\\.\\d+)?', str($applied_text)).group())
+    ${difference}=    Evaluate    abs($applied_value - $value)
+    Should Be True
+    ...    ${difference} <= 0.0001
+    ...    ${field_name} mismatch. Requested ${value}, but input shows ${applied_value}.
 
 Export Stitch Images
     [Arguments]    ${output_folder}    ${export_format}=PNG    ${file_name}=${EMPTY}

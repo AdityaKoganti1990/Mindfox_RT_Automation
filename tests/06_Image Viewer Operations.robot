@@ -122,17 +122,16 @@ MFRTIVO5 - Verify whether able to Pan Image Viewer using Pan Tool.
     Take Actual Screenshot    MFRTIV05.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV05.png    MFRTIV05.png
     Sleep    0.1s
-
 MFRTIV06 - Verify whether able to Reset Image Viewer to default view after panning.
     [Documentation]    Verify whether able to Reset Image Viewer to default view after panning.
     [Tags]    MFRTIV06
 
     Reset View
-    Sleep    0.1s
+    Apply Auto Best BNC
+    Sleep    0.3s
     Take Actual Screenshot    MFRTIV06.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV06.png    MFRTIV06.png
     Sleep    0.1s
-
 MFRTIV07 - Verify whether able to apply scales to image viewer.
     [Documentation]    Verify whether able to apply scales to image viewer.
     [Tags]    MFRTIV07
@@ -167,7 +166,7 @@ MFRTIV09 - Verify whether able Rotate Image Viewer using Rotate buttons.
     Take Actual Screenshot    MFRTIV09_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV09_2.png    MFRTIV09_2.png
     Reset View
-
+    Apply Auto Best BNC
 MFRTIV10 - Verify whether able Flip Image Viewer.
     [Documentation]    Verify whether able Flip Image Viewer.
     [Tags]    MFRTIV10
@@ -183,7 +182,7 @@ MFRTIV10 - Verify whether able Flip Image Viewer.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV10_2.png    MFRTIV10_2.png
     Sleep    0.1s
     Reset View
-
+    Apply Auto Best BNC
 MFRTIV11 - Verify whether able to apply Invert over the image viewer.
     [Documentation]    Verify whether able to apply Invert over the image viewer.
     [Tags]    MFRTIV11
@@ -194,7 +193,7 @@ MFRTIV11 - Verify whether able to apply Invert over the image viewer.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV11.png    MFRTIV11.png
     Sleep    0.1s
     Reset View
-
+    Apply Auto Best BNC
 MFRTIV12 - Verify whether able to change the units across the application.
     [Documentation]    Verify whether able to change the units across the application.
     [Tags]    MFRTIV12
@@ -287,16 +286,15 @@ MFRTIV17 - Verify whether the X and Y coordinates are shown in status bar when m
 
     Hover Mouse Over Image Viewer    930    460
     Sleep    0.1s
-    Verify Coordinates Are Shown In Status Bar    1145    871
+    Verify Coordinates Are Shown In Status Bar    1147    877
     Sleep    0.1s
-
 MFRTIV18 - Verify whether the Intensity value is shown in status bar when mouse is hovered over the image viewer
     [Documentation]    Verify whether the Intensity value is shown in status bar when mouse is hovered over the image viewer.
     [Tags]    MFRTIV18
 
     Hover Mouse Over Image Viewer    930    460
     Sleep    0.1s
-    Verify Intensity Value Is Shown In Status Bar    29574
+    Verify Intensity Value Is Shown In Status Bar    29525
     Sleep    0.1s
 
 MFRTIV19 - Verify whether annotations count is updated in status bar when annotation is added or deleted
@@ -327,6 +325,65 @@ MFRTIV20 - Verify whether SNR value is shown in status bar when image with SNR m
     Close Project
     Open ProjectFile    ${project_Directory_Path}MLE_8''0.322.dcm
     Verify SNR value in status bar    97.5    0.00
+
+MFRTIV21 - Verify whether able to apply color table over the image viewer.
+    [Documentation]    Verify whether able to apply color table over the image viewer.
+    [Tags]    MFRTIV21
+
+    Apply Color Table To Image Viewer    Hot Iron
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV21_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV21_1.png    MFRTIV21_1.png
+    Sleep    0.1s
+    Apply Color Table To Image Viewer    Grayscale
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV21_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV21_2.png    MFRTIV21_2.png
+
+MFRTIV22 - Verify whether able to apply all available color tables over the image viewer.
+    [Documentation]    Verify whether able to apply all available color tables over the image viewer.
+    [Tags]    MFRTIV22
+
+    Apply Color Table To Image Viewer    Hot Iron
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV22_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV22_1.png    MFRTIV22_1.png
+    Sleep    0.1s
+    Apply Color Table To Image Viewer    Rainbow
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV22_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV22_2.png    MFRTIV22_2.png
+    Sleep    0.1s
+    Apply Color Table To Image Viewer    Cool-Warm
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV22_3.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV22_3.png    MFRTIV22_3.png
+    Sleep    0.1s
+    Apply Color Table To Image Viewer    Bone
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV22_4.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV22_4.png    MFRTIV22_4.png
+    Sleep    0.1s
+    Apply Color Table To Image Viewer    Copper
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV22_5.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV22_5.png    MFRTIV22_5.png
+    Sleep    0.1s
+    Apply Color Table To Image Viewer    Spectrum
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV22_6.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV22_6.png    MFRTIV22_6.png
+    Sleep    0.1s
+    Apply Color Table To Image Viewer    Hot Metal Blue
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV22_7.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV22_7.png    MFRTIV22_7.png
+    Sleep    0.1s
+    Apply Color Table To Image Viewer    Grayscale
+    Sleep    0.1s
+    Take Actual Screenshot    MFRTIV22_8.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV22_8.png    MFRTIV22_8.png
+    Sleep    0.1s
     Close Project
+    Sleep    0.1s
     Close FoxRT Application Window
-    

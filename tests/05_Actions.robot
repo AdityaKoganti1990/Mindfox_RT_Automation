@@ -157,7 +157,7 @@ MFRTA15 - Verify whether able to run Stitch Process.
     ...    overlap=5
     ...    blend_levels=5
     ...    sub_pixel_refinement=yes
-    ...    min_confidence=6
+    ...    min_confidence=0.15
     ...    window_level=Auto Best Contrast
     ...    invert_image=no
     Sleep    0.1s

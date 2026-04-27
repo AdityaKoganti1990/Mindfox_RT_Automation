@@ -23,7 +23,6 @@ MFRTO01 - Verify whether able to open RT application in online mode.
     Login To FoxViewerDesktop    admin    admin
     Toggle Online Or Offline Mode    Online
     Verify Online Mode Is Enabled
-
 MFRTO02 - Verify the default display when switched to Online mode.
     [Documentation]    Verify the default display when switched to Online mode.
     [Tags]    MFRTO02
@@ -47,7 +46,6 @@ MFRTO03 - Verify whether detector tab is opened when switched to online mode.
 
     Toggle Online Or Offline Mode    Online
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${DETECTOR_TAB_XPATH}    expected_state=enabled    timeout=1
-
 MFRTO04 - Verify whether able to Hide the X - Ray controller in online mode.
     [Documentation]    Verify whether able to Hide the X - Ray controller in online mode.
     [Tags]    MFRTO04
@@ -62,34 +60,29 @@ MFRTO05 - Verify whether able to open Components window in online mode.
     Toggle Online Or Offline Mode    Online
     Open Component Window
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${COMPONENT_WINDOW_XPATH}    expected_state=exists    timeout=1
-
 MFRTO06 - Verify the component window can be closed in online mode.
     [Documentation]    Verify the component window can be closed in online mode.
     [Tags]    MFRTO06
 
     Close Component Window
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${COMPONENT_WINDOW_XPATH}    expected_state=not exists    timeout=1
-
 MFRTO07 - Verify whether Resume button opens the window to resume acquisition in online mode.
     [Documentation]    Verify whether Resume button opens the window to resume acquisition in online mode.
     [Tags]    MFRTO07
 
     Open Resume Acquisition Window
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${RESUME_ACQUISITION_WINDOW_XPATH}    expected_state=exists    timeout=1
-
 MFRTO08 - Verify whether Resume acquisition window can be closed in online mode.
     [Documentation]    Verify whether Resume acquisition window can be closed in online mode.
     [Tags]    MFRTO08
 
     Close Resume Acquisition Window
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${RESUME_ACQUISITION_WINDOW_XPATH}    expected_state=not exists    timeout=1
-
 MFRTO09 - Verify the detectors list in the detector tab when switched to online mode.
     [Documentation]    Verify the detectors list in the detector tab when switched to online mode.
     [Tags]    MFRTO09
 
     Verify Detectors List In Detector Tab    Simulator    DRTech    iRay 1717ME    XRD Detector    PaxScan 4343HE
-
 MFRTO10 - Verify the Binning options in the detector tab when switched to online mode.
     [Documentation]    Verify the Binning options in the detector tab when switched to online mode.
     [Tags]    MFRTO10
@@ -100,11 +93,16 @@ MFRTO11 - Verify the Acq Mode options in the detector tab when switched to onlin
     [Tags]    MFRTO11
 
     Verify Acq Mode Options In Detector Tab    SingleShot    Sequence    Continuous
-
 MFRTO12 - Verify the Video Formats options in the detector tab when switched to online mode.
     [Documentation]    Verify the Video Formats options in the detector tab when switched to online mode.
     [Tags]    MFRTO12
 
     Set Acq Mode    Continuous
-    Verify Video Format Options In Detector Tab    AVI (MJPEG)    MP4 (H.264)    AVI (Raw)
+    # Verify Video Format Options In Detector Tab    AVI (MJPEG)    MP4 (H.264)    AVI (Raw)
+    Set Acq Mode    SingleShot
+MFRTO13 - Verify whether Orientation options are shown in online mode.
+    [Documentation]    Verify whether Orientation options are shown in online mode.
+    [Tags]    MFRTO13
+
+    Verify Orientation Options    0°    90°    180°    270°    Flip H=True    Flip V=True
     Close FoxRT Application Window

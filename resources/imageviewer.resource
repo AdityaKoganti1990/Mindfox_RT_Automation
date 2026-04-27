@@ -78,6 +78,7 @@ Take window Screenshot
 Take Actual Screenshot
     [Arguments]    ${filename}    ${xpath}=${IMAGE_VIEWER_XPATH}
 
+    Sleep    0.2s    # Ensure any UI updates are rendered before taking screenshot
     ${screenshot_path}=    Take Screenshot    ${xpath}
     Log    Screenshot saved to (temporary): ${screenshot_path}
 

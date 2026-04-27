@@ -30,6 +30,14 @@ ${Y_Coordinate_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[con
 ${Intensity_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"Intensity:")]
 ${Annotation_Count_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"Annotations:")]
 ${SNR_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"SNR:")]
+${Color_Table_Grayscale_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Grayscale"]
+${Color_Table_HotIron_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_HotIron"]
+${Color_Table_Rainbow_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Rainbow"]
+${Color_Table_CoolWarm_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_CoolWarm"]
+${Color_Table_Bone_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Bone"]
+${Color_Table_Copper_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Copper"]
+${Color_Table_Spectrum_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Spectrum"]
+${Color_Table_HotMetalBlue_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_HotMetalBlue"]
 
 *** Keywords ***
 
@@ -229,3 +237,48 @@ Verify SNR value in status bar
     ...    Expected SNR ${expected_snr_clean} dB but status bar shows ${displayed_snr} dB
     Should Be Equal As Numbers    ${displayed_noise}    ${expected_noise_clean}
     ...    Expected Noise ${expected_noise_clean}% but status bar shows ${displayed_noise}%
+
+Apply Color Table To Image Viewer
+    [Arguments]    ${color_name}
+    [Documentation]    Apply the given color table to the image viewer by right-clicking on the viewer and clicking the matching AutomationId-based menu control.
+
+    ${color_table_xpath}=    Resolve Color Table Menu Item XPath    ${color_name}
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    ${start_x}    ${start_y}    ${end_x}    ${end_y}=    Get Current Location Of Image Viewer
+    AutoItLibrary.Mouse Click    right    ${start_x}    ${start_y}
+    Sleep    0.1s
+    Wait Until Element Exist    ${color_table_xpath}    5
+    Click    ${color_table_xpath}
+    Sleep    0.3s
+
+Resolve Color Table Menu Item XPath
+    [Arguments]    ${color_name}
+    Should Not Be Empty    ${color_name}    Color table name cannot be empty.
+    ${color_value}=    Evaluate    str($color_name).strip()
+    Should Not Be Empty    ${color_value}    Color table name cannot be blank.
+    ${is_xpath}=    Evaluate    str($color_value).startswith(('/', '('))
+    IF    ${is_xpath}
+        RETURN    ${color_value}
+    END
+
+    ${color_key}=    Evaluate    ''.join(ch.lower() for ch in str($color_name).strip() if ch.isalnum())
+    IF    '${color_key}' == 'grayscale' or '${color_key}' == 'imageviewerctxcolortablegrayscale'
+        RETURN    ${Color_Table_Grayscale_Menu_Item_XPATH}
+    ELSE IF    '${color_key}' == 'hotiron' or '${color_key}' == 'imageviewerctxcolortablehotiron'
+        RETURN    ${Color_Table_HotIron_Menu_Item_XPATH}
+    ELSE IF    '${color_key}' == 'rainbow' or '${color_key}' == 'imageviewerctxcolortablerainbow'
+        RETURN    ${Color_Table_Rainbow_Menu_Item_XPATH}
+    ELSE IF    '${color_key}' == 'coolwarm' or '${color_key}' == 'imageviewerctxcolortablecoolwarm'
+        RETURN    ${Color_Table_CoolWarm_Menu_Item_XPATH}
+    ELSE IF    '${color_key}' == 'bone' or '${color_key}' == 'imageviewerctxcolortablebone'
+        RETURN    ${Color_Table_Bone_Menu_Item_XPATH}
+    ELSE IF    '${color_key}' == 'copper' or '${color_key}' == 'imageviewerctxcolortablecopper'
+        RETURN    ${Color_Table_Copper_Menu_Item_XPATH}
+    ELSE IF    '${color_key}' == 'spectrum' or '${color_key}' == 'imageviewerctxcolortablespectrum'
+        RETURN    ${Color_Table_Spectrum_Menu_Item_XPATH}
+    ELSE IF    '${color_key}' == 'hotmetalblue' or '${color_key}' == 'imageviewerctxcolortablehotmetalblue'
+        RETURN    ${Color_Table_HotMetalBlue_Menu_Item_XPATH}
+    END
+
+    Fail    Unsupported color table '${color_name}'. Supported color tables: Grayscale, Hot Iron, Rainbow, Cool-Warm, Bone, Copper, Spectrum, Hot Metal Blue.

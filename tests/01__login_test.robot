@@ -27,7 +27,7 @@ MFRTL03 - Verify that the application version is displayed on the login screen
     [Tags]    smoke    login
 
     Open FoxViewerDesktop Application
-    # App Version Text Should Present in login screen
+    App Version Text Should Present in login screen
 
 MFRTL04 - Verify valid login credentials allow access to the application
     [Documentation]    Verify that valid login credentials allow access to the application

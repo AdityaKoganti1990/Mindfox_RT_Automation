@@ -1,5 +1,6 @@
 *** Settings ***
 Library           FlaUILibrary    screenshot_dir=${CURDIR}\\..\\Actual\\test.png
+Library           Collections
 Library           Process
 Library           ../lib/image_comparator.py
 Library           ../lib/ironpy_remote_client.py
@@ -26,6 +27,18 @@ ${DETECTOR_LIST_COMBOBOX_XPATH}    ${MAIN_WINDOW_XPATH}//ComboBox[@AutomationId=
 ${BINNING_COMBOBOX_XPATH}    ${MAIN_WINDOW_XPATH}//ComboBox[@AutomationId="DetParams_Cmb_Binning"]
 ${ACQ_MODE_COMBOBOX_XPATH}    ${MAIN_WINDOW_XPATH}//ComboBox[@AutomationId="DetParams_Cmb_AcqMode"]
 ${VIDEO_FORMAT_COMBOBOX_XPATH}    ${MAIN_WINDOW_XPATH}//ComboBox[@AutomationId="DetParams_Cmb_VideoFormat"]
+${ORIENTATION_COMBOBOX_XPATH}    ${MAIN_WINDOW_XPATH}//ComboBox[@AutomationId="DetParams_Cmb_DefaultOrientation"]
+${ORIENTATION_COMBOBOX_FALLBACK_XPATH}    ${MAIN_WINDOW_XPATH}//Text[@Name="Orientation"]/following::ComboBox[1]
+${ORIENTATION_FLIP_H_XPATH}    ${MAIN_WINDOW_XPATH}//*[@AutomationId="DetParams_Chk_FlipH"]
+${ORIENTATION_FLIP_H_DETPARAMS_XPATH}    ${MAIN_WINDOW_XPATH}//*[contains(@AutomationId,"DetParams") and contains(@AutomationId,"FlipH")]
+${ORIENTATION_FLIP_H_CHECKBOX_XPATH}    ${MAIN_WINDOW_XPATH}//CheckBox[contains(@Name,"Flip H")]
+${ORIENTATION_FLIP_H_BUTTON_XPATH}    ${MAIN_WINDOW_XPATH}//Button[contains(@Name,"Flip H")]
+${ORIENTATION_FLIP_H_LABEL_XPATH}    ${MAIN_WINDOW_XPATH}//Text[contains(@Name,"Flip H")]/following::CheckBox[1]
+${ORIENTATION_FLIP_V_XPATH}    ${MAIN_WINDOW_XPATH}//*[@AutomationId="DetParams_Chk_FlipV"]
+${ORIENTATION_FLIP_V_DETPARAMS_XPATH}    ${MAIN_WINDOW_XPATH}//*[contains(@AutomationId,"DetParams") and contains(@AutomationId,"FlipV")]
+${ORIENTATION_FLIP_V_CHECKBOX_XPATH}    ${MAIN_WINDOW_XPATH}//CheckBox[contains(@Name,"Flip V")]
+${ORIENTATION_FLIP_V_BUTTON_XPATH}    ${MAIN_WINDOW_XPATH}//Button[contains(@Name,"Flip V")]
+${ORIENTATION_FLIP_V_LABEL_XPATH}    ${MAIN_WINDOW_XPATH}//Text[contains(@Name,"Flip V")]/following::CheckBox[1]
 ${EXPOSURE_TIME_SLIDER_XPATH}    ${MAIN_WINDOW_XPATH}//Slider[@AutomationId="DetParams_Sld_ExposureTime"]
 ${FRAME_RATE_SLIDER_XPATH}    ${MAIN_WINDOW_XPATH}//Slider[@AutomationId="DetParams_Sld_FrameRate"]
 ${GAIN_SLIDER_XPATH}    ${MAIN_WINDOW_XPATH}//Slider[@AutomationId="DetParams_Sld_Gain"]
@@ -358,3 +371,137 @@ Verify Video Format Options In Detector Tab
     END
     RETURN    ${available_formats}
 
+Verify Orientation Options
+    [Arguments]    @{orientation_args}    &{flip_expectations}
+    [Documentation]    Verify orientation dropdown options and Flip H/Flip V availability/state. Use Flip H=True and Flip V=False style arguments for expected flip state.
+
+    ${expected_orientation_options}    ${expected_flip_states}=    Parse Orientation Verification Arguments
+    ...    @{orientation_args}
+    ...    &{flip_expectations}
+    Should Not Be Empty    ${expected_orientation_options}    Expected orientation options list cannot be empty.
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    ${orientation_combobox_xpath}=    Set Variable    ${ORIENTATION_COMBOBOX_XPATH}
+    ${exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${orientation_combobox_xpath}    2
+    IF    not ${exists}
+        ${orientation_combobox_xpath}=    Set Variable    ${ORIENTATION_COMBOBOX_FALLBACK_XPATH}
+    END
+    Wait Until Element Exist    ${orientation_combobox_xpath}    5
+    ${available_orientations}=    Get All Names From Combobox    ${orientation_combobox_xpath}
+    Log    Available orientation options: ${available_orientations}
+    FOR    ${orientation}    IN    @{expected_orientation_options}
+        Combobox Should Contain    ${orientation_combobox_xpath}    ${orientation}
+        Log    Orientation option '${orientation}' exists in the list as expected.
+    END
+
+    ${flip_h_expected}=    Evaluate    $expected_flip_states.get('fliph', '')
+    ${flip_v_expected}=    Evaluate    $expected_flip_states.get('flipv', '')
+    ${flip_h_state}=    Verify Orientation Flip Control    Flip H    ${flip_h_expected}
+    ${flip_v_state}=    Verify Orientation Flip Control    Flip V    ${flip_v_expected}
+    &{flip_states}=    Create Dictionary    Flip H=${flip_h_state}    Flip V=${flip_v_state}
+    RETURN    ${available_orientations}    ${flip_states}
+
+Parse Orientation Verification Arguments
+    [Arguments]    @{orientation_args}    &{flip_expectations}
+
+    @{expected_orientation_options}=    Create List
+    &{expected_flip_states}=    Create Dictionary
+
+    FOR    ${orientation_arg}    IN    @{orientation_args}
+        ${separator_index}=    Evaluate    str($orientation_arg).find('=')
+        IF    ${separator_index} > 0
+            ${flip_name}=    Evaluate    str($orientation_arg)[:${separator_index}].strip()
+            ${flip_value}=    Evaluate    str($orientation_arg)[${separator_index}+1:].strip()
+            ${flip_key}=    Normalize Orientation Flip Control Name    ${flip_name}
+            Set To Dictionary    ${expected_flip_states}    ${flip_key}=${flip_value}
+        ELSE
+            Append To List    ${expected_orientation_options}    ${orientation_arg}
+        END
+    END
+
+    FOR    ${flip_name}    ${flip_value}    IN    &{flip_expectations}
+        ${flip_key}=    Normalize Orientation Flip Control Name    ${flip_name}
+        Set To Dictionary    ${expected_flip_states}    ${flip_key}=${flip_value}
+    END
+
+    RETURN    ${expected_orientation_options}    ${expected_flip_states}
+
+Normalize Orientation Flip Control Name
+    [Arguments]    ${control_name}
+
+    Should Not Be Empty    ${control_name}    Flip control name cannot be empty.
+    ${control_key}=    Evaluate    ''.join(ch.lower() for ch in str($control_name).strip() if ch.isalnum())
+    IF    '${control_key}' in ('fliph', 'fliphorizontal', 'horizontal')
+        RETURN    fliph
+    ELSE IF    '${control_key}' in ('flipv', 'glipv', 'flipvertical', 'vertical')
+        RETURN    flipv
+    END
+    Fail    Unsupported orientation flip control '${control_name}'. Use Flip H or Flip V.
+
+Resolve Orientation Flip Control XPath
+    [Arguments]    ${control_name}
+
+    ${control_key}=    Normalize Orientation Flip Control Name    ${control_name}
+    IF    '${control_key}' == 'fliph'
+        @{candidate_xpaths}=    Create List
+        ...    ${ORIENTATION_FLIP_H_XPATH}
+        ...    ${ORIENTATION_FLIP_H_DETPARAMS_XPATH}
+        ...    ${ORIENTATION_FLIP_H_CHECKBOX_XPATH}
+        ...    ${ORIENTATION_FLIP_H_BUTTON_XPATH}
+        ...    ${ORIENTATION_FLIP_H_LABEL_XPATH}
+    ELSE
+        @{candidate_xpaths}=    Create List
+        ...    ${ORIENTATION_FLIP_V_XPATH}
+        ...    ${ORIENTATION_FLIP_V_DETPARAMS_XPATH}
+        ...    ${ORIENTATION_FLIP_V_CHECKBOX_XPATH}
+        ...    ${ORIENTATION_FLIP_V_BUTTON_XPATH}
+        ...    ${ORIENTATION_FLIP_V_LABEL_XPATH}
+    END
+
+    FOR    ${candidate_xpath}    IN    @{candidate_xpaths}
+        ${exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${candidate_xpath}    1
+        IF    ${exists}
+            RETURN    ${candidate_xpath}
+        END
+    END
+    Fail    Could not find ${control_name} control in the detector orientation controls.
+
+Verify Orientation Flip Control
+    [Arguments]    ${control_name}    ${expected_state}=${EMPTY}
+
+    ${control_xpath}=    Resolve Orientation Flip Control XPath    ${control_name}
+    Wait Until Element Exist    ${control_xpath}    5
+    ${toggle_state}=    Get Toggle State    ${control_xpath}
+    ${actual_checked}=    Normalize Orientation Flip Toggle State    ${toggle_state}    ${control_name}
+    Log    ${control_name} control exists and is ${actual_checked}.
+    IF    str($expected_state).strip() != ''
+        ${expected_checked}=    Normalize Orientation Flip Expected State    ${expected_state}    ${control_name}
+        Should Be Equal    ${actual_checked}    ${expected_checked}
+        ...    ${control_name} expected checked state ${expected_checked}, but actual checked state is ${actual_checked}.
+    END
+    RETURN    ${actual_checked}
+
+Normalize Orientation Flip Expected State
+    [Arguments]    ${state}    ${control_name}=Flip control
+
+    ${normalized}=    Evaluate    str($state).strip().lower()
+    ${is_true}=    Evaluate    $normalized in ('true','1','yes','y','on','checked','check','selected')
+    ${is_false}=    Evaluate    $normalized in ('false','0','no','n','off','unchecked','uncheck','notchecked','not selected','notselected')
+    IF    ${is_true}
+        RETURN    ${True}
+    END
+    IF    ${is_false}
+        RETURN    ${False}
+    END
+    Fail    Invalid expected state for ${control_name}: ${state}. Use true/false, checked/unchecked, yes/no, or on/off.
+
+Normalize Orientation Flip Toggle State
+    [Arguments]    ${state}    ${control_name}=Flip control
+
+    ${normalized}=    Evaluate    str($state).strip().lower()
+    IF    '${normalized}' in ('on', 'true', '1', 'checked', 'selected')
+        RETURN    ${True}
+    ELSE IF    '${normalized}' in ('off', 'false', '0', 'unchecked', 'unselected')
+        RETURN    ${False}
+    END
+    Fail    Could not read checked state for ${control_name}. Toggle state was: ${state}.

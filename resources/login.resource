@@ -8,7 +8,8 @@ Library           AutoItLibrary
 
 # ─────────────────── Application Info ───────────────────
 ${APPLICATION_NAME}              FoXpert
-${APPLICATION_VERSION}           Version 1.0.2.16
+${APPLICATION_VERSION}           Version 1.0.2.19
+${APPLICATION_VERSION_in_loginscreen}    VERSION 1.0.2.19
 ${APP_PATH}                      C:\\Program Files\\MindFox Software Solutions\\FoxRT Pro\\FoxViewerDesktop.exe
 ${TECH_SUPPORT_EMAIL}            support@mindfox.in
 ${INVALID_WARNING_TEXT}          Invalid username or password
@@ -21,7 +22,7 @@ ${PASSWORD_XPATH}                /Window/Edit[@AutomationId="Login_Pwd_Password"
 ${LOGIN_BUTTON_XPATH}            /Window[@Name="FoXpert RT - Login"]/Button[@AutomationId="Login_Btn_Login"]
 ${INVALID_LOGIN_WARNING_XPATH}   /Window[@Name="FoXpert RT - Login"]/Text[@Name="Invalid username or password"]
 ${APP_VERSION_TEXT_XPATH}        //*[@AutomationId="VersionText"]
-${APP_VERSION_loginscreen_TEXT_XPATH}    //*[normalize-space(@Name)='V E R S I O N 1 . 0']
+${APP_VERSION_loginscreen_TEXT_XPATH}    /Window/Text[@AutomationId="VersionText"]
 ${User_Name_LABEL_XPATH}         /Window[@Name="FoXpert RT - Login"]/Text[@Name="USERNAME"]
 ${Sales_Id_TEXT_XPATH}           //*[@Name="Sales: sales@mindfox.in"]
 ${WebSite_TEXT_XPATH}            //*[@Name="Web: www.mindfox.in"]
@@ -33,6 +34,9 @@ ${MAIN_MINIMIZE_BTN_XPATH}       /Window[@AutomationId="FoxRTProMainWindow"]/But
 ${MAIN_RESTORE_BTN_XPATH}        /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_MaximizeRestore"]
 ${MAIN_MAXIMIZE_BTN_XPATH}       /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_MaximizeRestore"]
 ${About_close_btn_XPATH}         //*[@AutomationId="About_Btn_CloseAbout"]
+${ALREADY_RUNNING_WARNING_XPATH}    //Text[contains(@Name,"FoXpert RT is already running.")]
+${ALREADY_RUNNING_WARNING_OK_BUTTON_XPATH}    //Window[@Name="FoXpert RT"]/Button[@Name="OK"]
+${ALREADY_RUNNING_WARNING_OK_BUTTON_FALLBACK_XPATH}    //Window/Button[@Name="OK"]
 ${APP_PID}                       NONE
 
 *** Keywords ***
@@ -44,6 +48,10 @@ Open FoxViewerDesktop Application
     Attach Application By Pid        ${pid}
     Set Suite Variable    ${APP_PID}    ${pid}
     Wait Until Element Is Enabled    ${LOGIN_BUTTON_XPATH}    5
+    Sleep    1s
+    ${result}=    Win Exists    FoXpert RT    OK
+    Run Keyword If    ${result}==1    Click    ${ALREADY_RUNNING_WARNING_OK_BUTTON_XPATH}
+    Sleep    0.2s       
     RETURN    ${pid}
     
     
@@ -84,7 +92,7 @@ App Version Text Should Present in login screen
     Wait Until Element Exist    ${LOGIN_WINDOW_XPATH}    2
     Wait Until Element Is Enabled    ${LOGIN_WINDOW_XPATH}    2 
     ${version}=    Get Name From Element    ${APP_VERSION_loginscreen_TEXT_XPATH}
-    Should Be Equal As Strings    ${version}    ${APPLICATION_VERSION}
+    Should Be Equal As Strings    ${version}    ${APPLICATION_VERSION_in_loginscreen}
 
 App Version Text Should Present
     Wait Until Element Exist    ${About_close_btn_XPATH}    2              
