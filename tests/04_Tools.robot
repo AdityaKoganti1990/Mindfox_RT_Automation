@@ -13,12 +13,11 @@ Resource      ../resources/Annotations.resource
 MFRTT01 - Verify whether able to add normal line profiler tool in image viewer
     [Documentation]    Verify whether able to open add line profiler tool in image viewer
     [Tags]    smoke    tools
-
     Open FoxViewerDesktop Application
     Login To FoxViewerDesktop    admin    admin
     Main Window Should Be Open
     Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
-    Add Line Profiler Tool    590    290    967    257    Normal
+    Add Line Profiler Tool    590    290    967    252    Normal
     Take Actual Screenshot    MFRTT01_1.png
     Take Line Profiler window Screenshot    MFRTT01_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT01_1.png    MFRTT01_1.png
@@ -28,7 +27,7 @@ MFRTT01-2 - Verify whether able to add IQI line profiler tool in image viewer
     [Documentation]    Verify whether able to open add line profiler tool in image viewer
     [Tags]    smoke    tools
 
-    Add Line Profiler Tool    590    290    967    257    Iqi
+    Add Line Profiler Tool    590    290    967    252    Iqi
     Take Actual Screenshot    MFRTT01-2_1.png
     Take Line Profiler window Screenshot    MFRTT01-2_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT01-2_1.png    MFRTT01-2_1.png
@@ -53,6 +52,7 @@ MFRTT03 - Verify whether able to apply window level over the image.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT03.png    MFRTT03.png
     Click    ${window_level_tool_button_xpath}
     Reset View
+    Apply Auto Best BNC
 MFRTT04 - Verify whether able to open and apply window level from window level panel.
     [Documentation]    Verify whether able to open and apply window level from window level panel.
     [Tags]    smoke    tools
@@ -65,6 +65,7 @@ MFRTT04 - Verify whether able to open and apply window level from window level p
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT04_2.png    MFRTT04_2.png
     Click    ${window_Level_tool_panel_button_xpath}
     Reset View
+    Apply Auto Best BNC
 MFRTT05 - Verify whether able to open Pixel Intensity Histogram.
     [Documentation]    Verify whether able to open Pixel Intensity Histogram.
     [Tags]    smoke    tools
@@ -80,6 +81,7 @@ MFRTT05 - Verify whether able to open Pixel Intensity Histogram.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT05_2.png    MFRTT05_2.png
     Click    ${pixel_intensity_histogram_button_xpath}
     Reset View
+    Apply Auto Best BNC
 MFRTT06 - Verify whether able to calibrate the image by adding calibration tool.
     [Documentation]    Verify whether able to calibrate the image by adding calibration tool.
     [Tags]    smoke    tools
@@ -108,6 +110,7 @@ MFRTT07 - Verify whether able to add SNR Measurement tool over the image.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT07.png    MFRTT07.png
     Click    ${snr_measurement_tool_button_xpath}
     Reset View
+    Apply Auto Best BNC
 MFRTT08 - Verify whether able to add surface plot 3D tool over the image and view the 3D surface plot.
     [Documentation]    Verify whether able to add surface plot 3D tool over the image and view the 3D surface plot.
     [Tags]    smoke    tools
@@ -121,6 +124,7 @@ MFRTT08 - Verify whether able to add surface plot 3D tool over the image and vie
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT08_2.png    MFRTT08_2.png
     Click    ${surface_plot_tool_button_xpath}
     Reset View
+    Apply Auto Best BNC
 MFRTT09 - Verify whether able to set colormap for the Surface Plot 3D tool.
     [Documentation]    Verify whether able to set colormap for the Surface Plot 3D tool.
     [Tags]    smoke    tools
@@ -226,7 +230,7 @@ MFRTT16 - Verify whether able to add multiple wall thickness measurement lines a
     
     Click    ${window_XPATH}
     Add Wall Thickness Measurement tool over image    805    465    840    465
-    Adjust Wall Thickness Measurement Line Position    395    860    325    860    1690    865    1595    865
+    Adjust Wall Thickness Measurement Line Position    413    860    325    860    1690    865    1595    865
     Take Actual Screenshot    MFRTT16_1.png
     Take wall thickness measurement window Screenshot    MFRTT16_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT16_1.png    MFRTT16_1.png
@@ -269,6 +273,7 @@ MFRTT19 - Verify whether able to delete the wall thickness measurement annotatio
     Take Actual Screenshot    MFRTT19.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT19.png    MFRTT19.png
     Reset View
+    Apply Auto Best BNC
 MFRTT20 - Verify whether able to add CNR measurement tool over the image and measure the CNR.
     [Documentation]    Verify whether able to add CNR measurement tool over the image and measure the CNR.
     [Tags]    smoke    tools
@@ -300,7 +305,6 @@ MFRTT22 - Verify whether able to detect wirepair using Detect IQI wire phantom t
 
     Click    ${window_XPATH}
     Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
-    Apply Auto Best BNC
     Detect IQI Wire Phantom Tool
     Take Actual Screenshot    MFRTT22_1.png
     Take IQI Wire Phantom Tool window Screenshot    MFRTT22_2.png
@@ -309,20 +313,17 @@ MFRTT22 - Verify whether able to detect wirepair using Detect IQI wire phantom t
     Click    ${IQI_wire_phantom_tool_button_xpath}
     Reset View
     Close Project
-
 MFRTT23 - Verify whether able to mark defects using defect marking & classification tool.
     [Documentation]    Verify whether able to mark defects using defect marking & classification tool.
     [Tags]    smoke    tools
 
     Click    ${window_XPATH}
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
-    Apply Auto Best BNC
     Add Defect Marking and Classification Tool over image    Porosity    Rectangle    821    372    1008    416
     Take Actual Screenshot    MFRTT23_1.png
     Take Defect Marking and Classification Tool window Screenshot    MFRTT23_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT23_1.png    MFRTT23_1.png
     Run Keyword And Continue On Failure   Compare Result Images    MFRTT23_2.png    MFRTT23_2.png    95
-
 MFRTT24 - Verify whether able to evaluate the defect marked using defect marking & classification tool.
     [Documentation]    Verify whether able to evaluate the defect marked using defect marking & classification tool.
     [Tags]    smoke    tools
@@ -333,7 +334,6 @@ MFRTT24 - Verify whether able to evaluate the defect marked using defect marking
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT24_1.png    MFRTT24_1.png
     Run Keyword And Continue On Failure   Compare Result Images    MFRTT24_2.png    MFRTT24_2.png    95
     Click    ${defect_marking_tool_button_xpath}
-
 MFRTT25 - Verify whether able to delete the defect.
     [Documentation]    Verify whether able to delete the defect.
     [Tags]    smoke    tools
@@ -377,6 +377,7 @@ MFRTT28 - Verify whether able to reset the applied image filter by clicking on R
     Reset Image Filter
     Take Actual Screenshot    MFRTT28.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT28.png    MFRTT28.png
+    Apply Auto Best BNC
 MFRTT29 - Verify whether able to apply all the available filters in the image filter tool and view the changes in the image.
     [Documentation]    Verify whether able to apply all the available filters in the image filter tool and view the changes in the image.
     [Tags]    smoke    tools
@@ -389,6 +390,7 @@ MFRTT29 - Verify whether able to apply all the available filters in the image fi
         Run Keyword And Continue On Failure    Compare Result Images    MFRTT29_${filter}.png    MFRTT29_${filter}.png    98
         Reset Image Filter
     END
+    Apply Auto Best BNC
 MFRTT30 - Verify whether able to rename a filter in the image filter tool and view the updated filter name in the filter combobox.
     [Documentation]    Verify whether able to rename a filter in the image filter tool and view the updated filter name in the filter combobox.
     [Tags]    smoke    tools
@@ -417,6 +419,7 @@ MFRTT32 - Verify whether able to apply Edge Detection filter by modifying the fi
     Take Actual Screenshot    MFRTT32.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT32.png    MFRTT32.png
     Reset View
+    Apply Auto Best BNC
 MFRTT33 - Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Documentation]    Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Tags]    smoke    tools
@@ -428,6 +431,7 @@ MFRTT33 - Verify whether able to apply Morphological Contour filter by modifying
     Take Actual Screenshot    MFRTT33.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT33.png    MFRTT33.png
     Reset View
+    Apply Auto Best BNC
 MFRTT34 - Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Documentation]    Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Tags]    smoke    tools
@@ -439,6 +443,7 @@ MFRTT34 - Verify whether able to apply High Pass Sharpen filter by modifying the
     Take Actual Screenshot    MFRTT34.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT34.png    MFRTT34.png
     Reset View
+    Apply Auto Best BNC
 MFRTT35 - Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Documentation]    Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Tags]    smoke    tools
@@ -450,6 +455,7 @@ MFRTT35 - Verify whether able to apply Low Pass Smooth filter by modifying the f
     Take Actual Screenshot    MFRTT35.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT35.png    MFRTT35.png
     Reset View
+    Apply Auto Best BNC
 MFRTT36 - Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Documentation]    Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Tags]    smoke    tools
@@ -461,6 +467,7 @@ MFRTT36 - Verify whether able to apply Sharpness Boost filter by modifying the f
     Take Actual Screenshot    MFRTT36.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT36.png    MFRTT36.png
     Reset View
+    Apply Auto Best BNC
 MFRTT37 - Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Documentation]    Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Tags]    smoke    tools
@@ -472,6 +479,7 @@ MFRTT37 - Verify whether able to apply Gaussian Blur filter by modifying the fil
     Take Actual Screenshot    MFRTT37.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT37.png    MFRTT37.png
     Reset View
+    Apply Auto Best BNC
 MFRTT38 - Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Documentation]    Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab.
     [Tags]    smoke    tools
@@ -483,6 +491,7 @@ MFRTT38 - Verify whether able to apply Fox Bleach filter by modifying the filter
     Take Actual Screenshot    MFRTT38.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT38.png    MFRTT38.png
     Reset View
+    Apply Auto Best BNC
 MFRTT39 - Verify whether able to close filters tab.
     [Documentation]    Verify whether able to close filters tab.
     [Tags]    smoke    tools
@@ -507,6 +516,7 @@ MFRTT41 - Verify whether able to reset the applied Auto Best BNC by clicking on 
     Reset View
     Take Actual Screenshot    MFRTT41.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT41.png    MFRTT41.png
+    Apply Auto Best BNC
 MFRTT42 - Verify whether able to apply Persatile Brightness and Contrast and view the changes in the image.
     [Documentation]    Verify whether able to apply Persatile Brightness and Contrast and view the changes in the image.
     [Tags]    smoke    tools
@@ -516,6 +526,7 @@ MFRTT42 - Verify whether able to apply Persatile Brightness and Contrast and vie
     Take Actual Screenshot    MFRTT42.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT42.png    MFRTT42.png
     Reset View
+    Apply Auto Best BNC
 MFRTT43 - Verify whether able to save Percentile Brightness and Contrast preset.
     [Documentation]    Verify whether able to save and load Percentile Brightness and Contrast preset.
     [Tags]    smoke    tools
@@ -541,6 +552,7 @@ MFRTT45 - Verify whether able to delete Percentile Brightness and Contrast prese
     Run Keyword And Continue On Failure    Verify Percentile Brightness and Contrast Preset Exists    PBNC1
     Run Keyword And Continue On Failure    Verify Percentile Brightness and Contrast Preset Exists    PBNC2
     Reset View
+    Apply Auto Best BNC
 MFRTT46 - Verify whether able to apply Fox Bleach filter using the tool item.
     [Documentation]    Verify whether able to apply Fox Bleach filter using the tool item.
     [Tags]    smoke    tools

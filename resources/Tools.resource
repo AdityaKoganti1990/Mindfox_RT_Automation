@@ -59,18 +59,6 @@ ${filter_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabI
 ${filter_apply_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Btn_ApplyFilter"]
 ${filter_reset_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Btn_Reset"]
 ${filter_apply_loading_bar_cancel_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_CancelFilter"]
-${filter_auto_best_contrast_checkbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/CheckBox[@AutomationId="ImgFilters_Chk_AutoBestContrast"]
-${filter_sigma_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_Sigma"]
-${filter_kernel_radius_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_KernelRadius"]
-${filter_canny_low_ratio_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_CannyLow"]
-${filter_canny_high_ratio_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_CannyHigh"]
-${filter_morph_radius_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_MorphRadius"]
-${filter_butterworth_cutoff_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ButterworthCutoff"]
-${filter_butterworth_order_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ButterworthOrder"]
-${filter_unsharp_amount_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_UnsharpAmount"]
-${filter_unsharp_sigma_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_UnsharpSigma"]
-${filter_clahe_tile_size_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ClaheTileSize"]
-${filter_clahe_clip_limit_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Slider[@AutomationId="ImgFilters_Sld_ClaheClipLimit"]
 ${percentile_brightness_contrast_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_PercentileBnC"]    
 ${percentile_brightness_contrast_savePreset_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="Pct_Btn_SavePreset"]
 ${percentile_brightness_contrast_savePreset_name_textbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Edit[@AutomationId="Pct_Txb_NewPresetName"]
@@ -976,181 +964,64 @@ Convert Image Filter Parameter To Boolean
     END
     Fail    Invalid input for ${field_name}: ${value}. Use yes/no, true/false, or 1/0.
 
-Get Supported Image Filter Parameters
-    [Arguments]    ${filterName}
-
-    ${filter_key}=    Normalize Image Filter Name    ${filterName}
-    IF    '${filter_key}'=='nofilter' or '${filter_key}'=='vectorgradientmagnitude' or '${filter_key}'=='sobeledge' or '${filter_key}'=='normalization' or '${filter_key}'=='histogramequalization'
-        RETURN    none
-    ELSE IF    '${filter_key}'=='cannyedge'
-        RETURN    Auto Best Contrast, Sigma, Kernel Radius, Canny Low Ratio, Canny High Ratio
-    ELSE IF    '${filter_key}'=='morphologicalgradient'
-        RETURN    Auto Best Contrast, Morph Radius
-    ELSE IF    '${filter_key}'=='butterworthhighpass' or '${filter_key}'=='butterworthlowpass'
-        RETURN    Auto Best Contrast, Butterworth Cutoff, Butterworth Order
-    ELSE IF    '${filter_key}'=='unsharpmask'
-        RETURN    Auto Best Contrast, Unsharp Amount, Unsharp Sigma
-    ELSE IF    '${filter_key}'=='gaussiansmooth'
-        RETURN    Auto Best Contrast, Sigma, Kernel Radius
-    END
-    RETURN    Auto Best Contrast, Fox Bleach Tile Size, Fox Bleach Clip Limit
-
-Get Image Filter Parameter Control
-    [Arguments]    ${filterName}    ${parameterName}
-
-    ${filter_key}=    Normalize Image Filter Name    ${filterName}
-    ${parameter_key}=    Normalize Image Filter Parameter Name    ${parameterName}
-    ${supported_parameters}=    Get Supported Image Filter Parameters    ${filterName}
-    ${filter_display_name}=    Resolve Image Filter Display Name    ${filterName}
-
-    IF    '${parameter_key}'=='autobestcontrast'
-        IF    '${filter_key}'=='cannyedge' or '${filter_key}'=='morphologicalgradient' or '${filter_key}'=='butterworthhighpass' or '${filter_key}'=='butterworthlowpass' or '${filter_key}'=='unsharpmask' or '${filter_key}'=='gaussiansmooth' or '${filter_key}'=='clahe'
-            RETURN    checkbox    ${filter_auto_best_contrast_checkbox_xpath}
-        END
-    ELSE IF    '${filter_key}'=='cannyedge'
-        IF    '${parameter_key}'=='sigma'
-            RETURN    slider    ${filter_sigma_slider_xpath}
-        ELSE IF    '${parameter_key}'=='kernelradius'
-            RETURN    slider    ${filter_kernel_radius_slider_xpath}
-        ELSE IF    '${parameter_key}'=='cannylowratio'
-            RETURN    slider    ${filter_canny_low_ratio_slider_xpath}
-        ELSE IF    '${parameter_key}'=='cannyhighratio'
-            RETURN    slider    ${filter_canny_high_ratio_slider_xpath}
-        END
-    ELSE IF    '${filter_key}'=='morphologicalgradient'
-        IF    '${parameter_key}'=='morphradius'
-            RETURN    slider    ${filter_morph_radius_slider_xpath}
-        END
-    ELSE IF    '${filter_key}'=='butterworthhighpass' or '${filter_key}'=='butterworthlowpass'
-        IF    '${parameter_key}'=='butterworthcutoff'
-            RETURN    slider    ${filter_butterworth_cutoff_slider_xpath}
-        ELSE IF    '${parameter_key}'=='butterworthorder'
-            RETURN    slider    ${filter_butterworth_order_slider_xpath}
-        END
-    ELSE IF    '${filter_key}'=='unsharpmask'
-        IF    '${parameter_key}'=='unsharpamount'
-            RETURN    slider    ${filter_unsharp_amount_slider_xpath}
-        ELSE IF    '${parameter_key}'=='unsharpsigma'
-            RETURN    slider    ${filter_unsharp_sigma_slider_xpath}
-        END
-    ELSE IF    '${filter_key}'=='gaussiansmooth'
-        IF    '${parameter_key}'=='sigma'
-            RETURN    slider    ${filter_sigma_slider_xpath}
-        ELSE IF    '${parameter_key}'=='kernelradius'
-            RETURN    slider    ${filter_kernel_radius_slider_xpath}
-        END
-    ELSE IF    '${filter_key}'=='clahe'
-        IF    '${parameter_key}'=='foxbleachtilesize' or '${parameter_key}'=='clahetilesize' or '${parameter_key}'=='tilesize'
-            RETURN    slider    ${filter_clahe_tile_size_slider_xpath}
-        ELSE IF    '${parameter_key}'=='foxbleachcliplimit' or '${parameter_key}'=='clahecliplimit' or '${parameter_key}'=='cliplimit'
-            RETURN    slider    ${filter_clahe_clip_limit_slider_xpath}
-        END
-    END
-
-    Fail    Unsupported parameter '${parameterName}' for filter '${filter_display_name}'. Supported parameters: ${supported_parameters}.
-
-Set Image Filter Slider Value
-    [Arguments]    ${slider_xpath}    ${target_value}    ${tolerance}=0.01
-    [Documentation]    Set a filter slider to the requested numeric value using its range metadata.
-
-    Focus    ${window_XPATH}
-    Sleep    0.05s
-    ${target_value}=    Evaluate    float($target_value)
-    ${tolerance}=    Evaluate    float($tolerance)
-    ${minimum_value}=    Get Property From Element    ${slider_xpath}    RANGEMINIMUM
-    ${maximum_value}=    Get Property From Element    ${slider_xpath}    RANGEMAXIMUM
-    ${current_value}=    Get Property From Element    ${slider_xpath}    RANGEVALUE
-    ${minimum_value}=    Evaluate    float($minimum_value)
-    ${maximum_value}=    Evaluate    float($maximum_value)
-    ${current_value}=    Evaluate    float($current_value)
-    Should Be True    ${minimum_value} <= ${target_value} <= ${maximum_value}
-    ...    Slider target ${target_value} must be between ${minimum_value} and ${maximum_value}.
-    ${difference}=    Evaluate    abs(${current_value} - ${target_value})
-    IF    ${difference} <= ${tolerance}
-        RETURN    ${current_value}
-    END
-
-    ${slider_rect}=    Get Rectangle Bounding From Element    ${slider_xpath}    BoundingRectangle
-    ${thumb_xpath}=    Set Variable    ${slider_xpath}/Thumb
-    ${thumb_rect}=    Get Rectangle Bounding From Element    ${thumb_xpath}    BoundingRectangle
-    ${slider_x}=    Get From List    ${slider_rect}    0
-    ${slider_y}=    Get From List    ${slider_rect}    1
-    ${slider_width}=    Get From List    ${slider_rect}    2
-    ${slider_height}=    Get From List    ${slider_rect}    3
-    ${thumb_x}=    Get From List    ${thumb_rect}    0
-    ${thumb_y}=    Get From List    ${thumb_rect}    1
-    ${thumb_width}=    Get From List    ${thumb_rect}    2
-    ${thumb_height}=    Get From List    ${thumb_rect}    3
-
-    ${start_x}=    Evaluate    int(${thumb_x} + (${thumb_width} / 2))
-    ${start_y}=    Evaluate    int(${thumb_y} + (${thumb_height} / 2))
-    ${thumb_half}=    Evaluate    ${thumb_width} / 2
-    ${min_x}=    Evaluate    ${slider_x} + ${thumb_half}
-    ${max_x}=    Evaluate    ${slider_x} + ${slider_width} - ${thumb_half}
-    ${range_span}=    Evaluate    ${maximum_value} - ${minimum_value}
-    IF    ${range_span} == 0
-        RETURN    ${current_value}
-    END
-    ${target_ratio}=    Evaluate    (${target_value} - ${minimum_value}) / ${range_span}
-    ${target_x}=    Evaluate    int(${min_x} + ((${max_x} - ${min_x}) * ${target_ratio}))
-    ${target_y}=    Evaluate    int(${slider_y} + (${slider_height} / 2))
-
-    AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${target_x}    ${target_y}
-    Sleep    0.08s
-    ${pixels_per_unit}=    Evaluate    max(1.0, (${max_x} - ${min_x}) / ${range_span})
-
-    FOR    ${attempt}    IN RANGE    10
-        ${current_value}=    Get Property From Element    ${slider_xpath}    RANGEVALUE
-        ${current_value}=    Evaluate    float($current_value)
-        ${difference}=    Evaluate    abs(${current_value} - ${target_value})
-        IF    ${difference} <= ${tolerance}
-            BREAK
-        END
-
-        ${delta_value}=    Evaluate    ${target_value} - ${current_value}
-        ${direction}=    Set Variable If    ${delta_value} > 0    1    -1
-        ${abs_delta}=    Evaluate    abs(${delta_value})
-        ${fine_threshold}=    Evaluate    ${tolerance} * 2
-        ${coarse_step}=    Evaluate    int(max(1, round(${abs_delta} * ${pixels_per_unit} * 0.6)))
-        ${step_pixels}=    Set Variable If    ${abs_delta} <= ${fine_threshold}    1    ${coarse_step}
-        ${step_pixels}=    Evaluate    min(15, max(1, ${step_pixels}))
-        ${thumb_rect}=    Get Rectangle Bounding From Element    ${thumb_xpath}    BoundingRectangle
-        ${thumb_x}=    Get From List    ${thumb_rect}    0
-        ${thumb_y}=    Get From List    ${thumb_rect}    1
-        ${thumb_width}=    Get From List    ${thumb_rect}    2
-        ${thumb_height}=    Get From List    ${thumb_rect}    3
-        ${start_x}=    Evaluate    int(${thumb_x} + (${thumb_width} / 2))
-        ${start_y}=    Evaluate    int(${thumb_y} + (${thumb_height} / 2))
-        ${nudge_target_x}=    Evaluate    int(min(${max_x}, max(${min_x}, ${start_x} + (${direction} * ${step_pixels}))))
-        IF    ${nudge_target_x} == ${start_x}
-            BREAK
-        END
-
-        AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${nudge_target_x}    ${target_y}
-        Sleep    0.03s
-    END
-
-    ${current_value}=    Get Property From Element    ${slider_xpath}    RANGEVALUE
-    ${current_value}=    Evaluate    float($current_value)
-    ${difference}=    Evaluate    abs(${current_value} - ${target_value})
-    Should Be True    ${difference} <= ${tolerance}
-    ...    Could not set slider ${slider_xpath} to ${target_value}. Current value is ${current_value}.
-    RETURN    ${current_value}
-
 Set Image Filter Parameter
     [Arguments]    ${filterName}    ${parameterName}    ${parameterValue}
 
-    ${control_type}    ${control_xpath}=    Get Image Filter Parameter Control    ${filterName}    ${parameterName}
-    Wait Until Element Exist    ${control_xpath}    2
-    IF    '${control_type}'=='checkbox'
-        ${bool_value}=    Convert Image Filter Parameter To Boolean    ${parameterValue}    ${parameterName}
-        Set Checkbox State    ${control_xpath}    ${bool_value}
-        ${applied_value}=    Set Variable    ${bool_value}
-    ELSE IF    '${control_type}'=='slider'
-        ${applied_value}=    Set Image Filter Slider Value    ${control_xpath}    ${parameterValue}
+    ${parameter_key}=    Normalize Image Filter Parameter Name    ${parameterName}
+    Set Image Filter Parameter By AutomationId    ${parameter_key}    ${parameterValue}
+    Log    Set filter '${filterName}' parameter '${parameterName}' to ${parameterValue}.
+    RETURN    ${TRUE}
+
+Set Image Filter Parameter By AutomationId
+    [Arguments]    ${parameter_key}    ${parameter_value}
+    [Documentation]    Set filter parameter by searching for control by AutomationId using flexible XPath.
+    
+    Focus    ${window_XPATH}
+    Sleep    0.1s
+    
+    # Map parameter keys to their AutomationId patterns
+    IF    '${parameter_key}'=='autobestcontrast'
+        ${xpath}=    Set Variable    //*[@AutomationId="ImgFilters_Chk_AutoBestContrast"]
+        Wait Until Element Exist    ${xpath}    2
+        ${bool_value}=    Convert Image Filter Parameter To Boolean    ${parameter_value}    ${parameter_key}
+        Set Checkbox State    ${xpath}    ${bool_value}
+    ELSE IF    '${parameter_key}'=='sigma'
+        Set Image Filter Numeric Parameter By Flexible XPath    Sigma    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='kernelradius'
+        Set Image Filter Numeric Parameter By Flexible XPath    KernelRadius    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='cannylowratio'
+        Set Image Filter Numeric Parameter By Flexible XPath    CannyLow    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='cannyhighratio'
+        Set Image Filter Numeric Parameter By Flexible XPath    CannyHigh    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='morphradius'
+        Set Image Filter Numeric Parameter By Flexible XPath    MorphRadius    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='butterworthcutoff'
+        Set Image Filter Numeric Parameter By Flexible XPath    ButterworthCutoff    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='butterworthorder'
+        Set Image Filter Numeric Parameter By Flexible XPath    ButterworthOrder    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='unsharpamount'
+        Set Image Filter Numeric Parameter By Flexible XPath    UnsharpAmount    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='unsharpsigma'
+        Set Image Filter Numeric Parameter By Flexible XPath    UnsharpSigma    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='foxbleachtilesize' or '${parameter_key}'=='clahetilesize' or '${parameter_key}'=='tilesize'
+        Set Image Filter Numeric Parameter By Flexible XPath    ClaheTileSize    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='foxbleachcliplimit' or '${parameter_key}'=='clahecliplimit' or '${parameter_key}'=='cliplimit'
+        Set Image Filter Numeric Parameter By Flexible XPath    ClaheClipLimit    ${parameter_value}
     ELSE
-        Fail    Unsupported control type '${control_type}' for image filter parameter '${parameterName}'.
+        Fail    Unknown parameter: ${parameter_key}
     END
-    Sleep    0.05s
-    Log    Set filter '${filterName}' parameter '${parameterName}' to ${applied_value}.
-    RETURN    ${applied_value}
+
+Set Image Filter Numeric Parameter By Flexible XPath
+    [Arguments]    ${param_name}    ${param_value}
+    [Documentation]    Set a numeric image-filter parameter (NUD) by its AutomationId.
+
+    ${param_value}=    Evaluate    float($param_value)
+    ${nud_xpath}=    Set Variable    //Edit[@AutomationId="ImgFilters_${param_name}_Num"]
+    Wait Until Element Exist    ${nud_xpath}    2
+
+    @{tab_keys}=    Create List    s'TAB'
+    Click    ${nud_xpath}
+    Sleep    0.1s
+    Set Text To Textbox    ${nud_xpath}    ${param_value}
+    Sleep    0.1s
+    Press Keys    ${tab_keys}    ${nud_xpath}
