@@ -38,7 +38,28 @@ ${Color_Table_Bone_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="Image
 ${Color_Table_Copper_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Copper"]
 ${Color_Table_Spectrum_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Spectrum"]
 ${Color_Table_HotMetalBlue_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_HotMetalBlue"]
-
+${LEFT_IMAGE_VIEWER_XPATH}     /Window/Custom[@AutomationId='PrimaryViewer']/Pane[@AutomationId='ImageScrollViewer']
+${RIGHT_IMAGE_VIEWER_XPATH}    /Window/Custom[@AutomationId='SecondaryViewer']/Pane[@AutomationId='ImageScrollViewer']
+${Dual_View_Toggle_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Tgl_DualView"]
+${Dual_View_SyncWL_Toggle_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Tgl_SyncWL"]
+${Dual_View_SyncZoom_Toggle_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Tgl_SyncZoom"]
+${Dual_View_SyncPan_Toggle_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Tgl_SyncPan"]
+${LEFT_IMAGE_VIEWER_WithScales_XPATH}     /Window[@AutomationId='FoxRTProMainWindow']/Custom[@AutomationId='PrimaryViewer']
+${RIGHT_IMAGE_VIEWER_WithScales_XPATH}    /Window[@AutomationId='FoxRTProMainWindow']/Custom[@AutomationId='SecondaryViewer']
+${Export_Image_Button_XPATH}              ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Btn_ExportImage"]
+${Export_Image_Window_XPATH}              ${MAIN_WINDOW_XPATH}/Window[@Name="Export Image"]
+${Export_Image_FileName_Textbox_XPATH}    ${Export_Image_Window_XPATH}//Edit[@AutomationId="ExportImg_Txt_FileName"]
+${Export_Image_Browse_Button_XPATH}       ${Export_Image_Window_XPATH}//Button[@AutomationId="ExportImg_Btn_Browse"]
+${Export_Image_Format_Combobox_XPATH}     ${Export_Image_Window_XPATH}//ComboBox[@AutomationId="ExportImg_Cmb_Format"]
+${Export_Image_DicomTags_Checkbox_XPATH}    ${Export_Image_Window_XPATH}//CheckBox[@AutomationId="ExportImg_Chk_DicomTags"]
+${Export_Image_TagsInside_Radio_XPATH}    ${Export_Image_Window_XPATH}//RadioButton[@AutomationId="ExportImg_Rdo_TagsInside"]
+${Export_Image_TagsOutside_Radio_XPATH}   ${Export_Image_Window_XPATH}//RadioButton[@AutomationId="ExportImg_Rdo_TagsOutside"]
+${Export_Image_SaveDialog_FileName_XPATH}    ${Export_Image_Window_XPATH}/Window/Pane[1]/ComboBox[1]/Edit
+${Export_Image_SaveDialog_Save_Button_XPATH}    ${Export_Image_Window_XPATH}/Window/Button[1]
+${Export_Image_Export_Button_XPATH}            ${Export_Image_Window_XPATH}//Button[@AutomationId="ExportImg_Btn_Export"]
+${Export_Image_Confirmation_Ok_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Button[@Name="OK"]
+${Export_Image_Overwrite_Yes_Button_XPATH}     ${Export_Image_Window_XPATH}/Window/Window/Button[@Name="Yes"]
+${Export_Image_PostExport_Yes_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Button[@Name="Yes"]
 *** Keywords ***
 
 Click Next/Previous Image Button
@@ -282,3 +303,187 @@ Resolve Color Table Menu Item XPath
     END
 
     Fail    Unsupported color table '${color_name}'. Supported color tables: Grayscale, Hot Iron, Rainbow, Cool-Warm, Bone, Copper, Spectrum, Hot Metal Blue.
+
+Take DualView Screenshot
+    [Arguments]    ${view}    ${filename}
+    [Documentation]    Capture a screenshot of either the Left (Primary) or Right (Secondary) image viewer in dual view mode.
+    ...    ${view} accepts: Left | Primary | Right | Secondary.
+
+    ${view_norm}=    Evaluate    str($view).strip().lower()
+    IF    '${view_norm}' in ('left', 'primary')
+        ${xpath}=    Set Variable    ${LEFT_IMAGE_VIEWER_XPATH}
+    ELSE IF    '${view_norm}' in ('right', 'secondary')
+        ${xpath}=    Set Variable    ${RIGHT_IMAGE_VIEWER_XPATH}
+    ELSE
+        Fail    Invalid view '${view}'. Use 'Left'/'Primary' or 'Right'/'Secondary'.
+    END
+
+    Sleep    0.2s    # Ensure any UI updates are rendered before taking screenshot
+    ${screenshot_path}=    Take Screenshot    ${xpath}
+    Log    Screenshot saved to (temporary): ${screenshot_path}
+
+    ${dest}=    Set Variable    ${actual_image}${filename}
+    Create Directory    ${actual_image}
+    Move File    ${screenshot_path}    ${dest}
+
+    Log    Screenshot moved to: ${dest}
+    RETURN    ${dest}
+
+Take DualView Screenshot with Scales
+    [Arguments]    ${view}    ${filename}
+    [Documentation]    Capture a screenshot of either the Left (Primary) or Right (Secondary) image viewer in dual view mode.
+    ...    ${view} accepts: Left | Primary | Right | Secondary.
+
+    ${view_norm}=    Evaluate    str($view).strip().lower()
+    IF    '${view_norm}' in ('left', 'primary')
+        ${xpath}=    Set Variable    ${LEFT_IMAGE_VIEWER_WithScales_XPATH}
+    ELSE IF    '${view_norm}' in ('right', 'secondary')
+        ${xpath}=    Set Variable    ${RIGHT_IMAGE_VIEWER_WithScales_XPATH}
+    ELSE
+        Fail    Invalid view '${view}'. Use 'Left'/'Primary' or 'Right'/'Secondary'.
+    END
+
+    Sleep    0.2s    # Ensure any UI updates are rendered before taking screenshot
+    ${screenshot_path}=    Take Screenshot    ${xpath}
+    Log    Screenshot saved to (temporary): ${screenshot_path}
+
+    ${dest}=    Set Variable    ${actual_image}${filename}
+    Create Directory    ${actual_image}
+    Move File    ${screenshot_path}    ${dest}
+
+    Log    Screenshot moved to: ${dest}
+    RETURN    ${dest}
+
+Select ImageViewer
+    [Arguments]    ${view}
+    [Documentation]    Click on either the Left (Primary) or Right (Secondary) image viewer in dual view mode to make it the active viewer.
+    ...    ${view} accepts: Left | Primary | Right | Secondary.
+
+    ${view_norm}=    Evaluate    str($view).strip().lower()
+    IF    '${view_norm}' in ('left', 'primary')
+        ${xpath}=    Set Variable    ${LEFT_IMAGE_VIEWER_XPATH}
+    ELSE IF    '${view_norm}' in ('right', 'secondary')
+        ${xpath}=    Set Variable    ${RIGHT_IMAGE_VIEWER_XPATH}
+    ELSE
+        Fail    Invalid view '${view}'. Use 'Left'/'Primary' or 'Right'/'Secondary'.
+    END
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    Click    ${xpath}
+    Sleep    0.1s
+
+Open/Close Dual View Mode
+    [Arguments]    ${enable}
+    [Documentation]    Toggle the Dual View mode on or off.
+    ...    ${enable} accepts truthy values (True/1/yes/on) to turn dual view ON, falsy values (False/0/no/off) to turn it OFF.
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    ${enable_norm}=    Evaluate    str($enable).strip().lower()
+    ${target_state}=    Set Variable If    '${enable_norm}' in ('true', '1', 'yes', 'on')    ON    OFF
+    ${current_state}=    Get Toggle State    ${Dual_View_Toggle_Button_XPATH}
+    Run Keyword If    '${current_state}' != '${target_state}'    Click    ${Dual_View_Toggle_Button_XPATH}
+    Sleep    0.1s
+
+Toggle WL Sync Option in Dual View Mode
+    [Arguments]    ${enable}
+    [Documentation]    Toggle the Window/Level (WL) synchronization option in Dual View mode on or off.
+    ...    ${enable} accepts truthy values (True/1/yes/on) to turn Sync WL ON, falsy values (False/0/no/off) to turn it OFF.
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    ${enable_norm}=    Evaluate    str($enable).strip().lower()
+    ${target_state}=    Set Variable If    '${enable_norm}' in ('true', '1', 'yes', 'on')    ON    OFF
+    ${current_state}=    Get Toggle State    ${Dual_View_SyncWL_Toggle_Button_XPATH}
+    Run Keyword If    '${current_state}' != '${target_state}'    Click    ${Dual_View_SyncWL_Toggle_Button_XPATH}
+    Sleep    0.1s
+
+Toggle Zoom Sync Option in Dual View Mode
+    [Arguments]    ${enable}
+    [Documentation]    Toggle the Zoom synchronization option in Dual View mode on or off.
+    ...    ${enable} accepts truthy values (True/1/yes/on) to turn Sync Zoom ON, falsy values (False/0/no/off) to turn it OFF.
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    ${enable_norm}=    Evaluate    str($enable).strip().lower()
+    ${target_state}=    Set Variable If    '${enable_norm}' in ('true', '1', 'yes', 'on')    ON    OFF
+    ${current_state}=    Get Toggle State    ${Dual_View_SyncZoom_Toggle_Button_XPATH}
+    Run Keyword If    '${current_state}' != '${target_state}'    Click    ${Dual_View_SyncZoom_Toggle_Button_XPATH}
+    Sleep    0.1s
+
+Toggle Pan Sync Option in Dual View Mode
+    [Arguments]    ${enable}
+    [Documentation]    Toggle the Pan synchronization option in Dual View mode on or off.
+    ...    ${enable} accepts truthy values (True/1/yes/on) to turn Sync Pan ON, falsy values (False/0/no/off) to turn it OFF.
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    ${enable_norm}=    Evaluate    str($enable).strip().lower()
+    ${target_state}=    Set Variable If    '${enable_norm}' in ('true', '1', 'yes', 'on')    ON    OFF
+    ${current_state}=    Get Toggle State    ${Dual_View_SyncPan_Toggle_Button_XPATH}
+    Run Keyword If    '${current_state}' != '${target_state}'    Click    ${Dual_View_SyncPan_Toggle_Button_XPATH}
+    Sleep    0.1s
+
+Export Image
+    [Arguments]    ${file_name}    ${folder_path}    ${save_as_type}=PNG
+    ...    ${include_dicom_tags}=True    ${tags_position}=Outside
+    [Documentation]    Open the Export Image dialog and export the currently active image.
+    ...    ${file_name}: Name of the exported file (typed into the Export Image dialog's File Name field).
+    ...    ${folder_path}: Full output path WITHOUT extension (e.g. C:\\Out\\Test1). The Save As dialog uses this as the file path and the Save as Type drives the extension. Parent directory is created if missing.
+    ...    ${save_as_type}: File format selected from the Save as Type combobox (e.g. PNG, JPEG, BMP, TIFF).
+    ...    ${include_dicom_tags}: Truthy/falsy — toggles the "Include DICOM tags" checkbox.
+    ...    ${tags_position}: 'Inside' or 'Outside' the image. Only honoured when ${include_dicom_tags} is truthy.
+
+    Click    ${Export_Image_Button_XPATH}
+    Wait Until Element Exist    ${Export_Image_Window_XPATH}    5
+    Sleep    0.5s
+
+    Set Text To Textbox    ${Export_Image_FileName_Textbox_XPATH}    ${file_name}
+    Sleep    0.2s
+    Select Combobox Item By Name    ${Export_Image_Format_Combobox_XPATH}    ${save_as_type}
+    Sleep    0.2s
+
+    ${target_dicom_state}=    Evaluate    'ON' if str($include_dicom_tags).strip().lower() in ('true', '1', 'yes', 'on') else 'OFF'
+    ${current_dicom_state}=    Get Toggle State    ${Export_Image_DicomTags_Checkbox_XPATH}
+    Run Keyword If    '${current_dicom_state}' != '${target_dicom_state}'    Click    ${Export_Image_DicomTags_Checkbox_XPATH}
+    Sleep    0.2s
+
+    IF    '${target_dicom_state}' == 'ON'
+        ${tags_position_norm}=    Evaluate    str($tags_position).strip().lower()
+        IF    '${tags_position_norm}' == 'inside'
+            Click    ${Export_Image_TagsInside_Radio_XPATH}
+        ELSE IF    '${tags_position_norm}' == 'outside'
+            Click    ${Export_Image_TagsOutside_Radio_XPATH}
+        ELSE
+            Fail    Invalid tags_position '${tags_position}'. Use 'Inside' or 'Outside'.
+        END
+        Sleep    0.2s
+    END
+
+    ${parent_folder}=    Evaluate    __import__('os').path.dirname(str($folder_path))
+    Create Directory    ${parent_folder}
+
+    Click    ${Export_Image_Browse_Button_XPATH}
+    Wait Until Element Exist    ${Export_Image_SaveDialog_FileName_XPATH}    5
+    Sleep    0.5s
+    Set Text To Textbox    ${Export_Image_SaveDialog_FileName_XPATH}    ${folder_path}
+    Sleep    0.3s
+    Click    ${Export_Image_SaveDialog_Save_Button_XPATH}
+    Sleep    1s
+    ${overwrite_warning_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${Export_Image_Overwrite_Yes_Button_XPATH}    5
+    Run Keyword If    ${overwrite_warning_present}    Click    ${Export_Image_Overwrite_Yes_Button_XPATH}
+    Sleep    1s
+
+    Click    ${Export_Image_Export_Button_XPATH}
+    Sleep    1s
+    ${post_export_yes_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${Export_Image_PostExport_Yes_Button_XPATH}    5
+    Run Keyword If    ${post_export_yes_present}    Click    ${Export_Image_PostExport_Yes_Button_XPATH}
+    Sleep    1s
+    Wait Until Element Exist    ${Export_Image_Confirmation_Ok_Button_XPATH}    60
+    Sleep    0.3s
+    Click    ${Export_Image_Confirmation_Ok_Button_XPATH}
+    Sleep    0.3s
+    RETURN    ${folder_path}

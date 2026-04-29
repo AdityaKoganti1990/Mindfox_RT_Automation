@@ -177,20 +177,20 @@ Is Visible Mode Indicator
     RETURN    not ${is_offscreen}
 
 VerifyControlState
-    [Arguments]    ${control_name}=${EMPTY}    ${expected_state}=${EMPTY}    ${timeout}=5
+    [Arguments]    ${control_name}=${EMPTY}    ${expected_state}=${EMPTY}    ${timeout}=2
     Should Not Be Empty    ${control_name}    Control name cannot be empty.
     ${control_xpath}=    Resolve Online Control XPath    ${control_name}
     ${normalized_expected_state}=    Set Variable    ${EMPTY}
     IF    '${expected_state}' != '${EMPTY}'
         ${normalized_expected_state}=    Normalize Control State    ${expected_state}
     END
-    ${effective_timeout}=    Set Variable If    '${normalized_expected_state}' == 'not exists'    2    ${timeout}
+    ${effective_timeout}=    Set Variable If    '${normalized_expected_state}' == 'not exists'    0.5    ${timeout}
     ${exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${control_xpath}    ${effective_timeout}
     IF    not ${exists}
         ${actual_state}=    Set Variable    not exists
         Log    Control '${control_name}' does not exist.
     ELSE
-        ${is_enabled}=    Run Keyword And Return Status    Wait Until Element Is Enabled    ${control_xpath}    1
+        ${is_enabled}=    Run Keyword And Return Status    Wait Until Element Is Enabled    ${control_xpath}    0.5
         ${actual_state}=    Set Variable If    ${is_enabled}    enabled    disabled
         Log    Control '${control_name}' is currently ${actual_state}.
     END

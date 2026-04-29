@@ -29,6 +29,8 @@ ${test_data}           ${CURDIR}\\..\\test_Images\\
 ${expected_image}      ${CURDIR}\\..\\Expected\\
 ${actual_image}        ${CURDIR}\\..\\Actual\\
 ${COMPARISON_IMAGE}    ${CURDIR}\\..\\Comparison\\
+${Actual_Image_Exports}       ${CURDIR}\\..\\Exports\\Image Exports\\Actual\\
+${Expected_Image_Exports}    ${CURDIR}\\..\\Exports\\Image Exports\\Expected\\
 *** Keywords ***
 
 #─────────────────── Image Viewer Filters ───────────────────
@@ -196,7 +198,7 @@ Close Image Viewer
 #─────────────────── Viewer Operations ───────────────────
 
 Reset View
-    Click    ${window_XPATH}
+    Focus    ${window_XPATH}
     Sleep    0.2s
     Click    ${RESET_VIEW_BUTTON_XPATH}
     Sleep    0.2s

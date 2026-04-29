@@ -1,4 +1,5 @@
 *** Settings ***
+Documentation     Online Mode test suite. Total Test Cases: 13 (MFRTO01 - MFRTO13).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary

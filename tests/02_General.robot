@@ -1,4 +1,5 @@
 *** Settings ***
+Documentation     General application test suite. Total Test Cases: 29 (MFRTG01 - MFRTG30; MFRTG18 intentionally skipped).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary

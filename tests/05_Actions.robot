@@ -1,4 +1,5 @@
 *** Settings ***
+Documentation     Actions test suite. Total Test Cases: 20 (MFRTA01 - MFRTA20).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary

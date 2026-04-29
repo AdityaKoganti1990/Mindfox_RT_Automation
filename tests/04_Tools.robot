@@ -1,4 +1,5 @@
 *** Settings ***
+Documentation     Tools test suite. Total Test Cases: 48 (MFRTT01, MFRTT01-2, MFRTT02 - MFRTT47).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary

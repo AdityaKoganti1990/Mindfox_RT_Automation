@@ -1,4 +1,5 @@
 *** Settings ***
+Documentation     Annotations test suite. Total Test Cases: 31 (MFRTANN01 - MFRTANN31).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary

@@ -1,4 +1,5 @@
 *** Settings ***
+Documentation     Login test suite. Total Test Cases: 5 (MFRTL01 - MFRTL05).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
