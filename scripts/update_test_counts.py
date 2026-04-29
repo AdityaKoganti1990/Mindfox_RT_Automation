@@ -34,9 +34,15 @@ MODULE_LABELS: list[tuple[str, str]] = [
 ]
 
 
-def count_test_cases(robot_file: Path) -> int:
+_TEST_ID_TOKEN = r"[A-Z]+\d+(?:-\d+)?"
+_RANGE_PATTERN = re.compile(rf"\b({_TEST_ID_TOKEN})(\s*-\s*)({_TEST_ID_TOKEN})\b")
+
+
+def scan_test_cases(robot_file: Path) -> tuple[int, str | None]:
+    """Return (count, last_test_id) for the file."""
     in_test_section = False
     count = 0
+    last_id: str | None = None
     for raw_line in robot_file.read_text(encoding="utf-8").splitlines():
         stripped = raw_line.strip()
         if stripped.startswith("***"):
@@ -50,19 +56,38 @@ def count_test_cases(robot_file: Path) -> int:
         # Test case names sit at column 0; steps are indented.
         if raw_line and raw_line[0] not in (" ", "\t"):
             count += 1
-    return count
+            # First whitespace-delimited token of the test name line is the ID.
+            last_id = stripped.split(maxsplit=1)[0]
+    return count, last_id
 
 
-def update_module_doc(robot_file: Path, count: int) -> bool:
-    """Rewrite 'Total Test Cases: N' inside the Documentation line. Returns True if changed."""
+def update_module_doc(robot_file: Path, count: int, last_id: str | None) -> bool:
+    """Rewrite 'Total Test Cases: N' and the upper bound of the last ID range. Returns True if changed."""
     text = robot_file.read_text(encoding="utf-8")
-    new_text, n = re.subn(
-        r"(Total Test Cases:\s*)\d+",
-        lambda m: f"{m.group(1)}{count}",
-        text,
-        count=1,
-    )
-    if n == 0:
+    found_marker = False
+
+    def update_line(line: str) -> str:
+        nonlocal found_marker
+        if "Total Test Cases:" not in line:
+            return line
+        found_marker = True
+        new_line = re.sub(
+            r"(Total Test Cases:\s*)\d+",
+            lambda m: f"{m.group(1)}{count}",
+            line,
+            count=1,
+        )
+        if last_id:
+            matches = list(_RANGE_PATTERN.finditer(new_line))
+            if matches:
+                last = matches[-1]
+                # Replace only the right-hand ID of the last range; left side stays.
+                new_line = new_line[: last.start(3)] + last_id + new_line[last.end(3):]
+        return new_line
+
+    new_text = "".join(update_line(line) for line in text.splitlines(keepends=True))
+
+    if not found_marker:
         print(f"[skip] {robot_file.name}: no 'Total Test Cases: N' marker found", file=sys.stderr)
         return False
     if new_text == text:
@@ -107,21 +132,24 @@ def main() -> int:
     args = parser.parse_args()
 
     counts: dict[str, int] = {}
+    last_ids: dict[str, str | None] = {}
     for robot_file in sorted(TESTS_DIR.glob("*.robot")):
         if robot_file.name == "__init__.robot":
             continue
-        counts[robot_file.name] = count_test_cases(robot_file)
+        count, last_id = scan_test_cases(robot_file)
+        counts[robot_file.name] = count
+        last_ids[robot_file.name] = last_id
 
     if args.check:
         original_states: dict[Path, str] = {}
-        for fname, count in counts.items():
+        for fname in counts:
             path = TESTS_DIR / fname
             original_states[path] = path.read_text(encoding="utf-8")
         original_states[INIT_FILE] = INIT_FILE.read_text(encoding="utf-8")
 
         any_change = False
         for fname, count in counts.items():
-            if update_module_doc(TESTS_DIR / fname, count):
+            if update_module_doc(TESTS_DIR / fname, count, last_ids[fname]):
                 any_change = True
         if update_init(counts):
             any_change = True
@@ -138,7 +166,7 @@ def main() -> int:
 
     changed_files: list[str] = []
     for fname, count in counts.items():
-        if update_module_doc(TESTS_DIR / fname, count):
+        if update_module_doc(TESTS_DIR / fname, count, last_ids[fname]):
             changed_files.append(fname)
     if update_init(counts):
         changed_files.append(INIT_FILE.name)
