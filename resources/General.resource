@@ -188,17 +188,20 @@ Logout From FoxViewerDesktop
 
 Close Project
     [Arguments]    ${warning_action}=No
+    [Documentation]    Close the active project. If unsaved changes trigger the Yes/No/Cancel warning dialog,
+    ...    ${warning_action} decides which button to click. Defaults to No (discard changes and close).
     Should Match Regexp    ${warning_action}    ^(Yes|No|Cancel)$
     ...    Unsupported close-project action: ${warning_action}. Use Yes, No or Cancel.
     Click    ${Button_Clear_XPATH}
     ${warning_visible}=    Run Keyword And Return Status
-    ...    Wait Until Element Exist    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    0.5
+    ...    Wait Until Element Exist    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    2
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'Yes'
     ...    Click    ${PROJECT_CLOSE_WARNING_YES_BUTTON_XPATH}
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'No'
     ...    Click    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'Cancel'
     ...    Click    ${PROJECT_CLOSE_WARNING_CANCEL_BUTTON_XPATH}
+    Run Keyword If    ${warning_visible}    Sleep    0.4s
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'Cancel'
     ...    Wait Until Keyword Succeeds    25x    0.2s    Element Should Be Enabled    ${Button_Clear_XPATH}
     Run Keyword If    not (${warning_visible} and '${warning_action}' == 'Cancel')

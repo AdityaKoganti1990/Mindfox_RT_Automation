@@ -7,5 +7,14 @@
     ],
     "robot.python.executable": "C:/Users/kogan/AppData/Local/Programs/Python/Python311/python.exe",
     "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.pythonProjects": []
+    "python-envs.pythonProjects": [],
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "match": "tests[\\\\/].*\\.robot$",
+                "isAsync": true,
+                "cmd": "\"C:/Users/kogan/AppData/Local/Programs/Python/Python311/python.exe\" \"${workspaceFolder}/scripts/update_test_counts.py\""
+            }
+        ]
+    }
 }

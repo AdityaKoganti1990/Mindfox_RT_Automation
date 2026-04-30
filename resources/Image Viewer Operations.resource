@@ -52,14 +52,27 @@ ${Export_Image_FileName_Textbox_XPATH}    ${Export_Image_Window_XPATH}//Edit[@Au
 ${Export_Image_Browse_Button_XPATH}       ${Export_Image_Window_XPATH}//Button[@AutomationId="ExportImg_Btn_Browse"]
 ${Export_Image_Format_Combobox_XPATH}     ${Export_Image_Window_XPATH}//ComboBox[@AutomationId="ExportImg_Cmb_Format"]
 ${Export_Image_DicomTags_Checkbox_XPATH}    ${Export_Image_Window_XPATH}//CheckBox[@AutomationId="ExportImg_Chk_DicomTags"]
+${Export_Image_Annotations_Checkbox_XPATH}    ${Export_Image_Window_XPATH}//CheckBox[@AutomationId="ExportImg_Chk_Annotations"]
+${Export_Image_Measurements_Checkbox_XPATH}    ${Export_Image_Window_XPATH}//CheckBox[@AutomationId="ExportImg_Chk_Measurements"]
+${Export_Image_IqiWire_Checkbox_XPATH}    ${Export_Image_Window_XPATH}//CheckBox[@AutomationId="ExportImg_Chk_IqiWire"]
 ${Export_Image_TagsInside_Radio_XPATH}    ${Export_Image_Window_XPATH}//RadioButton[@AutomationId="ExportImg_Rdo_TagsInside"]
 ${Export_Image_TagsOutside_Radio_XPATH}   ${Export_Image_Window_XPATH}//RadioButton[@AutomationId="ExportImg_Rdo_TagsOutside"]
-${Export_Image_SaveDialog_FileName_XPATH}    ${Export_Image_Window_XPATH}/Window/Pane[1]/ComboBox[1]/Edit
+${Export_Image_SaveDialog_FileName_XPATH}    ${Export_Image_Window_XPATH}/Window[@Name="Select export location"]/Pane[1]/ComboBox[1]/Edit
 ${Export_Image_SaveDialog_Save_Button_XPATH}    ${Export_Image_Window_XPATH}/Window/Button[1]
 ${Export_Image_Export_Button_XPATH}            ${Export_Image_Window_XPATH}//Button[@AutomationId="ExportImg_Btn_Export"]
 ${Export_Image_Confirmation_Ok_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Button[@Name="OK"]
 ${Export_Image_Overwrite_Yes_Button_XPATH}     ${Export_Image_Window_XPATH}/Window/Window/Button[@Name="Yes"]
 ${Export_Image_PostExport_Yes_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Button[@Name="Yes"]
+
+# ─────────────────── Paths ───────────────────
+
+${test_data}           ${CURDIR}\\..\\test_Images\\
+${expected_image}      ${CURDIR}\\..\\Expected\\
+${actual_image}        ${CURDIR}\\..\\Actual\\
+${COMPARISON_IMAGE}    ${CURDIR}\\..\\Comparison\\
+${Actual_Image_Exports}       ${CURDIR}\\..\\Exports\\Image Exports\\Actual\\
+${Expected_Image_Exports}    ${CURDIR}\\..\\Exports\\Image Exports\\Expected\\
+
 *** Keywords ***
 
 Click Next/Previous Image Button
@@ -428,62 +441,103 @@ Toggle Pan Sync Option in Dual View Mode
 Export Image
     [Arguments]    ${file_name}    ${folder_path}    ${save_as_type}=PNG
     ...    ${include_dicom_tags}=True    ${tags_position}=Outside
+    ...    ${include_annotations}=True    ${include_measurements}=True
+    ...    ${include_iqi_wire}=True
     [Documentation]    Open the Export Image dialog and export the currently active image.
     ...    ${file_name}: Name of the exported file (typed into the Export Image dialog's File Name field).
     ...    ${folder_path}: Full output path WITHOUT extension (e.g. C:\\Out\\Test1). The Save As dialog uses this as the file path and the Save as Type drives the extension. Parent directory is created if missing.
-    ...    ${save_as_type}: File format selected from the Save as Type combobox (e.g. PNG, JPEG, BMP, TIFF).
-    ...    ${include_dicom_tags}: Truthy/falsy — toggles the "Include DICOM tags" checkbox.
-    ...    ${tags_position}: 'Inside' or 'Outside' the image. Only honoured when ${include_dicom_tags} is truthy.
+    ...    ${save_as_type}: File format short name. Accepted aliases (case/dot insensitive): PNG, JPEG/JPG, BMP, TIFF/TIF, DCM/DICOM/DICONDE. Each is resolved to the actual dropdown label ("PNG Image (*.png)", "JPEG Image (*.jpg)", "BMP Image (*.bmp)", "TIFF Image (*.tiff)", "DICONDE Image (*.dcm)"). The full label may also be passed directly.
+    ...    ${include_dicom_tags}: Truthy/falsy — toggles the "Include DICOM tags" checkbox. Ignored when exporting as DICONDE/DCM (the checkbox is hidden in that mode).
+    ...    ${tags_position}: 'Inside' or 'Outside' the image. Only honoured when ${include_dicom_tags} is truthy and the format is not DICONDE/DCM.
+    ...    ${include_annotations}: Truthy/falsy — toggles the "Annotations" checkbox. Only present when annotations exist on the image; silently skipped otherwise. Defaults to True.
+    ...    ${include_measurements}: Truthy/falsy — toggles the "Measurements" checkbox. Only present when annotations exist on the image; silently skipped otherwise. Defaults to True.
+    ...    ${include_iqi_wire}: Truthy/falsy — toggles the "IQI Wire" checkbox. Only present when an IQI Wire phantom is detected on the image; silently skipped otherwise. Defaults to True.
 
     Click    ${Export_Image_Button_XPATH}
     Wait Until Element Exist    ${Export_Image_Window_XPATH}    5
-    Sleep    0.5s
+    Sleep    0.7s
 
     Set Text To Textbox    ${Export_Image_FileName_Textbox_XPATH}    ${file_name}
-    Sleep    0.2s
+    Sleep    0.3s
+    ${type_key}=    Evaluate    str($save_as_type).strip().lstrip('.').upper()
+    ${is_diconde_format}=    Set Variable If    '${type_key}' in ('DCM', 'DICOM', 'DICONDE')    ${True}    ${False}
+    ${format_label_map}=    Evaluate    {'PNG': 'PNG Image (*.png)', 'JPEG': 'JPEG Image (*.jpg)', 'JPG': 'JPEG Image (*.jpg)', 'BMP': 'BMP Image (*.bmp)', 'TIFF': 'TIFF Image (*.tiff)', 'TIF': 'TIFF Image (*.tiff)', 'DCM': 'DICONDE Image (*.dcm)', 'DICOM': 'DICONDE Image (*.dcm)', 'DICONDE': 'DICONDE Image (*.dcm)'}
+    ${save_as_type}=    Evaluate    $format_label_map.get($type_key, $save_as_type)
     Select Combobox Item By Name    ${Export_Image_Format_Combobox_XPATH}    ${save_as_type}
-    Sleep    0.2s
+    Sleep    0.6s
 
-    ${target_dicom_state}=    Evaluate    'ON' if str($include_dicom_tags).strip().lower() in ('true', '1', 'yes', 'on') else 'OFF'
-    ${current_dicom_state}=    Get Toggle State    ${Export_Image_DicomTags_Checkbox_XPATH}
-    Run Keyword If    '${current_dicom_state}' != '${target_dicom_state}'    Click    ${Export_Image_DicomTags_Checkbox_XPATH}
-    Sleep    0.2s
-
-    IF    '${target_dicom_state}' == 'ON'
-        ${tags_position_norm}=    Evaluate    str($tags_position).strip().lower()
-        IF    '${tags_position_norm}' == 'inside'
-            Click    ${Export_Image_TagsInside_Radio_XPATH}
-        ELSE IF    '${tags_position_norm}' == 'outside'
-            Click    ${Export_Image_TagsOutside_Radio_XPATH}
-        ELSE
-            Fail    Invalid tags_position '${tags_position}'. Use 'Inside' or 'Outside'.
-        END
+    IF    not ${is_diconde_format}
+        ${target_dicom_state}=    Evaluate    'ON' if str($include_dicom_tags).strip().lower() in ('true', '1', 'yes', 'on') else 'OFF'
         Sleep    0.2s
+        ${current_dicom_state}=    Get Toggle State    ${Export_Image_DicomTags_Checkbox_XPATH}
+        Run Keyword If    '${current_dicom_state}' != '${target_dicom_state}'    Click    ${Export_Image_DicomTags_Checkbox_XPATH}
+        Sleep    0.4s
+
+        IF    '${target_dicom_state}' == 'ON'
+            ${tags_position_norm}=    Evaluate    str($tags_position).strip().lower()
+            IF    '${tags_position_norm}' == 'inside'
+                Click    ${Export_Image_TagsInside_Radio_XPATH}
+            ELSE IF    '${tags_position_norm}' == 'outside'
+                Click    ${Export_Image_TagsOutside_Radio_XPATH}
+            ELSE
+                Fail    Invalid tags_position '${tags_position}'. Use 'Inside' or 'Outside'.
+            END
+            Sleep    0.3s
+        END
+    END
+
+    ${annotations_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${Export_Image_Annotations_Checkbox_XPATH}    1
+    IF    ${annotations_present}
+        ${target_annotations_state}=    Evaluate    'ON' if str($include_annotations).strip().lower() in ('true', '1', 'yes', 'on') else 'OFF'
+        ${current_annotations_state}=    Get Toggle State    ${Export_Image_Annotations_Checkbox_XPATH}
+        Run Keyword If    '${current_annotations_state}' != '${target_annotations_state}'    Click    ${Export_Image_Annotations_Checkbox_XPATH}
+        Sleep    0.3s
+    END
+
+    ${measurements_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${Export_Image_Measurements_Checkbox_XPATH}    1
+    IF    ${measurements_present}
+        ${target_measurements_state}=    Evaluate    'ON' if str($include_measurements).strip().lower() in ('true', '1', 'yes', 'on') else 'OFF'
+        ${current_measurements_state}=    Get Toggle State    ${Export_Image_Measurements_Checkbox_XPATH}
+        Run Keyword If    '${current_measurements_state}' != '${target_measurements_state}'    Click    ${Export_Image_Measurements_Checkbox_XPATH}
+        Sleep    0.3s
+    END
+
+    ${iqi_wire_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${Export_Image_IqiWire_Checkbox_XPATH}    1
+    IF    ${iqi_wire_present}
+        ${target_iqi_wire_state}=    Evaluate    'ON' if str($include_iqi_wire).strip().lower() in ('true', '1', 'yes', 'on') else 'OFF'
+        ${current_iqi_wire_state}=    Get Toggle State    ${Export_Image_IqiWire_Checkbox_XPATH}
+        Run Keyword If    '${current_iqi_wire_state}' != '${target_iqi_wire_state}'    Click    ${Export_Image_IqiWire_Checkbox_XPATH}
+        Sleep    0.3s
     END
 
     ${parent_folder}=    Evaluate    __import__('os').path.dirname(str($folder_path))
     Create Directory    ${parent_folder}
 
+    Sleep    0.2s
     Click    ${Export_Image_Browse_Button_XPATH}
+    Sleep    0.2s
     Wait Until Element Exist    ${Export_Image_SaveDialog_FileName_XPATH}    5
-    Sleep    0.5s
+    Sleep    0.6s
     Set Text To Textbox    ${Export_Image_SaveDialog_FileName_XPATH}    ${folder_path}
-    Sleep    0.3s
+    Sleep    0.5s
     Click    ${Export_Image_SaveDialog_Save_Button_XPATH}
-    Sleep    1s
+    Sleep    0.5s
     ${overwrite_warning_present}=    Run Keyword And Return Status
-    ...    Wait Until Element Exist    ${Export_Image_Overwrite_Yes_Button_XPATH}    5
+    ...    Wait Until Element Exist    ${Export_Image_Overwrite_Yes_Button_XPATH}    2
     Run Keyword If    ${overwrite_warning_present}    Click    ${Export_Image_Overwrite_Yes_Button_XPATH}
-    Sleep    1s
+    Sleep    0.5s
 
     Click    ${Export_Image_Export_Button_XPATH}
-    Sleep    1s
+    Sleep    0.5s
     ${post_export_yes_present}=    Run Keyword And Return Status
-    ...    Wait Until Element Exist    ${Export_Image_PostExport_Yes_Button_XPATH}    5
+    ...    Wait Until Element Exist    ${Export_Image_PostExport_Yes_Button_XPATH}    2
     Run Keyword If    ${post_export_yes_present}    Click    ${Export_Image_PostExport_Yes_Button_XPATH}
-    Sleep    1s
-    Wait Until Element Exist    ${Export_Image_Confirmation_Ok_Button_XPATH}    60
-    Sleep    0.3s
+    Sleep    0.5s
+    Wait Until Element Exist    ${Export_Image_Confirmation_Ok_Button_XPATH}    30
+    Sleep    0.5s
     Click    ${Export_Image_Confirmation_Ok_Button_XPATH}
-    Sleep    0.3s
+    Sleep    0.5s
     RETURN    ${folder_path}

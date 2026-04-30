@@ -1,20 +1,18 @@
 *** Settings ***
-Documentation     Image Viewer Operations test suite. Total Test Cases: 48 (MFRTIV01 - MFRTIV48).
+Documentation     Image Viewer Operations test suite. Total Test Cases: 65 (MFRTIV01 - MFRT).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
 Library           OperatingSystem
 Resource          ../resources/login.resource
 Resource          ../resources/General.resource
+Resource          ../resources/imageviewer.resource
 Resource          ../resources/Actions.resource
 Resource          ../resources/Annotations.resource
 Resource          ../resources/Tools.resource
 Resource          ../resources/Online.resource
 Resource          ../resources/Image Viewer Operations.resource
-*** Variables ***
-
 *** Test Cases ***
-
 MFRTIVO1 - Verify whether able to switch between images using Next/Previous buttons.
 
     [Documentation]    Verify whether able to switch between images using Next/Previous buttons.
@@ -789,7 +787,6 @@ MFRTIV45 - Verify whether able to apply filters and export the image in dual vie
     Click    ${Image_Filter_Tool_Button_XPATH}
     Reset View
     Apply Auto Best BNC
-
 MFRTIV46 - Verify whether able to apply color table on Dual View mode.
     [Documentation]    Verify whether able to apply color table on Dual View mode.
     [Tags]    MFRTIV46
@@ -805,7 +802,6 @@ MFRTIV46 - Verify whether able to apply color table on Dual View mode.
     Take DualView Screenshot    Secondary    MFRTIV46_Secondary_Grayscale.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV46_Primary_Grayscale.png    MFRTIV46_Primary_Grayscale.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV46_Secondary_Grayscale.png    MFRTIV46_Secondary_Grayscale.png
-
 MFRTIV47 - Verify whether able to apply color table and export the image in dual view mode.
     [Documentation]    Verify whether able to apply color table and export the image in dual view mode.
     [Tags]    MFRTIV47
@@ -825,7 +821,6 @@ MFRTIV47 - Verify whether able to apply color table and export the image in dual
     Select ImageViewer    Secondary
     Export Image    MFRTIV47_Secondary_Grayscale    ${Actual_Image_Exports}MFRTIV47_Secondary_Grayscale   PNG     True   Outside
     Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV47_Secondary_Grayscale.png   ${Expected_Image_Exports}MFRTIV47_Secondary_Grayscale.png
-
 MFRTIV48 - Verify whether able to close Dual View mode.
     [Documentation]    Verify whether able to close Dual View mode.
     [Tags]    MFRTIV48
@@ -837,4 +832,128 @@ MFRTIV48 - Verify whether able to close Dual View mode.
     Run Keyword And Continue On Failure   VerifyControlState    ${Dual_View_SyncWL_Toggle_Button_XPATH}    not exists
     Run Keyword And Continue On Failure    VerifyControlState    ${Dual_View_SyncPan_Toggle_Button_XPATH}    not exists
     Close Project
-    Close FoxRT Application Window
+MFRTIV49 - Verify whether able to export image in .dcm format.
+    [Documentation]    Verify whether able to export image in .dcm format.
+    [Tags]    MFRTIV49
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Export Image    MFRTIV49_Image    ${Actual_Image_Exports}MFRTIV49_Image    DCM
+    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTIV49_Image.dcm    ${Expected_Image_Exports}MFRTIV49_Image.dcm
+MFRTIV50 - Verify whether able to export image in .png format with tags disabled.
+    [Documentation]    Verify whether able to export image in .png format with tags disabled.
+    [Tags]    MFRTIV50
+
+    Export Image    MFRTIV50_Image    ${Actual_Image_Exports}MFRTIV50_Image    PNG     False
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV50_Image.png   ${Expected_Image_Exports}MFRTIV50_Image.png
+MFRTIV51 - Verify whether able to export image in .png format with tags enabled & inside image.
+    [Documentation]    Verify whether able to export image in .png format with tags enabled & inside image.
+    [Tags]    MFRTIV51
+
+    Export Image    MFRTIV51_Image    ${Actual_Image_Exports}MFRTIV51_Image    PNG     True    Inside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV51_Image.png   ${Expected_Image_Exports}MFRTIV51_Image.png
+MFRTIV52 - Verify whether able to export image in .png format with tags enabled & outside image.
+    [Documentation]    Verify whether able to export image in .png format with tags enabled & outside image.
+    [Tags]    MFRTIV52
+
+    Export Image    MFRTIV52_Image    ${Actual_Image_Exports}MFRTIV52_Image    PNG     True    Outside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV52_Image.png   ${Expected_Image_Exports}MFRTIV52_Image.png
+
+MFRTIV53 - Verify whether able to export image in .jpg format with tags disabled.
+    [Documentation]    Verify whether able to export image in .jpg format with tags disabled.
+    [Tags]    MFRTIV53
+
+    Export Image    MFRTIV53_Image    ${Actual_Image_Exports}MFRTIV53_Image    JPG     False
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV53_Image.jpg   ${Expected_Image_Exports}MFRTIV53_Image.jpg
+MFRTIV54 - Verify whether able to export image in .jpg format with tags enabled & inside image.
+    [Documentation]    Verify whether able to export image in .jpg format with tags enabled & inside image.
+    [Tags]    MFRTIV54
+
+    Export Image    MFRTIV54_Image    ${Actual_Image_Exports}MFRTIV54_Image    JPG     True    Inside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV54_Image.jpg   ${Expected_Image_Exports}MFRTIV54_Image.jpg
+MFRTIV55 - Verify whether able to export image in .jpg format with tags enabled & outside image.
+    [Documentation]    Verify whether able to export image in .jpg format with tags enabled & outside image.
+    [Tags]    MFRTIV55
+
+    Export Image    MFRTIV55_Image    ${Actual_Image_Exports}MFRTIV55_Image    JPG     True    Outside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV55_Image.jpg   ${Expected_Image_Exports}MFRTIV55_Image.jpg
+MFRTIV56 - Verify whether able to export image in .bmp format with tags disabled.
+    [Documentation]    Verify whether able to export image in .bmp format with tags disabled.
+    [Tags]    MFRTIV56
+
+    Export Image    MFRTIV56_Image    ${Actual_Image_Exports}MFRTIV56_Image    BMP     False
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV56_Image.bmp   ${Expected_Image_Exports}MFRTIV56_Image.bmp
+MFRTIV57 - Verify whether able to export image in .bmp format with tags enabled & inside image.
+    [Documentation]    Verify whether able to export image in .bmp format with tags enabled & inside image.
+    [Tags]    MFRTIV57
+
+    Export Image    MFRTIV57_Image    ${Actual_Image_Exports}MFRTIV57_Image    BMP     True    Inside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV57_Image.bmp   ${Expected_Image_Exports}MFRTIV57_Image.bmp
+MFRTIV58 - Verify whether able to export image in .bmp format with tags enabled & outside image.
+    [Documentation]    Verify whether able to export image in .bmp format with tags enabled & outside image.
+    [Tags]    MFRTIV58
+
+    Export Image    MFRTIV58_Image    ${Actual_Image_Exports}MFRTIV58_Image    BMP     True    Outside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV58_Image.bmp   ${Expected_Image_Exports}MFRTIV58_Image.bmp
+MFRTIV59 - Verify whether able to export image in .tiff format with tags disabled.
+    [Documentation]    Verify whether able to export image in .tiff format with tags disabled.
+    [Tags]    MFRTIV59
+
+    Export Image    MFRTIV59_Image    ${Actual_Image_Exports}MFRTIV59_Image    TIFF     False
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV59_Image.tiff   ${Expected_Image_Exports}MFRTIV59_Image.tiff
+MFRTIV60 - Verify whether able to export image in .tiff format with tags enabled & inside image.
+    [Documentation]    Verify whether able to export image in .tiff format with tags enabled & inside image.
+    [Tags]    MFRTIV60
+
+    Export Image    MFRTIV60_Image    ${Actual_Image_Exports}MFRTIV60_Image    TIFF     True    Inside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV60_Image.tiff   ${Expected_Image_Exports}MFRTIV60_Image.tiff
+MFRTIV61 - Verify whether able to export image in .tiff format with tags enabled & outside image.
+    [Documentation]    Verify whether able to export image in .tiff format with tags enabled & outside image.
+    [Tags]    MFRTIV61
+
+    Export Image    MFRTIV61_Image    ${Actual_Image_Exports}MFRTIV61_Image    TIFF     True    Outside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV61_Image.tiff   ${Expected_Image_Exports}MFRTIV61_Image.tiff
+
+MFRTIV62 - Verify whether able to export image after adding annotations in image viewer.
+    [Documentation]    Verify whether able to export image after adding annotations in image viewer.
+    [Tags]    MFRTIV62
+
+    Add Annotation    Rectangle
+    Add Annotation at custom position    Ruler    845    470    1050    570    
+    Export Image    MFRTIV62_Annotation    ${Actual_Image_Exports}MFRTIV62_Annotation   PNG     True   Inside    True    True
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV62_Annotation.png   ${Expected_Image_Exports}MFRTIV62_Annotation.png
+    Delete the annotation
+MFRTIV63 - Verify whether able to export image after applying filters in image viewer.
+    [Documentation]    Verify whether able to export image after applying filters in image viewer.
+    [Tags]    MFRTIV63
+
+    Click Image Filter Tool
+    Apply Image Filter    Fox Bleach     
+    Export Image    MFRTIV63_Filtered    ${Actual_Image_Exports}MFRTIV63_Filtered   PNG     True   Inside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV63_Filtered.png   ${Expected_Image_Exports}MFRTIV63_Filtered.png
+    Click    ${Image_Filter_Tool_Button_XPATH}
+    Reset View
+    Apply Auto Best BNC
+MFRTIV64 - Verify whether able to export image after applying color table in image viewer.
+    [Documentation]    Verify whether able to export image after applying color table in image viewer.
+    [Tags]    MFRTIV64
+
+    Apply Color Table To Image Viewer    Hot Iron
+    Export Image    MFRTIV64_HotIron    ${Actual_Image_Exports}MFRTIV64_HotIron   PNG     True   Inside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV64_HotIron.png   ${Expected_Image_Exports}MFRTIV64_HotIron.png
+    Apply Color Table To Image Viewer    Grayscale
+
+MFRTIV65 - Verify whether able to export image after analyzing the image in image viewer.
+    [Documentation]    Verify whether able to export image after analyzing the image in image viewer.
+    [Tags]    MFRTIV65
+
+    Close Project
+    Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
+    Apply Window Level    2    845    470    1050    570
+    Detect IQI Wire Phantom Tool
+    Export Image    MFRTIV65_Analyzed    ${Actual_Image_Exports}MFRTIV65_Analyzed   PNG     True   Inside
+    Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV65_Analyzed.png   ${Expected_Image_Exports}MFRTIV65_Analyzed.png
+    Click    ${window_level_tool_button_xpath}
+    Reset View
+    Apply Auto Best BNC
+    Close Project
+

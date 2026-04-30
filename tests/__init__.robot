@@ -1,6 +1,6 @@
 *** Settings ***
-Documentation     Mindfox RT Automation root suite. Total Test Cases: 194.
-...    Login: 5 | General: 29 | Annotations: 31 | Tools: 48 | Actions: 20 | Image Viewer: 48 | Online Mode: 13.
+Documentation     Mindfox RT Automation root suite. Total Test Cases: 211.
+...    Login: 5 | General: 29 | Annotations: 31 | Tools: 48 | Actions: 20 | Image Viewer: 65 | Online Mode: 13.
 Library           FlaUILibrary
 Library           Process
 Resource          ../resources/login.resource

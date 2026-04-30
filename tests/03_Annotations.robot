@@ -25,7 +25,6 @@ MFRTANN01 - Verify whether able to add arrow annotation in image viewer
     Take Actual Screenshot    MFRTANN01.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN01.png    MFRTANN01.png
     Delete the annotation
-
 MFRTANN02 - Verify whether able to add ruler annotation in image viewer
     [Documentation]    Verify whether able to add ruler annotation in image viewer
     [Tags]    smoke    annotations
@@ -36,8 +35,6 @@ MFRTANN02 - Verify whether able to add ruler annotation in image viewer
     Take Actual Screenshot    MFRTANN02.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN02.png    MFRTANN02.png
     Delete the annotation
-
-
 MFRTANN03 - Verify whether able to add line annotation in image viewer
     [Documentation]    Verify whether able to add line annotation in image viewer
     [Tags]    smoke    annotations
@@ -48,7 +45,6 @@ MFRTANN03 - Verify whether able to add line annotation in image viewer
     Take Actual Screenshot    MFRTANN03.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN03.png    MFRTANN03.png
     Delete the annotation
-
 MFRTANN04 - Verify whether able to add rectangle annotation in image viewer
     [Documentation]    Verify whether able to add rectangle annotation in image viewer
     [Tags]    smoke    annotations
