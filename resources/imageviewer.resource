@@ -25,7 +25,7 @@ ${RESET_VIEW_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Button
 
 # ─────────────────── Paths ───────────────────
 
-${test_data}           ${CURDIR}\\..\\test_Images\\
+${test_data}           ${CURDIR}\\..\\Test_Data\\
 ${expected_image}      ${CURDIR}\\..\\Expected\\
 ${actual_image}        ${CURDIR}\\..\\Actual\\
 ${COMPARISON_IMAGE}    ${CURDIR}\\..\\Comparison\\
