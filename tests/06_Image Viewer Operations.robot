@@ -956,4 +956,5 @@ MFRTIV65 - Verify whether able to export image after analyzing the image in imag
     Reset View
     Apply Auto Best BNC
     Close Project
+    Close FoxRT Application Window
 
