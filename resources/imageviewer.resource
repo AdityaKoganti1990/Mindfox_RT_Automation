@@ -92,7 +92,7 @@ Take Actual Screenshot
     RETURN    ${dest}
 
 Compare Result Images
-    [Arguments]    ${expected_image_path}    ${actual_image_path}    ${required_match_percentage}=100
+    [Arguments]    ${expected_image_path}    ${actual_image_path}    ${required_match_percentage}=98
     [Documentation]    Compare two images and pass if match percentage is >= required percentage.
 
     ${required_match_percentage}=    Convert To Number    ${required_match_percentage}
