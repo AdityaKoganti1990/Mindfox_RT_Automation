@@ -190,7 +190,11 @@ VerifyControlState
         ${actual_state}=    Set Variable    not exists
         Log    Control '${control_name}' does not exist.
     ELSE
-        ${is_enabled}=    Run Keyword And Return Status    Wait Until Element Is Enabled    ${control_xpath}    0.5
+        IF    '${normalized_expected_state}' == 'enabled'
+            ${is_enabled}=    Run Keyword And Return Status    Wait Until Element Is Enabled    ${control_xpath}    ${timeout}
+        ELSE
+            ${is_enabled}=    Is Element Enabled    ${control_xpath}
+        END
         ${actual_state}=    Set Variable If    ${is_enabled}    enabled    disabled
         Log    Control '${control_name}' is currently ${actual_state}.
     END
