@@ -4,13 +4,14 @@ Library           Process
 Library           ../lib/image_comparator.py
 Library           ../lib/ironpy_remote_client.py
 Library           AutoItLibrary
+Variables         ../lib/app_version.py
 *** Variables ***
 
 # ─────────────────── Application Info ───────────────────
+# ${APP_PATH}, ${APPLICATION_VERSION} and ${APPLICATION_VERSION_in_loginscreen}
+# are resolved at suite load by lib/app_version.py from the installed EXE's
+# FileVersion — no manual update needed after a build upgrade.
 ${APPLICATION_NAME}              FoXpert
-${APPLICATION_VERSION}           Version 1.0.2.19
-${APPLICATION_VERSION_in_loginscreen}    VERSION 1.0.2.19
-${APP_PATH}                      C:\\Program Files\\MindFox Software Solutions\\FoxRT Pro\\FoxViewerDesktop.exe
 ${TECH_SUPPORT_EMAIL}            support@mindfox.in
 ${INVALID_WARNING_TEXT}          Invalid username or password
 
