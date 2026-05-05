@@ -3,9 +3,10 @@ Documentation     Mindfox RT Automation root suite. Total Test Cases: 211.
 ...    Login: 5 | General: 29 | Annotations: 31 | Tools: 48 | Actions: 20 | Image Viewer: 65 | Online Mode: 13.
 Library           FlaUILibrary
 Library           Process
+Library           ../lib/display_check.py
 Resource          ../resources/login.resource
 
-#Suite Setup       Open Application For Suite
+Suite Setup        Verify Display Settings
 #Suite Teardown    Close Application For Suite
 
 *** Variables ***
