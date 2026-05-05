@@ -7,6 +7,7 @@ Library           ../lib/display_check.py
 Resource          ../resources/login.resource
 
 Suite Setup        Verify Display Settings
+Suite Teardown     Restore Display Settings
 #Suite Teardown    Close Application For Suite
 
 *** Variables ***
