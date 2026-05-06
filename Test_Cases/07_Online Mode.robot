@@ -99,6 +99,7 @@ MFRTO12 - Verify the Video Formats options in the detector tab when switched to 
     [Tags]    MFRTO12
 
     Set Acq Mode    Continuous
+    Run Keyword And Continue On Failure   VerifyControlState    control_name=${VIDEO_FORMAT_COMBOBOX_XPATH}    expected_state=not exists    timeout=1
     # Verify Video Format Options In Detector Tab    AVI (MJPEG)    MP4 (H.264)    AVI (Raw)
     Set Acq Mode    SingleShot
 MFRTO13 - Verify whether Orientation options are shown in online mode.
