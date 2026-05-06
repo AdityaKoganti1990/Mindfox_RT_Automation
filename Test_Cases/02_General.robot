@@ -225,6 +225,161 @@ MFRTG30 - Verify whether able to close application window.
     Close FoxRT Application Window
     Verify Application Is Closed
 
+MFRTG31 - Verify whether shortcut keys are working for opening files.
+    [Documentation]    Verify whether shortcut keys are working for opening files
+    [Tags]    smoke    general
+
+    Open FoxViewerDesktop Application
+    Login To FoxViewerDesktop    admin    admin
+    Press Shortcut Keys    Open File
+    Run Keyword And Continue On Failure   Verify window is Opened    Open DICOM / Image Files
+    Sleep    0.2s
+    Win Close    Open DICOM / Image Files
+    Win Wait Close    Open DICOM / Image Files
+
+MFRTG32 - Verify whether shortcut keys are working for export image.
+    [Documentation]    Verify whether shortcut keys are working for export image
+    [Tags]    smoke    general
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Press Shortcut Keys    Export Image
+    Run Keyword And Continue On Failure   Verify window is Opened    Export Image
+    Win Close    Export Image
+    Win Wait Close    Export Image
+MFRTG33 - Verify whether shortcut keys are working for Open DICOM tag browser.
+    [Documentation]    Verify whether shortcut keys are working for Open DICOM tag browser
+    [Tags]    smoke    general
+
+    Press Shortcut Keys    DICOM Tag Browser
+    Run Keyword And Continue On Failure   Verify window is Opened    DICOM Tag Browser
+    Win Close    DICOM Tag Browser
+    Win Wait Close    DICOM Tag Browser
+MFRTG34 - Verify whether shortcut keys are working for Resetting the view.
+    [Documentation]    Verify whether shortcut keys are working for Resetting the view
+    [Tags]    smoke    general
+
+    Apply Window Level    1    845    470    1050    570
+    Take Actual Screenshot    MFRTG34_before.png
+    Press Shortcut Keys    Reset View
+    Take Actual Screenshot    MFRTG34_after.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG34_before.png    MFRTG34_before.png    98
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG34_after.png    MFRTG34_after.png    98
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG34_before.png    MFRTG34_after.png    98    False
+    Click    ${window_level_tool_button_xpath}
+    Apply Auto Best BNC
+MFRTG35 - Verify whether shortcut keys are working for applying invert.
+    [Documentation]    Verify whether shortcut keys are working for applying invert
+    [Tags]    smoke    general
+
+    Press Shortcut Keys    Toggle Invert
+    Take Actual Screenshot    MFRTG35_invert.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG35_invert.png    MFRTG35_invert.png    98
+    Press Shortcut Keys    Toggle Invert
+    Apply Auto Best BNC
+
+MFRTG36 - Verify whether shortcut keys are working for opening report viewer window.
+    [Documentation]    Verify whether shortcut keys are working for opening report viewer window
+    [Tags]    smoke    general
+
+    Press Shortcut Keys    Generate PDF Report
+    Run Keyword And Continue On Failure   Verify window is Opened    Generate Report
+    Win Close    Generate Report
+    Win Wait Close    Generate Report
+MFRTG37 - Verify able to fit image to view using shortcut keys.
+    [Documentation]    Verify able to fit image to view using shortcut keys
+    [Tags]    smoke    general
+
+    Zoom Image Viewer    ZoomIn    3
+    Take Actual Screenshot    MFRTG37_before.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG37_before.png    MFRTG37_before.png    98
+    Press Shortcut Keys    Fit Image
+    Take Actual Screenshot    MFRTG37_fittoview.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG37_fittoview.png    MFRTG37_fittoview.png    98
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG37_before.png    MFRTG37_fittoview.png    98    False
+    Reset View
+    Apply Auto Best BNC
+MFRTG38 - Verify whether shortcut keys are working for zooming in the image.
+    [Documentation]    Verify whether shortcut keys are working for zooming in the image
+    [Tags]    smoke    general
+
+    Take Actual Screenshot    MFRTG38_before.png
+    Press Shortcut Keys    Zoom In
+    Take Actual Screenshot    MFRTG38_after.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG38_after.png    MFRTG38_after.png    98
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG38_before.png    MFRTG38_after.png    98    False
+    Reset View
+    Apply Auto Best BNC
+MFRTG39 - Verify whether shortcut keys are working for zooming out the image.
+    [Documentation]    Verify whether shortcut keys are working for zooming out the image
+    [Tags]    smoke    general
+
+    Take Actual Screenshot    MFRTG39_before.png
+    Press Shortcut Keys    Zoom Out
+    Take Actual Screenshot    MFRTG39_after.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG39_after.png    MFRTG39_after.png    98
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG39_before.png    MFRTG39_after.png    98    False
+    Reset View
+    Apply Auto Best BNC
+    Close Project
+
+MFRTG40 - Verify whether shortcut keys are working for navigating to previous and next file.
+    [Documentation]    Verify whether shortcut keys are working for navigating to previous and next file
+    [Tags]    smoke    general
+
+    Open FolderSet    ${folder_Directory_Path}
+    Sleep    1s
+    Press Shortcut Keys    Next File
+    Take Actual Screenshot    MFRTG40_next.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG40_next.png    MFRTG40_next.png    98
+    Press Shortcut Keys    Previous File
+    Take Actual Screenshot    MFRTG40_previous.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG40_previous.png    MFRTG40_previous.png    98
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG40_previous.png    MFRTG40_next.png    98    False
+MFRTG41 - Verify whether shortcut keys are working for first and last file navigation.
+    [Documentation]    Verify whether shortcut keys are working for first and last file navigation
+    [Tags]    smoke    general
+
+    Press Shortcut Keys    Last File
+    Take Actual Screenshot    MFRTG41_last.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG41_last.png    MFRTG41_last.png    98
+    Press Shortcut Keys    First File
+    Take Actual Screenshot    MFRTG41_first.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG41_first.png    MFRTG41_first.png    98
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG41_first.png    MFRTG41_last.png    98    False
+    Close Project
+MFRTG42 - Verify whether shortcut keys are working for deleting the selected annotation.
+    [Documentation]    Verify whether shortcut keys are working for deleting the selected annotation
+    [Tags]    smoke    general
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Add Annotation at custom position    Ruler    845    470    1050    570
+    Take Actual Screenshot    MFRTG42_before.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG42_before.png    MFRTG42_before.png    98
+    Select Annotation At Custom Position    845    470
+    Press Shortcut Keys    Delete
+    Take Actual Screenshot    MFRTG42_after.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG42_after.png    MFRTG42_after.png    98
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTG42_before.png    MFRTG42_after.png    100    False
+    Reset View
+    Apply Auto Best BNC
+MFRTG43 - Verify whether shortcut keys are working for cancelling/clear annotation or tool selection.
+    [Documentation]    Verify whether shortcut keys are working for cancelling/clear annotation or tool selection
+    [Tags]    smoke    general
+
+    Click    ${arrow_annotation_button_xpath}
+    Run Keyword And Continue On Failure   Verify Annotation Tool Selected    Arrow    Selected
+    Press Shortcut Keys    Escape
+    Run Keyword And Continue On Failure   Verify Annotation Tool Selected    Arrow    Not Selected
+    Click    ${line_profiler_tool_button_xpath}
+    Press Shortcut Keys    Escape
+    Run Keyword And Continue On Failure   Verify Tool Selected    Line Profiler    Not Selected
+    Click    ${window_level_tool_button_xpath}
+    Press Shortcut Keys    Escape
+    Run Keyword And Continue On Failure   Verify Tool Selected    Window Level    Selected
+    Click    ${window_level_tool_button_xpath}
+    Close Project
+    Close FoxRT Application Window
+
     
 
 

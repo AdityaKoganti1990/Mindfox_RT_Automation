@@ -1,11 +1,16 @@
 *** Settings ***
 Library           FlaUILibrary    screenshot_dir=${CURDIR}\\..\\Actual\\test.png
+Library           ../lib/flaui_keys_patch.py
 Library           Process
 Library           ../lib/image_comparator.py
 Library           ../lib/ironpy_remote_client.py
 Library           AutoItLibrary
+Library           Collections
+Library           String
 Resource          ../resources/login.resource
-
+Resource          ../resources/Tools.resource
+Resource          ../resources/Image Viewer Operations.resource
+Resource          ../resources/Annotations.resource
 *** Variables ***
 ${project_menu_item_xpaths}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_OpenFile"]
 ${INPUT_FILE_DIALOG_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/ComboBox[1]/Edit[@Name="File name:"]
@@ -117,13 +122,37 @@ Dismiss Project Open Warning Popup If Present
 
 Open FolderSet
     [Arguments]    ${folder_set_path}
+    ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
+    ${next_enabled_before_open}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Next_XPATH}
     Click    ${OpenFolder_Button_XPATH}
     Sleep    0.2s
+    ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
     Set Text To Textbox    ${INPUT_FOLDER_DIALOG_XPATH}    ${folder_set_path}
-    sleep   0.2s
+    Sleep    0.2s
     Click    ${Select_Folder_XPATH}
     Sleep    0.2s
-    Wait Until Element Is Enabled    ${Button_Next_XPATH}    3
+    Set Retry Timeout    0
+    ${loaded}=    Set Variable    ${False}
+    FOR    ${i}    IN RANGE    90
+        ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
+        IF    ${warning_clicked} and ${duplicate_warning}
+            ${loaded}=    Set Variable    ${True}
+            BREAK
+        END
+        ${next_enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Next_XPATH}
+        IF    ${next_enabled} and not ${next_enabled_before_open}
+            ${loaded}=    Set Variable    ${True}
+            BREAK
+        END
+        ${dialog_still_open}=    Run Keyword And Return Status    Element Should Exist    ${INPUT_FOLDER_DIALOG_XPATH}
+        IF    ${next_enabled_before_open} and not ${dialog_still_open}
+            ${loaded}=    Set Variable    ${True}
+            BREAK
+        END
+        Sleep    0.2s
+    END
+    Reset Retry Timeout
+    Should Be True    ${loaded}    Folder set did not load within expected time.
 
 Select Files From Files Tab
     [Arguments]    ${list_item_name}
@@ -314,4 +343,81 @@ Verify User Deleted From UserManagement Window
 Set UI Scale For RT Application
     [Arguments]    ${scale_value}
     Select Combobox Item By Name    ${UI_Scale_Combobox_XPATH}    ${scale_value}
-    Sleep    0.3s
+
+Press Shortcut Keys
+    [Arguments]    ${shortcut}
+    [Documentation]    Press an application shortcut on the main FoXpert RT window.
+    ...
+    ...    The argument can be either a friendly action name or a raw key spec.
+    ...
+    ...    Supported action names (case-insensitive):
+    ...    | Open File              | Ctrl+O  |
+    ...    | Export Image           | Ctrl+S  |
+    ...    | DICOM Tag Browser      | Ctrl+T  |
+    ...    | Reset View             | Ctrl+R  |
+    ...    | Toggle Invert          | Ctrl+I  |
+    ...    | Generate PDF Report    | Ctrl+P  |
+    ...    | Fit Image              | Ctrl+F  |
+    ...    | Zoom In                | Ctrl++  |
+    ...    | Zoom Out               | Ctrl+-  |
+    ...    | Previous File          | Left    |
+    ...    | Next File              | Right   |
+    ...    | First File             | Home    |
+    ...    | Last File              | End     |
+    ...    | Delete Annotation      | Delete  |
+    ...    | Cancel Tool            | Escape  |
+    ...
+    ...    Raw specs (e.g. ``CTRL+O``, ``LEFT``, ``HOME``, ``DELETE``, ``ESCAPE``) are
+    ...    passed through to FlaUI after wrapping in the required ``s'...'`` notation.
+    ...
+    ...    Examples:
+    ...    | Press Shortcut Keys    Open File
+    ...    | Press Shortcut Keys    Zoom In
+    ...    | Press Shortcut Keys    CTRL+O
+    ...    | Press Shortcut Keys    LEFT
+
+    ${key_spec}=    Resolve Shortcut Spec    ${shortcut}
+    @{keys}=    Create List    s'${key_spec}'
+    Focus    ${MAIN_WINDOW_XPATH}
+    Click    ${MAIN_WINDOW_XPATH}
+    Press Keys    ${keys}    ${MAIN_WINDOW_XPATH}
+    Sleep    0.5s
+    Run Keyword If    '${shortcut}' == 'Open File'    Wait Until Element Exist    ${INPUT_FILE_DIALOG_XPATH}    5
+
+Resolve Shortcut Spec
+    [Arguments]    ${name}
+    [Documentation]    Translate a friendly shortcut name to its FlaUI key spec.
+    ...    If the name is not in the mapping, returns it unchanged (uppercased and trimmed)
+    ...    so callers can pass raw specs like ``CTRL+O`` directly.
+    ${upper}=    Convert To Upper Case    ${name}
+    ${trimmed}=    Strip String    ${upper}
+    ${mapping}=    Create Dictionary
+    ...    OPEN FILE=CTRL+O
+    ...    EXPORT IMAGE=CTRL+S
+    ...    OPEN DICOM TAG BROWSER=CTRL+T
+    ...    DICOM TAG BROWSER=CTRL+T
+    ...    RESET VIEW=CTRL+R
+    ...    TOGGLE INVERT=CTRL+I
+    ...    GENERATE PDF REPORT=CTRL+P
+    ...    PDF REPORT=CTRL+P
+    ...    FIT IMAGE TO VIEW=CTRL+F
+    ...    FIT IMAGE=CTRL+F
+    ...    ZOOM IN=CTRL+OEM_PLUS
+    ...    ZOOM OUT=CTRL+OEM_MINUS
+    ...    PREVIOUS FILE=LEFT
+    ...    NEXT FILE=RIGHT
+    ...    FIRST FILE=HOME
+    ...    LAST FILE=END
+    ...    DELETE SELECTED ANNOTATION=DELETE
+    ...    DELETE ANNOTATION=DELETE
+    ...    CANCEL ACTIVE TOOL=ESCAPE
+    ...    CANCEL TOOL=ESCAPE
+    ...    CLEAR SELECTION=ESCAPE
+    ${has_key}=    Run Keyword And Return Status    Dictionary Should Contain Key    ${mapping}    ${trimmed}
+    IF    ${has_key}
+        ${spec}=    Get From Dictionary    ${mapping}    ${trimmed}
+    ELSE
+        ${spec}=    Set Variable    ${trimmed}
+    END
+    RETURN    ${spec}
+    Sleep    0.5s

@@ -1025,3 +1025,84 @@ Set Image Filter Numeric Parameter By Flexible XPath
     Set Text To Textbox    ${nud_xpath}    ${param_value}
     Sleep    0.1s
     Press Keys    ${tab_keys}    ${nud_xpath}
+
+Resolve Tool XPath
+    [Arguments]    ${tool_name}
+    [Documentation]    Translate a friendly tool name to its toggle button XPath.
+    ...    Supported names (case-insensitive, ignoring spaces/punctuation):
+    ...    Line Profiler, ROI Statistics, Window Level, Pixel Intensity Histogram,
+    ...    Calibration, SNR, Surface Plot, Wall Thickness, CNR, MTF,
+    ...    IQI Wire Phantom, Defect Marking, Image Filter,
+    ...    Percentile Brightness Contrast, Fox Bleach. A raw XPath is returned unchanged.
+    ${value}=    Evaluate    str($tool_name).strip()
+    Should Not Be Empty    ${value}    Tool name cannot be empty.
+    ${is_xpath}=    Evaluate    $value.startswith(('/', '('))
+    IF    ${is_xpath}
+        RETURN    ${value}
+    END
+    ${key}=    Evaluate    ''.join(ch.lower() for ch in $value if ch.isalnum())
+    ${mapping}=    Create Dictionary
+    ...    lineprofiler=${line_profiler_tool_button_xpath}
+    ...    roistatistics=${roi_statistics_tool_button_xpath}
+    ...    roistats=${roi_statistics_tool_button_xpath}
+    ...    windowlevel=${window_level_tool_button_xpath}
+    ...    areaadjust=${window_level_tool_button_xpath}
+    ...    pixelintensityhistogram=${pixel_intensity_histogram_button_xpath}
+    ...    histogram=${pixel_intensity_histogram_button_xpath}
+    ...    calibration=${calibration_tool_button_xpath}
+    ...    snr=${snr_measurement_tool_button_xpath}
+    ...    snrmeasurement=${snr_measurement_tool_button_xpath}
+    ...    surfaceplot=${surface_plot_tool_button_xpath}
+    ...    wallthickness=${wall_thickness_measurement_tool_button_xpath}
+    ...    wallthicknessmeasurement=${wall_thickness_measurement_tool_button_xpath}
+    ...    cnr=${cnr_measurement_tool_button_xpath}
+    ...    cnrmeasurement=${cnr_measurement_tool_button_xpath}
+    ...    mtf=${mtf_measurement_tool_button_xpath}
+    ...    mtfmeasurement=${mtf_measurement_tool_button_xpath}
+    ...    iqiwirephantom=${IQI_wire_phantom_tool_button_xpath}
+    ...    iqiwire=${IQI_wire_phantom_tool_button_xpath}
+    ...    iqi=${IQI_wire_phantom_tool_button_xpath}
+    ...    iqidetect=${IQI_wire_phantom_tool_button_xpath}
+    ...    defectmarking=${defect_marking_tool_button_xpath}
+    ...    defect=${defect_marking_tool_button_xpath}
+    ...    imagefilter=${Image_Filter_Tool_Button_XPATH}
+    ...    imagefilters=${Image_Filter_Tool_Button_XPATH}
+    ...    percentilebrightnesscontrast=${percentile_brightness_contrast_filter_button_xpath}
+    ...    percentilebnc=${percentile_brightness_contrast_filter_button_xpath}
+    ...    foxbleach=${fox_bleach_filter_button_xpath}
+    ${has_key}=    Run Keyword And Return Status    Dictionary Should Contain Key    ${mapping}    ${key}
+    IF    not ${has_key}
+        Fail    Unsupported tool '${tool_name}'. Supported: Line Profiler, ROI Statistics, Window Level, Pixel Intensity Histogram, Calibration, SNR, Surface Plot, Wall Thickness, CNR, MTF, IQI Wire Phantom, Defect Marking, Image Filter, Percentile Brightness Contrast, Fox Bleach.
+    END
+    ${xpath}=    Get From Dictionary    ${mapping}    ${key}
+    RETURN    ${xpath}
+
+Verify Tool Selected
+    [Arguments]    ${tool_name}    ${expected_state}=${EMPTY}
+    [Documentation]    Read whether a tool toggle button is selected.
+    ...
+    ...    Returns ``Selected`` or ``Not Selected``. If ``expected_state`` is supplied
+    ...    (``Selected`` or ``Not Selected``, case-insensitive), the actual state is
+    ...    asserted against it.
+    ...
+    ...    Examples:
+    ...    | ${state}=    Verify Tool Selected    Line Profiler
+    ...    | Verify Tool Selected    Calibration    Selected
+    ...    | Verify Tool Selected    SNR            Not Selected
+    ${xpath}=    Resolve Tool XPath    ${tool_name}
+    ${toggle_state}=    Get Toggle State    ${xpath}
+    ${actual_state}=    Set Variable If    '${toggle_state}' == 'ON'    Selected    Not Selected
+    Log    Tool '${tool_name}' is currently ${actual_state}.
+    IF    '${expected_state}' != '${EMPTY}'
+        ${expected_key}=    Evaluate    ''.join(ch.lower() for ch in str($expected_state) if ch.isalnum())
+        IF    '${expected_key}' == 'selected'
+            ${expected_label}=    Set Variable    Selected
+        ELSE IF    '${expected_key}' == 'notselected'
+            ${expected_label}=    Set Variable    Not Selected
+        ELSE
+            Fail    Unsupported expected state '${expected_state}'. Use 'Selected' or 'Not Selected'.
+        END
+        Should Be Equal As Strings    ${actual_state}    ${expected_label}
+        ...    Tool '${tool_name}' should be ${expected_label}, but it is ${actual_state}.
+    END
+    RETURN    ${actual_state}

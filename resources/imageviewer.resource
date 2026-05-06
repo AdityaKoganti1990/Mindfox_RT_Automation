@@ -92,8 +92,10 @@ Take Actual Screenshot
     RETURN    ${dest}
 
 Compare Result Images
-    [Arguments]    ${expected_image_path}    ${actual_image_path}    ${required_match_percentage}=98
-    [Documentation]    Compare two images and pass if match percentage is >= required percentage.
+    [Arguments]    ${expected_image_path}    ${actual_image_path}    ${required_match_percentage}=98    ${should_match}=True
+    [Documentation]    Compare two images.
+    ...    When ${should_match}=True (default), pass if match percentage is >= required percentage.
+    ...    When ${should_match}=False, pass if match percentage is < required percentage (images must NOT match).
 
     ${required_match_percentage}=    Convert To Number    ${required_match_percentage}
     Should Be True
@@ -111,9 +113,15 @@ Compare Result Images
     ${match_percentage}=    Evaluate    round(float($match_percentage), 4)
     Log    Image match percentage: ${match_percentage}%
 
-    Should Be True
-    ...    ${match_percentage} >= ${required_match_percentage}
-    ...    Match percentage ${match_percentage}% is below required ${required_match_percentage}% for images: ${expected_full} vs ${actual_full}
+    IF    ${should_match}
+        Should Be True
+        ...    ${match_percentage} >= ${required_match_percentage}
+        ...    Match percentage ${match_percentage}% is below required ${required_match_percentage}% for images: ${expected_full} vs ${actual_full}
+    ELSE
+        Should Be True
+        ...    ${match_percentage} < ${required_match_percentage}
+        ...    Match percentage ${match_percentage}% is at/above ${required_match_percentage}% but images were expected NOT to match: ${expected_full} vs ${actual_full}
+    END
     RETURN    ${match_percentage}
 
 Compare Result Files

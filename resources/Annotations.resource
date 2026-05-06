@@ -416,3 +416,69 @@ Add Point Intensity Annotation at custom position
 
     Sleep    1s
     Click    ${point_intensity_annotation_button_xpath}
+
+Select Annotation At Custom Position
+    [Arguments]    ${x}    ${y}
+    [Documentation]    Select annotation at user-provided coordinates by right-clicking to open context menu and choosing 'Select'.
+    Focus    ${window_XPATH}
+    Sleep    0.5s
+    AutoItLibrary.Mouse Click    left    ${x}    ${y}
+    Sleep    0.5
+
+Resolve Annotation Tool XPath
+    [Arguments]    ${tool_name}
+    [Documentation]    Translate a friendly annotation tool name to its toggle button XPath.
+    ...    Supported names (case-insensitive): Arrow, Ruler, Line, Rectangle, Circle,
+    ...    Freehand, Text, Point Intensity. A raw XPath is returned unchanged.
+    ${value}=    Evaluate    str($tool_name).strip()
+    Should Not Be Empty    ${value}    Annotation tool name cannot be empty.
+    ${is_xpath}=    Evaluate    $value.startswith(('/', '('))
+    IF    ${is_xpath}
+        RETURN    ${value}
+    END
+    ${key}=    Evaluate    ''.join(ch.lower() for ch in $value if ch.isalnum())
+    ${mapping}=    Create Dictionary
+    ...    arrow=${arrow_annotation_button_xpath}
+    ...    ruler=${ruler_annotation_button_xpath}
+    ...    line=${line_annotation_button_xpath}
+    ...    rectangle=${rectangle_annotation_button_xpath}
+    ...    circle=${circle_annotation_button_xpath}
+    ...    freehand=${freehand_annotation_button_xpath}
+    ...    text=${text_annotation_button_xpath}
+    ...    pointintensity=${point_intensity_annotation_button_xpath}
+    ${has_key}=    Run Keyword And Return Status    Dictionary Should Contain Key    ${mapping}    ${key}
+    IF    not ${has_key}
+        Fail    Unsupported annotation tool '${tool_name}'. Supported: Arrow, Ruler, Line, Rectangle, Circle, Freehand, Text, Point Intensity.
+    END
+    ${xpath}=    Get From Dictionary    ${mapping}    ${key}
+    RETURN    ${xpath}
+
+Verify Annotation Tool Selected
+    [Arguments]    ${tool_name}    ${expected_state}=${EMPTY}
+    [Documentation]    Read whether an annotation tool toggle is selected.
+    ...
+    ...    Returns ``Selected`` or ``Not Selected``. If ``expected_state`` is supplied
+    ...    (``Selected`` or ``Not Selected``, case-insensitive), the actual state is
+    ...    asserted against it.
+    ...
+    ...    Examples:
+    ...    | ${state}=    Verify Annotation Tool Selected    Arrow
+    ...    | Verify Annotation Tool Selected    Ruler    Selected
+    ...    | Verify Annotation Tool Selected    Line     Not Selected
+    ${xpath}=    Resolve Annotation Tool XPath    ${tool_name}
+    ${toggle_state}=    Get Toggle State    ${xpath}
+    ${actual_state}=    Set Variable If    '${toggle_state}' == 'ON'    Selected    Not Selected
+    Log    Annotation tool '${tool_name}' is currently ${actual_state}.
+    IF    '${expected_state}' != '${EMPTY}'
+        ${expected_key}=    Evaluate    ''.join(ch.lower() for ch in str($expected_state) if ch.isalnum())
+        IF    '${expected_key}' == 'selected'
+            ${expected_label}=    Set Variable    Selected
+        ELSE IF    '${expected_key}' == 'notselected'
+            ${expected_label}=    Set Variable    Not Selected
+        ELSE
+            Fail    Unsupported expected state '${expected_state}'. Use 'Selected' or 'Not Selected'.
+        END
+        Should Be Equal As Strings    ${actual_state}    ${expected_label}
+        ...    Annotation tool '${tool_name}' should be ${expected_label}, but it is ${actual_state}.
+    END
+    RETURN    ${actual_state}
