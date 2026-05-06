@@ -160,3 +160,36 @@ def file_match_percentage(file_path1, file_path2):
     Returns match percentage between 0.0 and 100.0.
     """
     return ImageComparator.file_match_percentage(file_path1, file_path2)
+
+
+def resize_image_to_target(source_path, dest_path, width=800, height=600):
+    """
+    Resize the image at ``source_path`` to (width x height) and save it to
+    ``dest_path``. The destination directory is created if needed and any
+    existing file at ``dest_path`` is overwritten.
+
+    Used to normalize screenshots to a fixed resolution at capture time so the
+    same Expected baseline can be reused across machines with different
+    display resolutions or UI scales.
+
+    Returns the absolute destination path.
+    """
+    if not os.path.exists(source_path):
+        raise FileNotFoundError(f"Source image not found: {source_path}")
+
+    width = int(width)
+    height = int(height)
+    if width <= 0 or height <= 0:
+        raise ValueError(f"Invalid target size: {width}x{height}")
+
+    dest_dir = os.path.dirname(os.path.abspath(dest_path))
+    if dest_dir and not os.path.isdir(dest_dir):
+        os.makedirs(dest_dir, exist_ok=True)
+
+    resample = getattr(Image, "Resampling", Image).LANCZOS
+
+    with Image.open(source_path) as img:
+        resized = img.convert("RGBA").resize((width, height), resample)
+        resized.save(dest_path)
+
+    return os.path.abspath(dest_path)

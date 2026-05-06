@@ -91,6 +91,26 @@ Take Actual Screenshot
     Log    Screenshot moved to: ${dest}
     RETURN    ${dest}
 
+Take Actual Screenshot Normalized
+    [Arguments]    ${filename}    ${xpath}=${IMAGE_VIEWER_XPATH}    ${target_width}=800    ${target_height}=600
+    [Documentation]    Capture a screenshot and save it at a fixed (default 800x600) resolution.
+    ...    The screenshot is taken at whatever native resolution the OS/UI provides,
+    ...    then resized before being written to the Actual folder so the saved image
+    ...    is machine-independent and can be compared directly against a baseline of
+    ...    the same target size.
+
+    Sleep    0.2s    # Ensure any UI updates are rendered before taking screenshot
+    ${screenshot_path}=    Take Screenshot    ${xpath}
+    Log    Raw screenshot captured at: ${screenshot_path}
+
+    ${dest}=    Set Variable    ${actual_image}${filename}
+    Create Directory    ${actual_image}
+    Resize Image To Target    ${screenshot_path}    ${dest}    ${target_width}    ${target_height}
+    Remove File    ${screenshot_path}
+
+    Log    Normalized screenshot (${target_width}x${target_height}) saved to: ${dest}
+    RETURN    ${dest}
+
 Compare Result Images
     [Arguments]    ${expected_image_path}    ${actual_image_path}    ${required_match_percentage}=98    ${should_match}=True
     [Documentation]    Compare two images.
