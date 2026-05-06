@@ -46,7 +46,6 @@ MFRTIVO1 - Verify whether able to switch between images using Next/Previous butt
     Take Actual Screenshot    MFRTIV01_6.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV01_6.png    MFRTIV01_6.png
     Sleep    0.1s
-
 MFRTIV02 - Verify whether able to switch between images using Keyboard Shortcuts.
 
     [Documentation]    Verify whether able to switch between images using Keyboard Shortcuts.
@@ -77,7 +76,6 @@ MFRTIV02 - Verify whether able to switch between images using Keyboard Shortcuts
     Sleep    0.1s
     Close Project
     Sleep    0.1s
-
 MFRTIVO3 - Verify whether able to Zoom Image viewer using zoom controls.
     [Documentation]    Verify whether able to Zoom Image viewer using zoom controls.
     [Tags]    MFRTIVO3
@@ -94,7 +92,6 @@ MFRTIVO3 - Verify whether able to Zoom Image viewer using zoom controls.
     Take Actual Screenshot    MFRTIV03_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV03_2.png    MFRTIV03_2.png
     Sleep    0.1s
-
 MFRTIVO4 - Verify whether able to Zoom Image viewer using Zoom Edit Control.
     [Documentation]    Verify whether able to Zoom Image viewer using Zoom Edit Control.
     [Tags]    MFRTIVO4
@@ -109,7 +106,6 @@ MFRTIVO4 - Verify whether able to Zoom Image viewer using Zoom Edit Control.
     Take Actual Screenshot    MFRTIV04_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV04_2.png    MFRTIV04_2.png
     Sleep    0.1s
-
 MFRTIVO5 - Verify whether able to Pan Image Viewer using Pan Tool.
     [Documentation]    Verify whether able to Pan Image Viewer using Pan Tool.
     [Tags]    MFRTIVO5
@@ -140,7 +136,6 @@ MFRTIV07 - Verify whether able to apply scales to image viewer.
     Take Actual Screenshot    MFRTIV07.png    ${IMAGE_VIEWER_XPATH_WITH_SCALES}
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV07.png    MFRTIV07.png
     Sleep    0.1s
-
 MFRTIV08 - Verify whether able to remove scales from image viewer.
     [Documentation]    Verify whether able to remove scales from image viewer.
     [Tags]    MFRTIV08
@@ -150,7 +145,6 @@ MFRTIV08 - Verify whether able to remove scales from image viewer.
     Take Actual Screenshot    MFRTIV08.png    ${IMAGE_VIEWER_XPATH_WITH_SCALES}
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV08.png    MFRTIV08.png
     Sleep    0.1s
-
 MFRTIV09 - Verify whether able Rotate Image Viewer using Rotate buttons.
     [Documentation]    Verify whether able Rotate Image Viewer using Rotate buttons.
     [Tags]    MFRTIV09
@@ -214,7 +208,6 @@ MFRTIV12 - Verify whether able to change the units across the application.
     Sleep    0.1s
     Change Units Across Application    mm
     Sleep    0.1s
-
 MFRTIV13 - Verify whether able to change the units across the application using change measurement units button in status bar.
     [Documentation]    Verify whether able to change the units across the application using change measurement units button in status bar.
     [Tags]    MFRTIV13
@@ -236,7 +229,6 @@ MFRTIV13 - Verify whether able to change the units across the application using 
     Sleep    0.1s
     Change Units Across Application from Status Bar    mm
     Sleep    0.1s
-
 MFRTIV14 - Verify whether applied Zoom value is shown in status bar.
     [Documentation]    Verify whether applied Zoom value is shown in status bar.
     [Tags]    MFRTIV14
@@ -248,14 +240,12 @@ MFRTIV14 - Verify whether applied Zoom value is shown in status bar.
     Zoom Image Viewer    ZoomOut    3
     Sleep    0.1s
     Verify Zoom Value In Status Bar    41
-
 MFRTIV15 - Verify whether DPI value of the image is shown in status bar
     [Documentation]    Verify whether DPI value of the image is shown in status bar.
     [Tags]    MFRTIV15
 
     Verify DPI value in status bar    254.0
     Sleep    0.1s
-
 MFRTIV16 - Verify whether DPI value is updating when different image with different DPI is opened
     [Documentation]    Verify whether DPI value is updating when different image with different DPI is opened.
     [Tags]    MFRTIV16
@@ -278,7 +268,6 @@ MFRTIV16 - Verify whether DPI value is updating when different image with differ
     Sleep    0.1s
     Verify DPI value in status bar    254.0
     Sleep    0.1s
-
 MFRTIV17 - Verify whether the X and Y coordinates are shown in status bar when mouse is hovered over the image viewer
     [Documentation]    Verify whether the X and Y coordinates are shown in status bar when mouse is hovered over the image viewer.
     [Tags]    MFRTIV17
@@ -295,7 +284,6 @@ MFRTIV18 - Verify whether the Intensity value is shown in status bar when mouse 
     Sleep    0.1s
     Verify Intensity Value Is Shown In Status Bar    29525
     Sleep    0.1s
-
 MFRTIV19 - Verify whether annotations count is updated in status bar when annotation is added or deleted
     [Documentation]    Verify whether annotations count is updated in status bar when annotation is added or deleted.
     [Tags]    MFRTIV19
@@ -312,7 +300,6 @@ MFRTIV19 - Verify whether annotations count is updated in status bar when annota
     Sleep    0.1s
     Verify Annotation Count In Status Bar    0
     Sleep    0.1s
-
 MFRTIV20 - Verify whether SNR value is shown in status bar when image with SNR metadata is opened.
     [Documentation]    Verify whether SNR value is shown in status bar when image with SNR metadata is opened.
     [Tags]    MFRTIV20
@@ -324,7 +311,6 @@ MFRTIV20 - Verify whether SNR value is shown in status bar when image with SNR m
     Close Project
     Open ProjectFile    ${project_Directory_Path}MLE_8''0.322.dcm
     Verify SNR value in status bar    97.5    0.00
-
 MFRTIV21 - Verify whether able to apply color table over the image viewer.
     [Documentation]    Verify whether able to apply color table over the image viewer.
     [Tags]    MFRTIV21
@@ -338,7 +324,6 @@ MFRTIV21 - Verify whether able to apply color table over the image viewer.
     Sleep    0.1s
     Take Actual Screenshot    MFRTIV21_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV21_2.png    MFRTIV21_2.png
-
 MFRTIV22 - Verify whether able to apply all available color tables over the image viewer.
     [Documentation]    Verify whether able to apply all available color tables over the image viewer.
     [Tags]    MFRTIV22
@@ -912,7 +897,6 @@ MFRTIV61 - Verify whether able to export image in .tiff format with tags enabled
 
     Export Image    MFRTIV61_Image    ${Actual_Image_Exports}MFRTIV61_Image    TIFF     True    Outside
     Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV61_Image.tiff   ${Expected_Image_Exports}MFRTIV61_Image.tiff
-
 MFRTIV62 - Verify whether able to export image after adding annotations in image viewer.
     [Documentation]    Verify whether able to export image after adding annotations in image viewer.
     [Tags]    MFRTIV62
@@ -941,7 +925,6 @@ MFRTIV64 - Verify whether able to export image after applying color table in ima
     Export Image    MFRTIV64_HotIron    ${Actual_Image_Exports}MFRTIV64_HotIron   PNG     True   Inside
     Run Keyword And Continue On Failure    Compare Result Images   ${Actual_Image_Exports}MFRTIV64_HotIron.png   ${Expected_Image_Exports}MFRTIV64_HotIron.png
     Apply Color Table To Image Viewer    Grayscale
-
 MFRTIV65 - Verify whether able to export image after analyzing the image in image viewer.
     [Documentation]    Verify whether able to export image after analyzing the image in image viewer.
     [Tags]    MFRTIV65
