@@ -1,13 +1,16 @@
 """
-Recount test cases in every tests/*.robot module and rewrite the
+Recount test cases in every Test_Cases/*.robot module and rewrite the
 "Total Test Cases: N" portion of each suite-level Documentation line,
-plus the per-module breakdown in tests/__init__.robot.
+plus the per-module breakdown in Test_Cases/__init__.robot.
 
 Run manually:    python scripts/update_test_counts.py
 Run as a check:  python scripts/update_test_counts.py --check   (exit 1 if anything would change)
 
 A test case is detected as: a non-indented, non-comment line under the
 *** Test Cases *** section of a Robot Framework file.
+
+Only files listed in MODULE_LABELS are processed; scratch/temp files
+(e.g. 03_Annotations_Temp.robot) are deliberately ignored.
 """
 
 from __future__ import annotations
@@ -18,7 +21,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-TESTS_DIR = REPO_ROOT / "tests"
+TESTS_DIR = REPO_ROOT / "Test_Cases"
 INIT_FILE = TESTS_DIR / "__init__.robot"
 
 # Friendly module label keyed by filename — used when rebuilding the
@@ -133,12 +136,14 @@ def main() -> int:
 
     counts: dict[str, int] = {}
     last_ids: dict[str, str | None] = {}
-    for robot_file in sorted(TESTS_DIR.glob("*.robot")):
-        if robot_file.name == "__init__.robot":
+    for fname, _ in MODULE_LABELS:
+        robot_file = TESTS_DIR / fname
+        if not robot_file.exists():
+            print(f"[skip] {fname}: file not found in {TESTS_DIR}", file=sys.stderr)
             continue
         count, last_id = scan_test_cases(robot_file)
-        counts[robot_file.name] = count
-        last_ids[robot_file.name] = last_id
+        counts[fname] = count
+        last_ids[fname] = last_id
 
     if args.check:
         original_states: dict[Path, str] = {}

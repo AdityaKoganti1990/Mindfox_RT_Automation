@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     General application test suite. Total Test Cases: 29 (MFRTG01 - MFRTG30; MFRTG18 intentionally skipped).
+Documentation     General application test suite. Total Test Cases: 42 (MFRTG01 - MFRTG43; MFRTG18 intentionally skipped).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -379,6 +379,7 @@ MFRTG43 - Verify whether shortcut keys are working for cancelling/clear annotati
     Click    ${window_level_tool_button_xpath}
     Close Project
     Close FoxRT Application Window
+
 
     
 
