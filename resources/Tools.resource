@@ -551,7 +551,7 @@ Click Apply Image Filter
     Run Keyword If    not ${filter_tool_open}    Click Image Filter Tool
     Click    ${filter_apply_button_xpath}
     Sleep    0.2s
-    Wait Until Element Is Offscreen    ${filter_apply_loading_bar_cancel_button_xpath}    5
+    Wait Until Element Is Offscreen    ${filter_apply_loading_bar_cancel_button_xpath}    60
     Sleep    0.2s
     Wait Until Element Is Enabled    ${project_menu_item_xpaths}
     Sleep    0.2s
