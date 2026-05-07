@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Image Viewer Operations test suite. Total Test Cases: 65 (MFRTIV01 - MFRT).
+Documentation     Image Viewer Operations test suite. Total Test Cases: 65 (MFRTIV01 - MFRTIV65).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -13,10 +13,10 @@ Resource          ../resources/Tools.resource
 Resource          ../resources/Online.resource
 Resource          ../resources/Image Viewer Operations.resource
 *** Test Cases ***
-MFRTIVO1 - Verify whether able to switch between images using Next/Previous buttons.
+MFRTIV01 - Verify whether able to switch between images using Next/Previous buttons.
 
     [Documentation]    Verify whether able to switch between images using Next/Previous buttons.
-    [Tags]    MFRTIVO1
+    [Tags]    MFRTIV01
 
     Open FoxViewerDesktop Application
     Login To FoxViewerDesktop    admin    admin
@@ -76,9 +76,9 @@ MFRTIV02 - Verify whether able to switch between images using Keyboard Shortcuts
     Sleep    0.1s
     Close Project
     Sleep    0.1s
-MFRTIVO3 - Verify whether able to Zoom Image viewer using zoom controls.
+MFRTIV03 - Verify whether able to Zoom Image viewer using zoom controls.
     [Documentation]    Verify whether able to Zoom Image viewer using zoom controls.
-    [Tags]    MFRTIVO3
+    [Tags]    MFRTIV03
 
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
     Sleep    0.1s
@@ -92,9 +92,9 @@ MFRTIVO3 - Verify whether able to Zoom Image viewer using zoom controls.
     Take Actual Screenshot    MFRTIV03_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV03_2.png    MFRTIV03_2.png
     Sleep    0.1s
-MFRTIVO4 - Verify whether able to Zoom Image viewer using Zoom Edit Control.
+MFRTIV04 - Verify whether able to Zoom Image viewer using Zoom Edit Control.
     [Documentation]    Verify whether able to Zoom Image viewer using Zoom Edit Control.
-    [Tags]    MFRTIVO4
+    [Tags]    MFRTIV04
 
     Zoom Image Viewer Using Zoom Edit Control    100
     Sleep    0.1s
@@ -106,9 +106,9 @@ MFRTIVO4 - Verify whether able to Zoom Image viewer using Zoom Edit Control.
     Take Actual Screenshot    MFRTIV04_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV04_2.png    MFRTIV04_2.png
     Sleep    0.1s
-MFRTIVO5 - Verify whether able to Pan Image Viewer using Pan Tool.
+MFRTIV05 - Verify whether able to Pan Image Viewer using Pan Tool.
     [Documentation]    Verify whether able to Pan Image Viewer using Pan Tool.
-    [Tags]    MFRTIVO5
+    [Tags]    MFRTIV05
 
     Zoom Image Viewer    ZoomIn    3
     Sleep    0.1s

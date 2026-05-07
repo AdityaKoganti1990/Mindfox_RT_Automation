@@ -77,7 +77,13 @@ ${fox_bleach_filter_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]
 ${filter_rename_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[1]
 ${filter_rename_textbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Edit[@AutomationId="ImgFilters_Rename_TxtName"]   
 ${filter_reset_to_default_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Rename_BtnResetDefault"]
-${filter_save_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Rename_BtnSave"]    
+${filter_save_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Rename_BtnSave"]
+${render_mode_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/StatusBar/Button[@AutomationId="Main_Btn_RenderMode"]
+${render_mode_gpu_option_xpath}    /Window/Window/Menu/MenuItem[contains(@Name,"GPU Rendering")]
+${render_mode_cpu_option_xpath}    /Window/Window/Menu/MenuItem[contains(@Name,"CPU Rendering")]
+${render_mode_info_option_xpath}    /Window/Window/Menu/MenuItem[contains(@Name,"GPU Info")]
+${render_mode_info_window_xpath}    /Window/Window[@Name="GPU Rendering Info"]
+${render_mode_info_window_Ok_Button_xpath}    /Window/Window[@Name="GPU Rendering Info"]/Button[@Name="OK"]
 *** Keywords ***
 
 Add Line Profiler Tool
@@ -1106,3 +1112,52 @@ Verify Tool Selected
         ...    Tool '${tool_name}' should be ${expected_label}, but it is ${actual_state}.
     END
     RETURN    ${actual_state}
+
+Select GPU Type
+    [Arguments]    ${gpu_type}
+    [Documentation]    Open the Render Mode menu on the status bar and click one of
+    ...    its items. Accepts ``GPU``, ``CPU``, or ``Info`` (case-insensitive).
+    ...
+    ...    Item names vary per machine (e.g. ``GPU Rendering (AMD Radeon(TM) Graphics)``,
+    ...    ``CPU Rendering (Software)``), so each item is matched on its leading text
+    ...    (``GPU Rendering`` / ``CPU Rendering`` / ``GPU Info``).
+    ...
+    ...    Examples:
+    ...    | Select GPU Type    GPU
+    ...    | Select GPU Type    CPU
+    ...    | Select GPU Type    Info
+    ${normalized_type}=    Evaluate    ''.join(ch.lower() for ch in str($gpu_type).strip() if ch.isalnum())
+    IF    '${normalized_type}'=='gpu'
+        ${option_xpath}=    Set Variable    ${render_mode_gpu_option_xpath}
+        ${option_label}=    Set Variable    GPU Rendering
+    ELSE IF    '${normalized_type}'=='cpu'
+        ${option_xpath}=    Set Variable    ${render_mode_cpu_option_xpath}
+        ${option_label}=    Set Variable    CPU Rendering
+    ELSE IF    '${normalized_type}'=='info' or '${normalized_type}'=='gpuinfo'
+        ${option_xpath}=    Set Variable    ${render_mode_info_option_xpath}
+        ${option_label}=    Set Variable    GPU Info
+    ELSE
+        Fail    Unsupported render mode '${gpu_type}'. Use 'GPU', 'CPU', or 'Info'.
+    END
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.2s
+    Click    ${render_mode_button_xpath}
+    Sleep    0.2s
+    Wait Until Element Exist    ${option_xpath}    5
+    Click    ${option_xpath}
+    Sleep    0.2s
+    IF    '${normalized_type}'=='info' or '${normalized_type}'=='gpuinfo'
+        Wait Until Element Exist    ${render_mode_info_window_xpath}    5
+    END
+    Log    Render mode set to '${option_label}'.
+
+Close GPU/CPU Rendering Info Window
+    [Documentation]    If the GPU Info option was selected in the render mode menu, a new window opens showing GPU details. This keyword closes that window.
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.2s
+    ${info_window_exists}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${render_mode_info_window_xpath}    1
+    Run Keyword If    ${info_window_exists}    Click    ${render_mode_info_window_Ok_Button_xpath}
+    Sleep    0.2s
+    Wait Until Element Does Not Exist    ${render_mode_info_window_xpath}    5
+    Log    GPU Info window closed successfully.
