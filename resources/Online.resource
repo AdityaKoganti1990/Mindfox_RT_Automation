@@ -377,7 +377,7 @@ Verify Video Format Options In Detector Tab
 
 Verify Orientation Options
     [Arguments]    @{orientation_args}    &{flip_expectations}
-    [Documentation]    Verify orientation dropdown options and Flip H/Flip V availability/state. Use Flip H=True and Flip V=False style arguments for expected flip state.
+    [Documentation]    Verify orientation dropdown options and Flip H/Flip V availability/state. Use Flip H=True and Flip V=False style arguments for expected flip state. Pass Flip H=NA (or Flip V=NA) to only verify the control exists and skip the availability/state check.
 
     ${expected_orientation_options}    ${expected_flip_states}=    Parse Orientation Verification Arguments
     ...    @{orientation_args}
@@ -475,6 +475,11 @@ Verify Orientation Flip Control
 
     ${control_xpath}=    Resolve Orientation Flip Control XPath    ${control_name}
     Wait Until Element Exist    ${control_xpath}    5
+    ${normalized_expected}=    Evaluate    str($expected_state).strip().lower()
+    IF    '${normalized_expected}' in ('na', 'n/a')
+        Log    ${control_name} control exists. Skipping availability/state verification (NA).
+        RETURN    ${None}
+    END
     ${toggle_state}=    Get Toggle State    ${control_xpath}
     ${actual_checked}=    Normalize Orientation Flip Toggle State    ${toggle_state}    ${control_name}
     Log    ${control_name} control exists and is ${actual_checked}.

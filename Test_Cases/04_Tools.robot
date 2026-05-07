@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Tools test suite. Total Test Cases: 48 (MFRTT01, MFRTT01-2, MFRTT02 - MFRTT47).
+Documentation     Tools test suite. Total Test Cases: 58 (MFRTT01, MFRTT01-2, MFRTT02 - MFRTT38_2, plus _2 variants of MFRTT27-29 and MFRTT32-38).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -9,7 +9,6 @@ Resource          ../resources/General.resource
 Resource          ../resources/imageviewer.resource
 Resource          ../resources/Tools.resource
 Resource      ../resources/Annotations.resource
-
 *** Test Cases ***
 MFRTT01 - Verify whether able to add normal line profiler tool in image viewer
     [Documentation]    Verify whether able to open add line profiler tool in image viewer
@@ -363,25 +362,26 @@ MFRTT26 - Verify whether filters tab is enabled when Image filter tool item is c
     Click Image Filter Tool
     Run Keyword And Continue On Failure    Verify Control Exists in Image Viewer    ${filter_combobox_xpath}
     Run Keyword And Continue On Failure    Verify Control Exists in Image Viewer    ${filter_apply_button_xpath}
-MFRTT27 - Verify whether able to apply image filter and view the changes in the image.
-    [Documentation]    Verify whether able to apply image filter and view the changes in the image.
-    [Tags]    smoke    tools
+MFRTT27 - Verify whether able to apply image filter and view the changes in the image with GPU Rendering.
+    [Documentation]    Verify whether able to apply image filter and view the changes in the image with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
+    Select GPU Type    GPU
     Apply Image Filter    Edge Gradient
     Take Actual Screenshot    MFRTT27.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT27.png    MFRTT27.png
-MFRTT28 - Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab.
-    [Documentation]    Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab.
-    [Tags]    smoke    tools
+MFRTT28 - Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with GPU Rendering.
+    [Documentation]    Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Reset Image Filter
     Take Actual Screenshot    MFRTT28.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT28.png    MFRTT28.png
     Apply Auto Best BNC
-MFRTT29 - Verify whether able to apply all the available filters in the image filter tool and view the changes in the image.
-    [Documentation]    Verify whether able to apply all the available filters in the image filter tool and view the changes in the image.
-    [Tags]    smoke    tools
+MFRTT29 - Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with GPU Rendering.
+    [Documentation]    Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
     @{filters}=    Create List    Edge Detection    Gradient Magnitude    Morphological Contour    Edge Gradient    High-Pass Sharpen    Low-Pass Smooth     Normalize    Sharpness Boost    Auto Equalise    Gaussian Blur    Fox Bleach        
@@ -409,9 +409,9 @@ MFRTT31 - Verify whether able to reset the filter name to default by clicking on
     Reset Filter Name to Default    My Custom Filter1
     Sleep    0.5s
     Run Keyword And Continue On Failure    Verify Filter Not Exists in Filters List    My Custom Filter1
-MFRTT32 - Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Documentation]    Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Tags]    smoke    tools
+MFRTT32 - Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Documentation]    Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
     Set Image Filter Parameters    Edge Detection    Sigma=2.50    Kernel Radius=4    Canny Low Ratio=0.20    Canny High Ratio=0.50
@@ -421,9 +421,9 @@ MFRTT32 - Verify whether able to apply Edge Detection filter by modifying the fi
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT32.png    MFRTT32.png
     Reset View
     Apply Auto Best BNC
-MFRTT33 - Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Documentation]    Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Tags]    smoke    tools
+MFRTT33 - Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Documentation]    Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
     Set Image Filter Parameters    Morphological Contour    Auto Best Contrast=True    Morph Radius=5
@@ -433,9 +433,9 @@ MFRTT33 - Verify whether able to apply Morphological Contour filter by modifying
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT33.png    MFRTT33.png
     Reset View
     Apply Auto Best BNC
-MFRTT34 - Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Documentation]    Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Tags]    smoke    tools
+MFRTT34 - Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Documentation]    Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
     Set Image Filter Parameters    High-Pass Sharpen    Auto Best Contrast=True    Butterworth Cutoff=0.50    Butterworth Order=5
@@ -445,9 +445,9 @@ MFRTT34 - Verify whether able to apply High Pass Sharpen filter by modifying the
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT34.png    MFRTT34.png
     Reset View
     Apply Auto Best BNC
-MFRTT35 - Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Documentation]    Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Tags]    smoke    tools
+MFRTT35 - Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Documentation]    Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
     Set Image Filter Parameters    Low-Pass Smooth    Auto Best Contrast=True    Butterworth Cutoff=0.50    Butterworth Order=5
@@ -457,9 +457,9 @@ MFRTT35 - Verify whether able to apply Low Pass Smooth filter by modifying the f
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT35.png    MFRTT35.png
     Reset View
     Apply Auto Best BNC
-MFRTT36 - Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Documentation]    Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Tags]    smoke    tools
+MFRTT36 - Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Documentation]    Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
     Set Image Filter Parameters    Sharpness Boost    Auto Best Contrast=True    Unsharp Amount=5.0    Unsharp Sigma=5.0
@@ -469,9 +469,9 @@ MFRTT36 - Verify whether able to apply Sharpness Boost filter by modifying the f
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT36.png    MFRTT36.png
     Reset View
     Apply Auto Best BNC
-MFRTT37 - Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Documentation]    Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Tags]    smoke    tools
+MFRTT37 - Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Documentation]    Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
     Set Image Filter Parameters    Gaussian Blur    Auto Best Contrast=True    Sigma=5.00    Kernel Radius=5
@@ -481,9 +481,9 @@ MFRTT37 - Verify whether able to apply Gaussian Blur filter by modifying the fil
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT37.png    MFRTT37.png
     Reset View
     Apply Auto Best BNC
-MFRTT38 - Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Documentation]    Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab.
-    [Tags]    smoke    tools
+MFRTT38 - Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Documentation]    Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+    [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
     Set Image Filter Parameters    Fox Bleach    Auto Best Contrast=True    Fox Bleach Tile Size=60    Fox Bleach Clip Limit=10.0
@@ -493,6 +493,121 @@ MFRTT38 - Verify whether able to apply Fox Bleach filter by modifying the filter
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT38.png    MFRTT38.png
     Reset View
     Apply Auto Best BNC
+MFRTT27_2 - Verify whether able to apply image filter and view the changes in the image with CPU Rendering.
+    [Documentation]    Verify whether able to apply image filter and view the changes in the image with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Click    ${window_XPATH}
+    Select GPU Type    CPU
+    Apply Image Filter    Edge Gradient
+    Take Actual Screenshot    MFRTT27_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT27_2.png    MFRTT27_2.png
+MFRTT28_2 - Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with CPU Rendering.
+    [Documentation]    Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Reset Image Filter
+    Take Actual Screenshot    MFRTT28_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT28_2.png    MFRTT28_2.png
+    Apply Auto Best BNC
+MFRTT29_2 - Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with CPU Rendering.
+    [Documentation]    Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Click    ${window_XPATH}
+    @{filters}=    Create List    Edge Detection    Gradient Magnitude    Morphological Contour    Edge Gradient    High-Pass Sharpen    Low-Pass Smooth     Normalize    Sharpness Boost    Auto Equalise    Gaussian Blur    Fox Bleach
+    FOR    ${filter}    IN    @{filters}
+        Apply Image Filter    ${filter}
+        Take Actual Screenshot    MFRTT29_2_${filter}.png
+        Run Keyword And Continue On Failure    Compare Result Images    MFRTT29_2_${filter}.png    MFRTT29_2_${filter}.png    98
+        Reset Image Filter
+    END
+    Apply Auto Best BNC
+MFRTT32_2 - Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Documentation]    Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Click    ${window_XPATH}
+    Set Image Filter Parameters    Edge Detection    Sigma=2.50    Kernel Radius=4    Canny Low Ratio=0.20    Canny High Ratio=0.50
+    Sleep    0.5s
+    Click Apply Image Filter
+    Take Actual Screenshot    MFRTT32_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT32_2.png    MFRTT32_2.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT33_2 - Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Documentation]    Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Click    ${window_XPATH}
+    Set Image Filter Parameters    Morphological Contour    Auto Best Contrast=True    Morph Radius=5
+    Sleep    0.5s
+    Click Apply Image Filter
+    Take Actual Screenshot    MFRTT33_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT33_2.png    MFRTT33_2.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT34_2 - Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Documentation]    Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Click    ${window_XPATH}
+    Set Image Filter Parameters    High-Pass Sharpen    Auto Best Contrast=True    Butterworth Cutoff=0.50    Butterworth Order=5
+    Sleep    0.5s
+    Click Apply Image Filter
+    Take Actual Screenshot    MFRTT34_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT34_2.png    MFRTT34_2.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT35_2 - Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Documentation]    Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Click    ${window_XPATH}
+    Set Image Filter Parameters    Low-Pass Smooth    Auto Best Contrast=True    Butterworth Cutoff=0.50    Butterworth Order=5
+    Sleep    0.5s
+    Click Apply Image Filter
+    Take Actual Screenshot    MFRTT35_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT35_2.png    MFRTT35_2.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT36_2 - Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Documentation]    Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Click    ${window_XPATH}
+    Set Image Filter Parameters    Sharpness Boost    Auto Best Contrast=True    Unsharp Amount=5.0    Unsharp Sigma=5.0
+    Sleep    0.5s
+    Click Apply Image Filter
+    Take Actual Screenshot    MFRTT36_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT36_2.png    MFRTT36_2.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT37_2 - Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Documentation]    Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Click    ${window_XPATH}
+    Set Image Filter Parameters    Gaussian Blur    Auto Best Contrast=True    Sigma=5.00    Kernel Radius=5
+    Sleep    0.5s
+    Click Apply Image Filter
+    Take Actual Screenshot    MFRTT37_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT37_2.png    MFRTT37_2.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT38_2 - Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Documentation]    Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+    [Tags]    smoke    tools    cpu_rendering
+
+    Click    ${window_XPATH}
+    Set Image Filter Parameters    Fox Bleach    Auto Best Contrast=True    Fox Bleach Tile Size=60    Fox Bleach Clip Limit=10.0
+    Sleep    0.5s
+    Click Apply Image Filter
+    Take Actual Screenshot    MFRTT38_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT38_2.png    MFRTT38_2.png
+    Reset View
+    Apply Auto Best BNC
+    Select GPU Type    GPU
 MFRTT39 - Verify whether able to close filters tab.
     [Documentation]    Verify whether able to close filters tab.
     [Tags]    smoke    tools

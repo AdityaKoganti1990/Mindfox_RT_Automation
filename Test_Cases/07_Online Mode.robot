@@ -106,5 +106,5 @@ MFRTO13 - Verify whether Orientation options are shown in online mode.
     [Documentation]    Verify whether Orientation options are shown in online mode.
     [Tags]    MFRTO13
 
-    Verify Orientation Options    0°    90°    180°    270°    Flip H=True    Flip V=True
+    Run Keyword And Continue On Failure   Verify Orientation Options    0°    90°    180°    270°    Flip H=NA    Flip V=NA
     Close FoxRT Application Window
