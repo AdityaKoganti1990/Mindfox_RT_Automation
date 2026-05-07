@@ -5,10 +5,7 @@ Library           Process
 Library           AutoItLibrary
 Library           Collections
 Resource          ../resources/login.resource
-Resource          ../resources/General.resource
-Resource          ../resources/imageviewer.resource
 Resource          ../resources/Tools.resource
-Resource      ../resources/Annotations.resource
 *** Test Cases ***
 MFRTT01 - Verify whether able to add normal line profiler tool in image viewer
     [Documentation]    Verify whether able to open add line profiler tool in image viewer

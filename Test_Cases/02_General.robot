@@ -5,7 +5,6 @@ Library           Process
 Library           AutoItLibrary
 Resource          ../resources/login.resource
 Resource          ../resources/General.resource
-Resource          ../resources/imageviewer.resource
 
 *** Variables ***
 ${names}

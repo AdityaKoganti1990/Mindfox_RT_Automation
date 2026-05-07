@@ -4,8 +4,6 @@ Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
 Resource          ../resources/login.resource
-Resource          ../resources/General.resource
-Resource          ../resources/imageviewer.resource
 Resource          ../resources/annotations.resource
 *** Test Cases ***
 MFRTANN01 - Verify whether able to add arrow annotation in image viewer

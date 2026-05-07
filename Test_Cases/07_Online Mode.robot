@@ -5,12 +5,6 @@ Library           Process
 Library           AutoItLibrary
 Library           OperatingSystem
 Resource          ../resources/login.resource
-Resource          ../resources/General.resource
-Resource          ../resources/imageviewer.resource
-Resource          ../resources/Actions.resource
-Resource          ../resources/Annotations.resource
-Resource          ../resources/Tools.resource
-Resource          ../resources/Image Viewer Operations.resource
 Resource          ../resources/Online.resource
 *** Variables ***
 
