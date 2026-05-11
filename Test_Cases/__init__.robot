@@ -7,7 +7,7 @@ Library           ../lib/display_check.py
 Resource          ../resources/login.resource
 
 Suite Setup        Verify Display Settings
-Suite Teardown     Restore Display Settings
+Suite Teardown     Run Keywords    Restore Display Settings    AND    Shutdown PC
 #Suite Teardown    Close Application For Suite
 
 *** Variables ***
@@ -33,3 +33,6 @@ Open Application For Suite
 Close Application For Suite
     Run Keyword If    '${pid}' != 'NONE'
     ...    Close FoxViewerDesktop Application    ${pid}
+
+Shutdown PC
+    Run Process    powershell    -ExecutionPolicy    Bypass    -File    ${CURDIR}/../lib/prompt_shutdown.ps1
