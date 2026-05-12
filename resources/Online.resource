@@ -51,6 +51,8 @@ ${COMPONENT_WINDOW_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="DICONDE Setup"]
 ${COMPONENT_WINDOW_Close_BUTTON_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Button[@AutomationId="Diconde_Btn_CloseDialog"]
 ${RESUME_ACQUISITION_WINDOW_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="Resume Component"]
 ${RESUME_ACQUISITION_CANCEL_BUTTON_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="Resume Component"]/Button[@Name="Cancel"]
+${XRay_Controller_Connection_Combobox_XPATH}    ${MAIN_WINDOW_XPATH}/Tab[2]/TabItem[1]/Custom/Pane/ComboBox[@AutomationId="XRayCtrl_Cmb_Controller"]
+${MOTION_CONTROLLER_Connection_Combobox_XPATH}    ${MAIN_WINDOW_XPATH}/Tab[2]/TabItem[2]/Custom/Pane/ComboBox[@AutomationId="MotionCtrl_Cmb_Controller"]
 *** Keywords ***
 
 Toggle Online Or Offline Mode
@@ -251,10 +253,10 @@ Show or Hide XRay Controller
     Focus    ${MAIN_WINDOW_XPATH}
     Sleep    0.1s
     ${state_norm}=    Evaluate    str($state).strip().lower()
-    ${should_show}=    Evaluate    $state_norm in ('show', 'true', '1', 'on')
-    ${should_hide}=    Evaluate    $state_norm in ('hide', 'false', '0', 'off')
+    ${should_show}=    Evaluate    $state_norm in ('show', 'true', '1', 'on', 'open')
+    ${should_hide}=    Evaluate    $state_norm in ('hide', 'false', '0', 'off', 'close')
     Should Be True    ${should_show} or ${should_hide}
-    ...    Invalid state '${state}'. Use 'Show' or 'Hide'.
+    ...    Invalid state '${state}'. Use 'Show'/'Hide', 'On'/'Off', or 'True'/'False'.
     ${tab_exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${XRay_Controller_Window_Tab_XPATH}    2
     Log    XRay Controller tab exists in tree: ${tab_exists}
     IF    ${tab_exists}
@@ -270,11 +272,18 @@ Show or Hide XRay Controller
     IF    ${should_show} and not ${currently_shown}
         Log    Clicking button to SHOW XRay Controller
         Click    ${XRay_Controller_Button_XPATH}
+        Sleep    0.5s
+        Wait Until Element Exist    ${XRay_Controller_Window_Tab_XPATH}    5
+        Log    Clicking XRay Controller tab to bring it to focus
+        Click    ${XRay_Controller_Window_Tab_XPATH}
+    ELSE IF    ${should_show} and ${currently_shown}
+        Log    XRay Controller already shown - clicking tab to ensure focus
+        Click    ${XRay_Controller_Window_Tab_XPATH}
     ELSE IF    ${should_hide} and ${currently_shown}
         Log    Clicking button to HIDE XRay Controller
         Click    ${XRay_Controller_Button_XPATH}
     ELSE
-        Log    XRay Controller already in requested state - no click needed
+        Log    XRay Controller already hidden - no click needed
     END
     Sleep    0.5s
 
@@ -542,10 +551,17 @@ Toggle Motion Controller Window
     IF    ${should_show} and not ${currently_shown}
         Log    Clicking button to SHOW Motion Controller
         Click    ${MotionController_Button_XPATH}
+        Sleep    0.5s
+        Wait Until Element Exist    ${MOTION_CONTROLLER_WINDOW_XPATH}    5
+        Log    Clicking Motion Controller tab to bring it to focus
+        Click    ${MOTION_CONTROLLER_WINDOW_XPATH}
+    ELSE IF    ${should_show} and ${currently_shown}
+        Log    Motion Controller already shown - clicking tab to ensure focus
+        Click    ${MOTION_CONTROLLER_WINDOW_XPATH}
     ELSE IF    ${should_hide} and ${currently_shown}
         Log    Clicking button to HIDE Motion Controller
         Click    ${MotionController_Button_XPATH}
     ELSE
-        Log    Motion Controller already in requested state - no click needed
+        Log    Motion Controller already hidden - no click needed
     END
     Sleep    0.5s

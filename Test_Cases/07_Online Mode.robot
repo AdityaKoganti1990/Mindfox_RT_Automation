@@ -6,10 +6,9 @@ Library           AutoItLibrary
 Library           OperatingSystem
 Resource          ../resources/login.resource
 Resource          ../resources/Online.resource
+
 *** Variables ***
-
 *** Test Cases ***
-
 MFRTO01 - Verify whether able to open RT application in online mode.
     [Documentation]    Verify whether able to open RT application in online mode.
     [Tags]    MFRTO01
@@ -45,7 +44,8 @@ MFRTO04 - Verify whether able to Hide the X - Ray controller in online mode.
     [Tags]    MFRTO04
 
     Toggle Online Or Offline Mode    Online
-    Show or Hide XRay Controller    hide
+    Show or Hide XRay Controller    Hide
+    Run Keyword And Continue On Failure    VerifyControlState    control_name=${XRay_Controller_Connection_Combobox_XPATH}    expected_state=not exists    timeout=1
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${XRay_Controller_Window_Tab_XPATH}    expected_state=not exists    timeout=1
     Toggle Motion Controller Window    Hide
 MFRTO05 - Verify whether able to open Components window in online mode.
@@ -107,11 +107,13 @@ MFRTO14 - Verify whether able to open Motion Controller window in online mode.
 
     Toggle Online Or Offline Mode    Online
     Toggle Motion Controller Window    Show
+    Run Keyword And Continue On Failure    VerifyControlState    control_name=${MOTION_CONTROLLER_Connection_Combobox_XPATH}    expected_state=exists    timeout=1
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${MOTION_CONTROLLER_WINDOW_XPATH}    expected_state=exists    timeout=1
 MFRTO15 - Verify whether able to hide the Motion Controller window in online mode.
     [Documentation]    Verify whether able to hide the Motion Controller window in online mode.
     [Tags]    MFRTO15
 
     Toggle Motion Controller Window    Hide
+    Run Keyword And Continue On Failure    VerifyControlState    control_name=${MOTION_CONTROLLER_Connection_Combobox_XPATH}    expected_state=not exists    timeout=1
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${MOTION_CONTROLLER_WINDOW_XPATH}    expected_state=not exists    timeout=1
     Close FoxRT Application Window
