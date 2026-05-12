@@ -22,6 +22,7 @@ ${OFFLINE_OPEN_FILE_BUTTON_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId=
 ${Component_Create_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Btn_NewComponent"]
 ${Component_Resume_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Btn_ResumeComponent"]
 ${XRay_Controller_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Btn_XRayController"]
+${MotionController_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Btn_MotionController"]
 ${DETECTOR_TAB_XPATH}    ${MAIN_WINDOW_XPATH}//TabItem[@AutomationId="Main_Tab_Detector"]
 ${DETECTOR_LIST_COMBOBOX_XPATH}    ${MAIN_WINDOW_XPATH}//ComboBox[@AutomationId="DetParams_Cmb_Detector"]
 ${BINNING_COMBOBOX_XPATH}    ${MAIN_WINDOW_XPATH}//ComboBox[@AutomationId="DetParams_Cmb_Binning"]
@@ -45,6 +46,7 @@ ${GAIN_SLIDER_XPATH}    ${MAIN_WINDOW_XPATH}//Slider[@AutomationId="DetParams_Sl
 ${IMAGE_AVERAGING_SLIDER_XPATH}    ${MAIN_WINDOW_XPATH}//Slider[@AutomationId="DetParams_Sld_ImageAveraging"]
 ${SEQUENCE_FRAMES_SLIDER_XPATH}    ${MAIN_WINDOW_XPATH}//Slider[@AutomationId="DetParams_Sld_SequenceFrames"]
 ${XRay_Controller_Window_Tab_XPATH}    ${MAIN_WINDOW_XPATH}//TabItem[@AutomationId="Main_BottomTab_XRayController"]
+${MOTION_CONTROLLER_WINDOW_XPATH}    ${MAIN_WINDOW_XPATH}//TabItem[@AutomationId="Main_BottomTab_MotionController"]
 ${COMPONENT_WINDOW_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="DICONDE Setup"]
 ${COMPONENT_WINDOW_Close_BUTTON_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Button[@AutomationId="Diconde_Btn_CloseDialog"]
 ${RESUME_ACQUISITION_WINDOW_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="Resume Component"]
@@ -514,3 +516,36 @@ Normalize Orientation Flip Toggle State
         RETURN    ${False}
     END
     Fail    Could not read checked state for ${control_name}. Toggle state was: ${state}.
+
+Toggle Motion Controller Window
+    [Arguments]    ${state}
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    ${state_norm}=    Evaluate    str($state).strip().lower()
+    ${should_show}=    Evaluate    $state_norm in ('show', 'true', '1', 'on', 'open')
+    ${should_hide}=    Evaluate    $state_norm in ('hide', 'false', '0', 'off', 'close')
+    Should Be True    ${should_show} or ${should_hide}
+    ...    Invalid state '${state}'. Use 'Show'/'Hide', 'On'/'Off', or 'True'/'False'.
+    ${tab_exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${MOTION_CONTROLLER_WINDOW_XPATH}    2
+    Log    Motion Controller tab exists in tree: ${tab_exists}
+    IF    ${tab_exists}
+        ${offscreen_raw}=    Is Element Offscreen    ${MOTION_CONTROLLER_WINDOW_XPATH}
+        Log    Motion Controller tab Is Element Offscreen raw value: '${offscreen_raw}'
+        ${is_offscreen}=    Evaluate    str($offscreen_raw).strip().lower() == 'true'
+        ${currently_shown}=    Evaluate    not ${is_offscreen}
+    ELSE
+        ${currently_shown}=    Set Variable    ${False}
+    END
+    Log    Motion Controller currently shown: ${currently_shown}
+    Log    should_show=${should_show}, should_hide=${should_hide}
+    IF    ${should_show} and not ${currently_shown}
+        Log    Clicking button to SHOW Motion Controller
+        Click    ${MotionController_Button_XPATH}
+    ELSE IF    ${should_hide} and ${currently_shown}
+        Log    Clicking button to HIDE Motion Controller
+        Click    ${MotionController_Button_XPATH}
+    ELSE
+        Log    Motion Controller already in requested state - no click needed
+    END
+    Sleep    0.5s

@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Online Mode test suite. Total Test Cases: 13 (MFRTO01 - MFRTO13).
+Documentation     Online Mode test suite. Total Test Cases: 15 (MFRTO01 - MFRTO15).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -31,6 +31,7 @@ MFRTO02 - Verify the default display when switched to Online mode.
     Run Keyword And Continue On Failure    VerifyControlState    control_name=${arrow_annotation_button_xpath}    expected_state=disabled    timeout=5
     Run Keyword And Continue On Failure    VerifyControlState    control_name=${line_profiler_tool_button_xpath}    expected_state=disabled    timeout=5
     Run Keyword And Continue On Failure    VerifyControlState    control_name=${line_profiler_tool_button_xpath}    expected_state=disabled    timeout=5
+    Run Keyword And Continue On Failure    VerifyControlState    control_name=${MotionController_Button_XPATH}    expected_state=enabled    timeout=5
     Take Actual Screenshot    MFRTO02_1.png
     Run Keyword And Continue On Failure   Compare Result Images    MFRTO02_1.png    MFRTO02_1.png
 MFRTO03 - Verify whether detector tab is opened when switched to online mode.
@@ -46,6 +47,7 @@ MFRTO04 - Verify whether able to Hide the X - Ray controller in online mode.
     Toggle Online Or Offline Mode    Online
     Show or Hide XRay Controller    hide
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${XRay_Controller_Window_Tab_XPATH}    expected_state=not exists    timeout=1
+    Toggle Motion Controller Window    Hide
 MFRTO05 - Verify whether able to open Components window in online mode.
     [Documentation]    Verify whether able to open Components window in online mode.
     [Tags]    MFRTO05
@@ -98,5 +100,18 @@ MFRTO13 - Verify whether Orientation options are shown in online mode.
     [Documentation]    Verify whether Orientation options are shown in online mode.
     [Tags]    MFRTO13
 
-    Run Keyword And Continue On Failure   Verify Orientation Options    0°    90°    180°    270°    Flip H=NA    Flip V=NA
+    Run Keyword And Continue On Failure   Verify Orientation Options    0°    90°    180°    270°    Flip H=NA    Flip V=NA    
+MFRTO14 - Verify whether able to open Motion Controller window in online mode.
+    [Documentation]    Verify whether able to open Motion Controller window in online mode.
+    [Tags]    MFRTO14
+
+    Toggle Online Or Offline Mode    Online
+    Toggle Motion Controller Window    Show
+    Run Keyword And Continue On Failure   VerifyControlState    control_name=${MOTION_CONTROLLER_WINDOW_XPATH}    expected_state=exists    timeout=1
+MFRTO15 - Verify whether able to hide the Motion Controller window in online mode.
+    [Documentation]    Verify whether able to hide the Motion Controller window in online mode.
+    [Tags]    MFRTO15
+
+    Toggle Motion Controller Window    Hide
+    Run Keyword And Continue On Failure   VerifyControlState    control_name=${MOTION_CONTROLLER_WINDOW_XPATH}    expected_state=not exists    timeout=1
     Close FoxRT Application Window
