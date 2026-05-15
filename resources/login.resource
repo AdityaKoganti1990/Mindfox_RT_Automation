@@ -91,9 +91,20 @@ Login Window Should Be Closed
 
 App Version Text Should Present in login screen
     Wait Until Element Exist    ${LOGIN_WINDOW_XPATH}    2
-    Wait Until Element Is Enabled    ${LOGIN_WINDOW_XPATH}    2 
+    Wait Until Element Is Enabled    ${LOGIN_WINDOW_XPATH}    2
     ${version}=    Get Name From Element    ${APP_VERSION_loginscreen_TEXT_XPATH}
     Should Be Equal As Strings    ${version}    ${APPLICATION_VERSION_in_loginscreen}
+    Show App Version Popup    ${version}    30
+
+Show App Version Popup
+    [Arguments]    ${version_text}    ${timeout_seconds}=30
+    [Documentation]    Display the detected app version in a popup with OK/Cancel buttons. Auto-continues after the specified timeout (default 30s). Cancel stops the entire automation run.
+    ${result}=    Run Process    powershell    -ExecutionPolicy    Bypass    -File    ${CURDIR}/../lib/show_version_popup.ps1    -VersionText    ${version_text}    -TimeoutSeconds    ${timeout_seconds}
+    Log    Version popup exit code: ${result.rc}
+    Log    Version popup stdout: ${result.stdout}
+    IF    ${result.rc} == 2
+        Fatal Error    User clicked Cancel on the app version popup. Stopping automation.
+    END
 
 App Version Text Should Present
     Wait Until Element Exist    ${About_close_btn_XPATH}    2              
