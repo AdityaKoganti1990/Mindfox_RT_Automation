@@ -102,10 +102,11 @@ ${rt_simulator_window_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Wind
 ${rt_simulator_window_close_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="FoXpert RT Simulator"]/Button[3]
 *** Keywords ***
 Open Report Viewer
-    [Documentation]    Open Report Viewer
-    
+    [Documentation]    Open Report Viewer. If a scrollbar is present on the main toolbar pane (Generate Report button hidden below visible area), scroll the pane to the bottom before clicking. Otherwise click directly without scrolling.
+
     Click    ${MAIN_WINDOW_XPATH}
     Sleep    0.2s
+    Scroll To Report Viewer Button
     Click    ${REPORT_VIEWER_BUTTON_XPATH}
     Sleep    0.2s
     Wait Until Element Exist    ${REPORT_VIEWER_Close_BUTTON_XPATH}    5
@@ -114,6 +115,30 @@ Open Report Viewer
     Sleep    1s
     Resize FoxRT Application Window    10    10    1850    1000
     Sleep    1s
+
+Scroll To Report Viewer Button
+    [Documentation]    If a vertical scrollbar is present (and visible) on the main toolbar pane, scroll the pane to the bottom so the Generate Report button comes into view. Skips silently when no scrollbar is shown (the toolbar contents already fit and the button is in view).
+
+    ${scrollbar_xpath}=    Set Variable    ${MAIN_WINDOW_XPATH}/Pane/ScrollBar
+    ${scrollbar_present}=    Run Keyword And Return Status    Wait Until Element Exist    ${scrollbar_xpath}    1
+    IF    not ${scrollbar_present}
+        Log    No scrollbar on toolbar pane; Generate Report button should already be in view.
+        RETURN
+    END
+
+    ${scrollbar_visible}=    Run Keyword And Return Status    Element Should Not Be Offscreen    ${scrollbar_xpath}
+    IF    not ${scrollbar_visible}
+        Log    Toolbar scrollbar element exists but is offscreen; skipping scroll.
+        RETURN
+    END
+
+    Log    Scrollbar visible on toolbar pane; scrolling pane to the bottom.
+    Focus    ${MAIN_WINDOW_XPATH}
+    FOR    ${index}    IN RANGE    30
+        Scroll Down    ${MAIN_WINDOW_XPATH}/Pane    1
+        Sleep    0.05s
+    END
+    Sleep    0.2s
 
 
 Resize Report Viewer Window
@@ -163,10 +188,13 @@ Set Report Viewer Params
     [Arguments]    ${report_number}=${EMPTY}    ${report_date}=${EMPTY}    ${report_title}=${EMPTY}
     ...    ${include_Radiographic_Images}=${EMPTY}    ${include_Measurements}=${EMPTY}
     ...    ${include_IQI_Wire_Analysis}=${EMPTY}    ${include_Defect_Indications}=${EMPTY}
+    ...    ${template}=Standard Template
     [Documentation]    Set Report Viewer Params without popup dialogs. Uses passed arguments or default values.
-    
+    ...    ${template} selects the report template radio button before applying params (default: "Standard Template"). Pass "Custom Template" for the custom variant.
+
     Focus    ${REPORT_VIEWER_WINDOW_XPATH}
     Sleep    0.2s
+    Select Report Viewer Template    ${template}
 
     ${default_report_number}=    Evaluate    __import__('datetime').datetime.now().strftime('RPT-%Y%m%d-%H%M%S')
     ${default_report_date}=    Evaluate    __import__('datetime').datetime.now().strftime('%Y-%m-%d')

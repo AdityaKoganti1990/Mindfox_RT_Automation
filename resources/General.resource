@@ -48,6 +48,20 @@ ${User_Manual_Button_XPATH}    //*[@AutomationId="Main_Btn_UserManual"]
 ${open_about_menu_XPATH}          //*[@AutomationId="Main_Btn_About"]
 ${open_user_management_menu_XPATH}    //*[@AutomationId="Main_Btn_UserManagement"]
 ${UI_Scale_Combobox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//ComboBox[@AutomationId="Main_Cmb_UiScale"]
+${audit_log_window_xpath}                /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Audit Log"]
+${audit_log_from_date_xpath}             ${audit_log_window_xpath}//*[@AutomationId="FromDate"]
+${audit_log_to_date_xpath}               ${audit_log_window_xpath}//*[@AutomationId="ToDate"]
+${audit_log_category_combobox_xpath}     ${audit_log_window_xpath}//ComboBox[@AutomationId="AuditLog_Cmb_CategoryFilter"]
+${audit_log_user_combobox_xpath}         ${audit_log_window_xpath}//ComboBox[@AutomationId="AuditLog_Cmb_UserFilter"]
+${audit_log_load_button_xpath}           ${audit_log_window_xpath}//Button[@AutomationId="AuditLog_Btn_Load"]
+${audit_log_export_csv_button_xpath}     ${audit_log_window_xpath}//Button[@AutomationId="AuditLog_Btn_ExportCsv"]
+${audit_log_export_dialog_filename_xpath}    ${audit_log_window_xpath}/Window//ComboBox[@AutomationId="FileNameControlHost"]//Edit
+${audit_log_export_dialog_filename_fallback_xpath}    ${audit_log_window_xpath}/Window//Edit[@Name="File name:"]
+${audit_log_export_dialog_save_button_xpath}    ${audit_log_window_xpath}/Window//Button[@Name="Save"]
+${audit_log_export_overwrite_yes_button_xpath}    ${audit_log_window_xpath}/Window/Window/Button[@Name="Yes"]
+${audit_log_export_confirmation_ok_button_xpath}    /Window/Window[1]/Button[@Name="OK"]
+${audit_log_export_confirmation_ok_button_fallback_xpath}    ${MAIN_WINDOW_XPATH}//Window/Button[@Name="OK"]
+${audit_log_exports_directory}           ${CURDIR}\\..\\Exports\\Audit Logs\\
 ${project_Directory_Path}    ${CURDIR}\\..\\Test_Data\\
 ${folder_Directory_Path}     ${CURDIR}\\..\\Test_Data\\Project Folder_Set1
 ${Stitch_Files_Directory_Path}     ${CURDIR}\\..\\Test_Data\\StitchTestData\\
@@ -175,6 +189,123 @@ Open audit Logs
 Close audit Logs
     Win Close    Audit Log
     Win Wait Close    Audit Log    ${EMPTY}    2
+
+Apply Audit Log Filter Params
+    [Arguments]    ${from_date}=${EMPTY}    ${to_date}=${EMPTY}    ${category}=${EMPTY}    ${user}=${EMPTY}
+    [Documentation]    Set Audit Log filter fields and then click the Load button to apply them. Each filter argument is optional — only fields with non-empty values are updated; the Load button is always clicked at the end.
+    ...    ${from_date} / ${to_date}: typed into the From/To date pickers (e.g., 2026-01-15).
+    ...    ${category}: selected from the Category dropdown by visible name.
+    ...    ${user}: selected from the User dropdown by visible name.
+    ...
+    ...    Examples:
+    ...    | Apply Audit Log Filter Params    from_date=2026-01-01    to_date=2026-01-31
+    ...    | Apply Audit Log Filter Params    category=Login    user=admin
+    ...    | Apply Audit Log Filter Params    2026-01-01    2026-01-31    Login    admin
+
+    Focus    ${audit_log_window_xpath}
+    Sleep    0.2s
+
+    IF    '${from_date}' != '${EMPTY}'
+        Set Audit Log Date Field    ${audit_log_from_date_xpath}    ${from_date}
+    END
+    IF    '${to_date}' != '${EMPTY}'
+        Set Audit Log Date Field    ${audit_log_to_date_xpath}    ${to_date}
+    END
+    IF    '${category}' != '${EMPTY}'
+        Select Combobox Item By Name    ${audit_log_category_combobox_xpath}    ${category}
+        Sleep    0.2s
+    END
+    IF    '${user}' != '${EMPTY}'
+        Select Combobox Item By Name    ${audit_log_user_combobox_xpath}    ${user}
+        Sleep    0.2s
+    END
+
+    Click    ${audit_log_load_button_xpath}
+    Sleep    0.3s
+
+Set Audit Log Date Field
+    [Arguments]    ${field_xpath}    ${value}
+    [Documentation]    Set a value into a date picker field by clicking to focus, selecting any existing text with Ctrl+A, then typing the new value via OS-level keystrokes.
+    ...    Avoids FlaUI's TextBox.set_Text path which calls UIA SetFocus and throws InvalidOperationException on WPF DatePicker controls.
+
+    Click    ${field_xpath}
+    Sleep    0.3s
+    AutoItLibrary.Send    ^a
+    Sleep    0.1s
+    AutoItLibrary.Send    {DEL}
+    Sleep    0.1s
+    AutoItLibrary.Send    ${value}    1
+    Sleep    0.2s
+
+Export Audit Log
+    [Arguments]    ${file_name}=${EMPTY}    ${folder_path}=${audit_log_exports_directory}
+    [Documentation]    Click Export CSV in the Audit Log window, enter the destination path in the Save dialog, and click Save.
+    ...    ${file_name}: CSV file name without extension (e.g. AuditLog_MFRTB22). Defaults to a timestamped name AuditLog-YYYYMMDD-HHMMSS.
+    ...    ${folder_path}: Destination directory. Defaults to ${audit_log_exports_directory} (= <repo>\\Exports\\Audit Logs\\). Created if missing.
+    ...    Handles the Save As overwrite confirmation if the file already exists.
+    ...
+    ...    Examples:
+    ...    | Export Audit Log
+    ...    | Export Audit Log    MFRTB22_Audit
+    ...    | Export Audit Log    MFRTB22_Audit    ${audit_log_exports_directory}
+
+    IF    '${file_name}' == '${EMPTY}'
+        ${file_name}=    Evaluate    __import__('datetime').datetime.now().strftime('AuditLog-%Y%m%d-%H%M%S')
+    END
+
+    Create Directory    ${folder_path}
+    ${full_path}=    Evaluate    __import__('os').path.join($folder_path, $file_name)
+
+    Click    ${audit_log_export_csv_button_xpath}
+    Sleep    0.5s
+
+    ${primary_present}=    Run Keyword And Return Status    Wait Until Element Exist    ${audit_log_export_dialog_filename_xpath}    5
+    ${filename_xpath}=    Set Variable If    ${primary_present}    ${audit_log_export_dialog_filename_xpath}    ${audit_log_export_dialog_filename_fallback_xpath}
+    Wait Until Element Exist    ${filename_xpath}    5
+    Sleep    0.5s
+    Set Text To Textbox    ${filename_xpath}    ${full_path}
+    Sleep    0.3s
+    Click    ${audit_log_export_dialog_save_button_xpath}
+    Sleep    0.5s
+
+    ${overwrite_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${audit_log_export_overwrite_yes_button_xpath}    2
+    Run Keyword If    ${overwrite_present}    Click    ${audit_log_export_overwrite_yes_button_xpath}
+    Sleep    0.3s
+
+    ${primary_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${audit_log_export_confirmation_ok_button_xpath}    5
+    IF    ${primary_present}
+        Click    ${audit_log_export_confirmation_ok_button_xpath}
+    ELSE
+        ${fallback_present}=    Run Keyword And Return Status
+        ...    Wait Until Element Exist    ${audit_log_export_confirmation_ok_button_fallback_xpath}    2
+        Run Keyword If    ${fallback_present}    Click    ${audit_log_export_confirmation_ok_button_fallback_xpath}
+    END
+    Sleep    0.3s
+    Log    Audit log exported to: ${full_path}.csv
+
+Verify Exported File Saved
+    [Arguments]    ${file_name}    ${folder_path}=${EMPTY}    ${timeout}=30
+    [Documentation]    Verify that an exported file exists on disk. Common helper for any export flow (CSV, PDF, image, etc.).
+    ...    ${file_name}: Name of the exported file with extension (e.g. MFRTB22_Audit.csv). May also be passed as a full path if ${folder_path} is left empty.
+    ...    ${folder_path}: Directory the file should be in. Optional — when empty, ${file_name} is treated as a full path.
+    ...    ${timeout}: Seconds to retry the existence check (file system writes can lag); default 30.
+    ...
+    ...    Examples:
+    ...    | Verify Exported File Saved    MFRTB22_Audit.csv    ${audit_log_exports_directory}
+    ...    | Verify Exported File Saved    ${audit_log_exports_directory}MFRTB22_Audit.csv
+    ...    | Verify Exported File Saved    MFRTIV43_Primary.png    ${Actual_Image_Exports}
+
+    IF    $folder_path
+        ${full_path}=    Evaluate    __import__('os').path.join($folder_path, $file_name)
+    ELSE
+        ${full_path}=    Set Variable    ${file_name}
+    END
+
+    Wait Until Keyword Succeeds    ${timeout}x    1s    File Should Exist    ${full_path}
+    Log    Verified exported file exists: ${full_path}
+    RETURN    ${full_path}
 
 Open Service Support
     Click    //*[@AutomationId="Main_Btn_ServiceSupport"]

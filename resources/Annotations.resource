@@ -425,6 +425,16 @@ Select Annotation At Custom Position
     AutoItLibrary.Mouse Click    left    ${x}    ${y}
     Sleep    0.5
 
+Move Annotation Label
+    [Arguments]    ${click_x}    ${click_y}    ${target_x}    ${target_y}
+    [Documentation]    Move an annotation label by clicking it at (${click_x}, ${click_y}) and dragging it to (${target_x}, ${target_y}).
+    ...    Coordinates are absolute screen coordinates. The first pair locates the label; the second pair is the destination.
+
+    Focus    ${window_XPATH}
+    Sleep    0.5s
+    AutoItLibrary.Mouse Click Drag    left    ${click_x}    ${click_y}    ${target_x}    ${target_y}
+    Sleep    0.5s
+
 Resolve Annotation Tool XPath
     [Arguments]    ${tool_name}
     [Documentation]    Translate a friendly annotation tool name to its toggle button XPath.
