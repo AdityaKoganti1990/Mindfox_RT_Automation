@@ -515,13 +515,21 @@ Evaluate Defect Marked
     Sleep    0.2s
 
 Click Image Filter Tool
-    [Documentation]    Activate the Image Filter tool.
+    [Arguments]    ${status}=True
+    [Documentation]    Toggle the Image Filter tool. ${status}=True activates (selects) it, ${status}=False turns it off. Defaults to True. If the tool is already in the requested state, no action is taken.
 
     Focus    ${window_XPATH}
     Sleep    0.2s
-    Click    ${Image_Filter_Tool_Button_XPATH}
-    Sleep    0.2s
-    Wait Until Element Exist    ${filter_combobox_xpath}    5
+    ${filter_tool_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${filter_combobox_xpath}    1
+    IF    '${status}' == 'True' and not ${filter_tool_open}
+        Click    ${Image_Filter_Tool_Button_XPATH}
+        Sleep    0.2s
+        Wait Until Element Exist    ${filter_combobox_xpath}    5
+    ELSE IF    '${status}' == 'False' and ${filter_tool_open}
+        Click    ${Image_Filter_Tool_Button_XPATH}
+        Sleep    0.2s
+    END
     Sleep    0.2s
 
 Apply Image Filter
@@ -910,9 +918,13 @@ Normalize Image Filter Name
         RETURN    gaussiansmooth
     ELSE IF    '${filter_key}'=='clahe' or '${filter_key}'=='foxbleach'
         RETURN    clahe
+    ELSE IF    '${filter_key}'=='median3x3' or '${filter_key}'=='median' or '${filter_key}'=='median33'
+        RETURN    median3x3
+    ELSE IF    '${filter_key}'=='bilateralsmooth' or '${filter_key}'=='bilateral'
+        RETURN    bilateralsmooth
     END
 
-    Fail    Unsupported image filter '${filterName}'. Supported filters: No Filter, Edge Detection, Gradient Magnitude, Morphological Contour, Edge Gradient, High-Pass Sharpen, Low-Pass Smooth, Normalize, Sharpness Boost, Auto Equalise, Gaussian Blur, Fox Bleach.
+    Fail    Unsupported image filter '${filterName}'. Supported filters: No Filter, Edge Detection, Gradient Magnitude, Morphological Contour, Edge Gradient, High-Pass Sharpen, Low-Pass Smooth, Normalize, Sharpness Boost, Auto Equalise, Gaussian Blur, Fox Bleach, Median 3x3, Bilateral Smooth.
 
 Resolve Image Filter Display Name
     [Arguments]    ${filterName}
@@ -940,6 +952,10 @@ Resolve Image Filter Display Name
         RETURN    Auto Equalise
     ELSE IF    '${filter_key}'=='gaussiansmooth'
         RETURN    Gaussian Blur
+    ELSE IF    '${filter_key}'=='median3x3'
+        RETURN    Median 3x3
+    ELSE IF    '${filter_key}'=='bilateralsmooth'
+        RETURN    Bilateral Smooth
     END
     RETURN    Fox Bleach
 
@@ -1013,6 +1029,8 @@ Set Image Filter Parameter By AutomationId
         Set Image Filter Numeric Parameter By Flexible XPath    ClaheTileSize    ${parameter_value}
     ELSE IF    '${parameter_key}'=='foxbleachcliplimit' or '${parameter_key}'=='clahecliplimit' or '${parameter_key}'=='cliplimit'
         Set Image Filter Numeric Parameter By Flexible XPath    ClaheClipLimit    ${parameter_value}
+    ELSE IF    '${parameter_key}'=='bilateralrangesigma' or '${parameter_key}'=='rangesigma'
+        Set Image Filter Numeric Parameter By Flexible XPath    BilateralRangeSigma    ${parameter_value}
     ELSE
         Fail    Unknown parameter: ${parameter_key}
     END

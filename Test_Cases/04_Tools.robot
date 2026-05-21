@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Tools test suite. Total Test Cases: 58 (MFRTT01, MFRTT01-2, MFRTT02 - MFRTT38_2, plus _2 variants of MFRTT27-29 and MFRTT32-38).
+Documentation     Tools test suite. Total Test Cases: 64 (MFRTT01, MFRTT01-2, MFRTT02 - MFRTT38_2, plus _2 variants of MFRTT27-29 and MFRTT32-38).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -381,7 +381,7 @@ MFRTT29 - Verify whether able to apply all the available filters in the image fi
     [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
-    @{filters}=    Create List    Edge Detection    Gradient Magnitude    Morphological Contour    Edge Gradient    High-Pass Sharpen    Low-Pass Smooth     Normalize    Sharpness Boost    Auto Equalise    Gaussian Blur    Fox Bleach        
+    @{filters}=    Create List    Edge Detection    Gradient Magnitude    Morphological Contour    Edge Gradient    High-Pass Sharpen    Low-Pass Smooth     Normalize    Sharpness Boost    Auto Equalise    Gaussian Blur    Fox Bleach    Median 3x3    Bilateral Smooth
     FOR    ${filter}    IN    @{filters}
         Apply Image Filter    ${filter}
         Take Actual Screenshot    MFRTT29_${filter}.png
@@ -512,7 +512,7 @@ MFRTT29_2 - Verify whether able to apply all the available filters in the image 
     [Tags]    smoke    tools    cpu_rendering
 
     Click    ${window_XPATH}
-    @{filters}=    Create List    Edge Detection    Gradient Magnitude    Morphological Contour    Edge Gradient    High-Pass Sharpen    Low-Pass Smooth     Normalize    Sharpness Boost    Auto Equalise    Gaussian Blur    Fox Bleach
+    @{filters}=    Create List    Edge Detection    Gradient Magnitude    Morphological Contour    Edge Gradient    High-Pass Sharpen    Low-Pass Smooth     Normalize    Sharpness Boost    Auto Equalise    Gaussian Blur    Fox Bleach    Median 3x3    Bilateral Smooth
     FOR    ${filter}    IN    @{filters}
         Apply Image Filter    ${filter}
         Take Actual Screenshot    MFRTT29_2_${filter}.png
@@ -610,7 +610,7 @@ MFRTT39 - Verify whether able to close filters tab.
     [Tags]    smoke    tools
 
     Click    ${window_XPATH}
-    Click    ${Image_Filter_Tool_Button_XPATH}
+    Click Image Filter Tool    False
     Run Keyword And Continue On Failure    Verify Control Not Exists in Image Viewer    ${filter_combobox_xpath}
     Run Keyword And Continue On Failure    Verify Control Not Exists in Image Viewer    ${filter_apply_button_xpath}
 MFRTT40 - Verify whether able to apply Auto Best BNC and view the changes in the image.
@@ -680,5 +680,82 @@ MFRTT47 - Verify whether able to reset the applied Fox Bleach filter by un-check
     Take Actual Screenshot    MFRTT47.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT47.png    MFRTT47.png
     Reset View
+    Apply Auto Best BNC
+MFRTT48 - Verify whether able to apply Median 3x3 filter using CPU Rendering.
+    [Documentation]    Verify whether able to apply Median 3x3 filter using CPU Rendering.
+    [Tags]    smoke
+
+    Click    ${window_XPATH}
+    Select GPU Type    CPU
+    Click Image Filter Tool    True
+    Apply Image Filter    Median 3x3
+    Take Actual Screenshot    MFRTT48.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT48.png    MFRTT48.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT49 - Verify whether able to apply Median 3x3 filter using GPU Rendering.
+    [Documentation]    Verify whether able to apply Median 3x3 filter using GPU Rendering.
+    [Tags]    smoke
+
+    Click    ${window_XPATH}
+    Select GPU Type    GPU
+    Click Image Filter Tool    True
+    Apply Image Filter    Median 3x3
+    Take Actual Screenshot    MFRTT49.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT49.png    MFRTT49.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT50 - Verify whether able to apply Bilateral Smooth filter using CPU Rendering.
+    [Documentation]    Verify whether able to apply Bilateral Smooth filter using CPU Rendering.
+    [Tags]    smoke
+
+    Click    ${window_XPATH}
+    Select GPU Type    CPU
+    Click Image Filter Tool    True
+    Apply Image Filter    Bilateral Smooth
+    Take Actual Screenshot    MFRTT50.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT50.png    MFRTT50.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT51 - Verify whether able to apply Bilateral Smooth filter using CPU Rendering and modifying the filter parameters.
+    [Documentation]    Verify whether able to apply Bilateral Smooth filter using CPU Rendering and modifying the filter parameters.
+    [Tags]    smoke
+
+    Click    ${window_XPATH}
+    Select GPU Type    CPU
+    Click Image Filter Tool    True
+    Set Image Filter Parameters    Bilateral Smooth    Auto Best Contrast=True    Sigma=2.5    Kernel Radius=5    Bilateral Range Sigma=0.200
+    Sleep    0.5s
+    Click Apply Image Filter
+    Take Actual Screenshot    MFRTT51.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT51.png    MFRTT51.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT52 - Verify whether able to apply Bilateral Smooth filter using GPU Rendering.
+    [Documentation]    Verify whether able to apply Bilateral Smooth filter using GPU Rendering.
+    [Tags]    smoke
+
+    Click    ${window_XPATH}
+    Select GPU Type    GPU
+    Click Image Filter Tool    True
+    Apply Image Filter    Bilateral Smooth
+    Take Actual Screenshot    MFRTT52.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT52.png    MFRTT52.png
+    Reset View
+    Apply Auto Best BNC
+MFRTT53 - Verify whether able to apply Bilateral Smooth filter using GPU Rendering and modifying the filter parameters.
+    [Documentation]    Verify whether able to apply Bilateral Smooth filter using GPU Rendering and modifying the filter parameters.
+    [Tags]    smoke
+
+    Click    ${window_XPATH}
+    Select GPU Type    GPU
+    Click Image Filter Tool    True
+    Set Image Filter Parameters    Bilateral Smooth    Auto Best Contrast=True    Sigma=2.5    Kernel Radius=5    Bilateral Range Sigma=0.200
+    Click Apply Image Filter
+    Take Actual Screenshot    MFRTT53.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT53.png    MFRTT53.png
+    Reset View
+    Apply Auto Best BNC
+    Click Image Filter Tool    False
     Close Project
     Close FoxRT Application Window
