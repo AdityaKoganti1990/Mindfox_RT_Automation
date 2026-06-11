@@ -786,7 +786,7 @@ MFRTB76 - Verify whether Save button is disabled when preset name is not entered
 
     Click    ${percentile_brightness_contrast_filter_button_xpath}
     sleep    0.2s
-    Run Keyword And Continue On Failure    VerifyControlState    ${percentile_brightness_contrast_save_preset_button_xpath}    disabled
+    Run Keyword And Continue On Failure    VerifyControlState    ${percentile_brightness_contrast_savePreset_button_xpath}    disabled
     sleep    0.2s
     Click    ${window_XPATH}
 

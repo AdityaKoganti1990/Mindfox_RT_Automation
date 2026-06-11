@@ -651,4 +651,3 @@ Resolve Shortcut Spec
         ${spec}=    Set Variable    ${trimmed}
     END
     RETURN    ${spec}
-    Sleep    0.5s
