@@ -188,11 +188,13 @@ VerifyControlState
     IF    '${expected_state}' != '${EMPTY}'
         ${normalized_expected_state}=    Normalize Control State    ${expected_state}
     END
-    ${effective_timeout}=    Set Variable If    '${normalized_expected_state}' == 'not exists'    0.5    ${timeout}
-    ${exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${control_xpath}    ${effective_timeout}
+    ${exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${control_xpath}    ${timeout}
     IF    not ${exists}
         ${actual_state}=    Set Variable    not exists
         Log    Control '${control_name}' does not exist.
+    ELSE IF    '${normalized_expected_state}' in ('selected', 'de-selected')
+        ${actual_state}=    Get Control Selection State    ${control_xpath}
+        Log    Control '${control_name}' is currently ${actual_state}.
     ELSE
         IF    '${normalized_expected_state}' == 'enabled'
             ${is_enabled}=    Run Keyword And Return Status    Wait Until Element Is Enabled    ${control_xpath}    ${timeout}
@@ -212,6 +214,47 @@ VerifyControlState
         END
     END
     RETURN    ${actual_state}
+
+Get Control Selection State
+    [Arguments]    ${control_xpath}
+    [Documentation]    Return 'selected' or 'de-selected' for the given control by reading whichever UIA pattern it exposes — TogglePattern (most WPF ToggleButtons), SelectionItemPattern (radio buttons), or Checkbox.
+
+    ${toggle_status}    ${toggle_state}=    Run Keyword And Ignore Error    Get Toggle State    ${control_xpath}
+    Log    Get Control Selection State: Get Toggle State -> status=${toggle_status}, value='${toggle_state}'
+    IF    '${toggle_status}' == 'PASS'
+        ${state_upper}=    Evaluate    str($toggle_state).strip().upper()
+        IF    '${state_upper}' == 'ON'
+            RETURN    selected
+        ELSE IF    '${state_upper}' == 'OFF'
+            RETURN    de-selected
+        ELSE
+            Fail    Toggle state is '${toggle_state}', expected ON or OFF.
+        END
+    END
+
+    ${radio_status}    ${radio_state}=    Run Keyword And Ignore Error    Get Radiobutton State    ${control_xpath}
+    Log    Get Control Selection State: Get Radiobutton State -> status=${radio_status}, value='${radio_state}'
+    IF    '${radio_status}' == 'PASS'
+        ${is_on}=    Evaluate    str($radio_state).strip().lower() in ('true', '1', 'on', 'selected', 'checked')
+        IF    ${is_on}
+            RETURN    selected
+        ELSE
+            RETURN    de-selected
+        END
+    END
+
+    ${check_status}    ${check_state}=    Run Keyword And Ignore Error    Get Checkbox State    ${control_xpath}
+    Log    Get Control Selection State: Get Checkbox State -> status=${check_status}, value='${check_state}'
+    IF    '${check_status}' == 'PASS'
+        ${is_on}=    Evaluate    str($check_state).strip().lower() in ('true', '1', 'on', 'selected', 'checked')
+        IF    ${is_on}
+            RETURN    selected
+        ELSE
+            RETURN    de-selected
+        END
+    END
+
+    Fail    Control '${control_xpath}' does not expose a toggle/selection/checkbox state — cannot determine selected vs de-selected.
 
 Resolve Online Control XPath
     [Arguments]    ${control_name}
@@ -244,8 +287,12 @@ Normalize Control State
         RETURN    exists
     ELSE IF    '${normalized_state}' in ('not exist', 'not exists', 'notexist', 'notexists', 'not present', 'notpresent', 'hidden', 'absent')
         RETURN    not exists
+    ELSE IF    '${normalized_state}' in ('select', 'selected', 'check', 'checked', 'on', 'toggled', 'toggle on', 'toggleon')
+        RETURN    selected
+    ELSE IF    '${normalized_state}' in ('deselect', 'de-select', 'deselected', 'de-selected', 'unselect', 'unselected', 'uncheck', 'unchecked', 'off', 'untoggled', 'toggle off', 'toggleoff')
+        RETURN    de-selected
     END
-    Fail    Unsupported control state '${state}'. Use enabled, disabled, exists, or not exists.
+    Fail    Unsupported control state '${state}'. Use enabled, disabled, exists, not exists, selected, or de-selected.
 
 Show or Hide XRay Controller
     [Arguments]    ${state}

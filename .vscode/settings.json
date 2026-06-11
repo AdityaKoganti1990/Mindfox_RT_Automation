@@ -16,5 +16,6 @@
                 "cmd": "\"C:/Users/kogan/AppData/Local/Programs/Python/Python311/python.exe\" \"${workspaceFolder}/scripts/update_test_counts.py\""
             }
         ]
-    }
+    },
+    "chat.disableAIFeatures": false
 }

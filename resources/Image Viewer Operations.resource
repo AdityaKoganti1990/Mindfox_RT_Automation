@@ -28,8 +28,10 @@ ${DPI_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Na
 ${X_Coordinate_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"X:")]
 ${Y_Coordinate_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"Y:")]
 ${Intensity_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"Intensity:")]
+${RGB_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[6]
 ${Annotation_Count_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"Annotations:")]
 ${SNR_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"SNR:")]
+${Status_Bar_Message_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[1]/Text
 ${Color_Table_Grayscale_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Grayscale"]
 ${Color_Table_HotIron_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_HotIron"]
 ${Color_Table_Rainbow_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Rainbow"]
@@ -50,6 +52,7 @@ ${Export_Image_Button_XPATH}              ${MAIN_WINDOW_XPATH}//Button[@Automati
 ${Export_Image_Window_XPATH}              ${MAIN_WINDOW_XPATH}/Window[@Name="Export Image"]
 ${Export_Image_FileName_Textbox_XPATH}    ${Export_Image_Window_XPATH}//Edit[@AutomationId="ExportImg_Txt_FileName"]
 ${Export_Image_Browse_Button_XPATH}       ${Export_Image_Window_XPATH}//Button[@AutomationId="ExportImg_Btn_Browse"]
+${Export_Image_SaveIn_TextField_Xpath}    ${Export_Image_Window_XPATH}//Text[@AutomationId="FolderPathText"]
 ${Export_Image_Format_Combobox_XPATH}     ${Export_Image_Window_XPATH}//ComboBox[@AutomationId="ExportImg_Cmb_Format"]
 ${Export_Image_DicomTags_Checkbox_XPATH}    ${Export_Image_Window_XPATH}//CheckBox[@AutomationId="ExportImg_Chk_DicomTags"]
 ${Export_Image_Annotations_Checkbox_XPATH}    ${Export_Image_Window_XPATH}//CheckBox[@AutomationId="ExportImg_Chk_Annotations"]
@@ -60,9 +63,16 @@ ${Export_Image_TagsOutside_Radio_XPATH}   ${Export_Image_Window_XPATH}//RadioBut
 ${Export_Image_SaveDialog_FileName_XPATH}    ${Export_Image_Window_XPATH}/Window[@Name="Select export location"]/Pane[1]/ComboBox[1]/Edit
 ${Export_Image_SaveDialog_Save_Button_XPATH}    ${Export_Image_Window_XPATH}/Window/Button[1]
 ${Export_Image_Export_Button_XPATH}            ${Export_Image_Window_XPATH}//Button[@AutomationId="ExportImg_Btn_Export"]
+${Export_Image_Cancel_Button_XPATH}    ${Export_Image_Window_XPATH}//Button[@AutomationId="ExportImg_Btn_Cancel"]
 ${Export_Image_Confirmation_Ok_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Button[@Name="OK"]
 ${Export_Image_Overwrite_Yes_Button_XPATH}     ${Export_Image_Window_XPATH}/Window/Window/Button[@Name="Yes"]
 ${Export_Image_PostExport_Yes_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Button[@Name="Yes"]
+${Fit_To_View_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Button[@AutomationId="Main_Btn_FitToView"]
+${Tags_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Button[@AutomationId="Main_Btn_TagBrowser"]
+${Overlay_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Button[@AutomationId="Main_Btn_OverlayConfig"]
+${Files_Tab_XPATH}    ${MAIN_WINDOW_XPATH}//TabItem[@AutomationId="Main_Tab_Files"]
+${Filters_Tab_XPATH}    ${MAIN_WINDOW_XPATH}//TabItem[@AutomationId="Main_Tab_Filters"]
+${Filters_Tab_Close_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="ImgFilters_Btn_Close"]
 
 # ─────────────────── Paths ───────────────────
 
@@ -248,6 +258,188 @@ Verify Intensity Value Is Shown In Status Bar
     Should Be Equal As Numbers    ${displayed_intensity_clean}    ${expected_intensity_clean}
     ...    Expected intensity ${expected_intensity_clean} but status bar shows ${displayed_intensity_clean}
 
+Verify RGB Value Exists In Status Bar
+    [Arguments]    ${expected_rgb}=${EMPTY}
+    [Documentation]    Verify that an RGB value is displayed in the status bar (typically when the cursor is over a color image such as PNG/JPG/BMP/TIFF).
+    ...
+    ...    Without arguments: passes if the RGB status-bar text element is present and shows R:, G:, and B: components (e.g. "R:52 G:52 B:52").
+    ...    With ${expected_rgb} as comma-separated values (e.g. "56,56,56"): also asserts each component matches the displayed value in R, G, B order.
+
+    Set Retry Timeout    0
+    ${rgb_exists}=    Run Keyword And Return Status    Element Should Exist    ${RGB_Status_Bar_Text_XPATH}
+    Reset Retry Timeout
+    Should Be True    ${rgb_exists}    Expected RGB value to be shown in status bar but it is not present.
+    ${displayed_rgb}=    Get Name From Element    ${RGB_Status_Bar_Text_XPATH}
+    Should Contain    ${displayed_rgb}    R:    Expected 'R:' component in status bar but got '${displayed_rgb}'.
+    Should Contain    ${displayed_rgb}    G:    Expected 'G:' component in status bar but got '${displayed_rgb}'.
+    Should Contain    ${displayed_rgb}    B:    Expected 'B:' component in status bar but got '${displayed_rgb}'.
+    Log    RGB value '${displayed_rgb}' is displayed in the status bar as expected.
+
+    IF    '${expected_rgb}' == '${EMPTY}'
+        RETURN
+    END
+    ${displayed_parts}=    Evaluate    [p.split(':')[-1].strip() for p in str($displayed_rgb).split()]
+    ${expected_parts}=    Evaluate    [p.strip() for p in str($expected_rgb).split(',')]
+    Length Should Be    ${expected_parts}    3    Expected RGB triplet as 'R,G,B' (e.g. '56,56,56') but got '${expected_rgb}'.
+    Length Should Be    ${displayed_parts}    3    Could not parse 3 components from displayed RGB '${displayed_rgb}'.
+    Should Be Equal As Numbers    ${displayed_parts}[0]    ${expected_parts}[0]
+    ...    Expected R=${expected_parts}[0] but status bar shows R=${displayed_parts}[0].
+    Should Be Equal As Numbers    ${displayed_parts}[1]    ${expected_parts}[1]
+    ...    Expected G=${expected_parts}[1] but status bar shows G=${displayed_parts}[1].
+    Should Be Equal As Numbers    ${displayed_parts}[2]    ${expected_parts}[2]
+    ...    Expected B=${expected_parts}[2] but status bar shows B=${displayed_parts}[2].
+
+Verify Intensity Value Not Exists In Status Bar
+    [Documentation]    Verify that no Intensity value is shown in the status bar (e.g. when the cursor is not over the image, or no image is loaded).
+    ...    Passes if the Intensity status-bar text element is not present, or is present but contains no value after the "Intensity:" label.
+
+    Set Retry Timeout    0
+    ${intensity_exists}=    Run Keyword And Return Status    Element Should Exist    ${Intensity_Status_Bar_Text_XPATH}
+    Reset Retry Timeout
+    IF    not ${intensity_exists}
+        Log    Intensity value is not displayed in the status bar as expected.
+        RETURN
+    END
+    ${displayed_intensity}=    Get Name From Element    ${Intensity_Status_Bar_Text_XPATH}
+    ${displayed_intensity_clean}=    Evaluate    str($displayed_intensity).strip().split(':')[-1].strip()
+    Should Be Empty    ${displayed_intensity_clean}
+    ...    Expected no intensity value in status bar but it shows '${displayed_intensity_clean}'.
+    Log    Intensity value is not displayed in the status bar as expected.
+
+Verify All Annotation Tools Are Disabled
+    [Documentation]    Verify that all annotation tool buttons in the toolbar are disabled (typical state when no project is open).
+    ...    Tools checked: Arrow, Ruler, Line, Rectangle, Circle, Freehand, Text, Point Intensity. Reports every mismatching tool (does not stop at the first failure).
+    Verify All Annotation Tools State    disabled
+
+Verify All Annotation Tools Are Enabled
+    [Documentation]    Verify that all annotation tool buttons in the toolbar are enabled (typical state when a project is open).
+    ...    Tools checked: Arrow, Ruler, Line, Rectangle, Circle, Freehand, Text, Point Intensity. Reports every mismatching tool (does not stop at the first failure).
+    Verify All Annotation Tools State    enabled
+
+Verify All Annotation Tools State
+    [Arguments]    ${expected_state}
+    [Documentation]    Internal helper for `Verify All Annotation Tools Are Disabled` / `Verify All Annotation Tools Are Enabled`.
+    ...    Use those public keywords from tests; this exists only to share the per-tool loop.
+
+    @{tool_names}=    Create List    Arrow    Ruler    Line    Rectangle    Circle    Freehand    Text    Point Intensity
+    @{tool_xpaths}=    Create List
+    ...    ${arrow_annotation_button_xpath}
+    ...    ${ruler_annotation_button_xpath}
+    ...    ${line_annotation_button_xpath}
+    ...    ${rectangle_annotation_button_xpath}
+    ...    ${circle_annotation_button_xpath}
+    ...    ${freehand_annotation_button_xpath}
+    ...    ${text_annotation_button_xpath}
+    ...    ${point_intensity_annotation_button_xpath}
+    Verify Tools In State    Annotation    ${expected_state}    ${tool_names}    ${tool_xpaths}
+
+Verify All Analysis Tools Are Disabled
+    [Documentation]    Verify that all analysis tool buttons in the toolbar are disabled (typical state when no project is open).
+    ...    Tools checked: Line Profiler, ROI Statistics, Window Level, Pixel Intensity Histogram, Calibration, SNR Measurement, Surface Plot, Wall Thickness Measurement, CNR Measurement, MTF Measurement, IQI Wire Phantom, Defect Marking, Image Filter, Percentile Brightness/Contrast. Reports every mismatching tool (does not stop at the first failure).
+    Verify All Analysis Tools State    disabled
+
+Verify All Analysis Tools Are Enabled
+    [Documentation]    Verify that all analysis tool buttons in the toolbar are enabled (typical state when a project is open).
+    ...    Tools checked: Line Profiler, ROI Statistics, Window Level, Pixel Intensity Histogram, Calibration, SNR Measurement, Surface Plot, Wall Thickness Measurement, CNR Measurement, MTF Measurement, IQI Wire Phantom, Defect Marking, Image Filter, Percentile Brightness/Contrast. Reports every mismatching tool (does not stop at the first failure).
+    Verify All Analysis Tools State    enabled
+
+Verify All Analysis Tools State
+    [Arguments]    ${expected_state}
+    [Documentation]    Internal helper for `Verify All Analysis Tools Are Disabled` / `Verify All Analysis Tools Are Enabled`.
+    ...    Use those public keywords from tests; this exists only to share the per-tool loop.
+
+    @{tool_names}=    Create List    Line Profiler    ROI Statistics    Area Adjust    Window Level    Pixel Intensity Histogram    Calibration    SNR Measurement    Surface Plot    Wall Thickness Measurement    CNR Measurement    MTF Measurement    IQI Wire Phantom    Defect Marking    Filters    Auto BnC    Percentile BnC    Fox Bleach
+    @{tool_xpaths}=    Create List
+    ...    ${line_profiler_tool_button_xpath}
+    ...    ${roi_statistics_tool_button_xpath}
+    ...    ${window_level_tool_button_xpath}
+    ...    ${window_Level_tool_panel_button_xpath}
+    ...    ${pixel_intensity_histogram_button_xpath}
+    ...    ${calibration_tool_button_xpath}
+    ...    ${snr_measurement_tool_button_xpath}
+    ...    ${surface_plot_tool_button_xpath}
+    ...    ${wall_thickness_measurement_tool_button_xpath}
+    ...    ${cnr_measurement_tool_button_xpath}
+    ...    ${mtf_measurement_tool_button_xpath}
+    ...    ${IQI_wire_phantom_tool_button_xpath}
+    ...    ${defect_marking_tool_button_xpath}
+    ...    ${Image_Filter_Tool_Button_XPATH}
+    ...    ${autoBNC_menu_xpath}
+    ...    ${percentile_brightness_contrast_filter_button_xpath}
+    ...    ${fox_bleach_filter_button_xpath}
+    Verify Tools In State    Analysis    ${expected_state}    ${tool_names}    ${tool_xpaths}
+
+Verify All Image Operation Tools Are Disabled
+    [Documentation]    Verify that all image operation tool buttons in the toolbar are disabled (typical state when no project is open).
+    ...    Tools checked: Next Image, Previous Image, Zoom In, Zoom Out, Pan, Scale (Ruler), Rotate CW, Rotate CCW, Flip Horizontal, Flip Vertical, Invert, Dual View. Reports every mismatching tool (does not stop at the first failure).
+    Verify All Image Operation Tools State    disabled
+
+Verify All Image Operation Tools Are Enabled
+    [Documentation]    Verify that all image operation tool buttons in the toolbar are enabled (typical state when a project is open).
+    ...    Tools checked: Next Image, Previous Image, Zoom In, Zoom Out, Pan, Scale (Ruler), Rotate CW, Rotate CCW, Flip Horizontal, Flip Vertical, Invert, Dual View. Reports every mismatching tool (does not stop at the first failure).
+    Verify All Image Operation Tools State    enabled
+
+Verify All Image Operation Tools State
+    [Arguments]    ${expected_state}
+    [Documentation]    Internal helper for `Verify All Image Operation Tools Are Disabled` / `Verify All Image Operation Tools Are Enabled`.
+    ...    Use those public keywords from tests; this exists only to share the per-tool loop.
+
+    @{tool_names}=    Create List    Next Image    Previous Image    Zoom In    Zoom Out    Fit to View    Pan    Scale    Rotate CW    Rotate CCW    Flip Horizontal    Flip Vertical    Invert    Units    Delete All Annotations    Tags    Overlay    Dual View
+    @{tool_xpaths}=    Create List
+    ...    ${Click_Next_Image_Button_XPATH}
+    ...    ${Click_Previous_Image_Button_XPATH}
+    ...    ${Zoom_Up_Button_XPATH}
+    ...    ${Zoom_Down_Button_XPATH}
+    ...    ${Fit_To_View_Button_XPATH}
+    ...    ${Pan_Tool_Button_XPATH}
+    ...    ${Scale_Toggle_Button_XPATH}
+    ...    ${Rotate_CW_Button_XPATH}
+    ...    ${Rotate_CCW_Button_XPATH}
+    ...    ${Flip_Horizontal_Button_XPATH}
+    ...    ${Flip_Vertical_Button_XPATH}
+    ...    ${Invert_button_XPATH}
+    ...    ${Units_Toggle_Button_XPATH}
+    ...    ${delete_annotation_button_xpath}
+    ...    ${Tags_Button_XPATH}
+    ...    ${Overlay_Button_XPATH}
+    ...    ${Dual_View_Toggle_Button_XPATH}
+    Verify Tools In State    Image Operation    ${expected_state}    ${tool_names}    ${tool_xpaths}
+
+Verify Tools In State
+    [Arguments]    ${group_label}    ${expected_state}    ${tool_names}    ${tool_xpaths}
+    [Documentation]    Internal helper shared by all `Verify All <Group> Tools Are Enabled/Disabled` keywords.
+    ...    Iterates the provided (names, xpaths) lists in matching order, asserts each control's state, and reports every mismatch (`Run Keyword And Continue On Failure`) rather than stopping at the first failure.
+    ...    A tool that is not present in the UI tree is treated as 'disabled' (hidden == effectively unavailable). For expected_state=enabled, a missing tool still fails with a clear "not present" message.
+
+    ${expected_state_norm}=    Evaluate    str($expected_state).strip().lower()
+    Should Match Regexp    ${expected_state_norm}    ^(enabled|disabled)$
+    ...    Invalid expected_state '${expected_state}'. Use 'enabled' or 'disabled'.
+
+    ${names_count}=    Get Length    ${tool_names}
+    ${xpaths_count}=    Get Length    ${tool_xpaths}
+    Should Be Equal As Integers    ${names_count}    ${xpaths_count}
+    ...    ${group_label} tool list mismatch: ${names_count} names vs ${xpaths_count} xpaths. Each xpath needs a matching name in the same position.
+
+    Set Retry Timeout    0
+    FOR    ${index}    ${xpath}    IN ENUMERATE    @{tool_xpaths}
+        ${name}=    Set Variable    ${tool_names}[${index}]
+        ${status}    ${is_enabled}=    Run Keyword And Ignore Error    Is Element Enabled    ${xpath}
+        IF    '${status}' == 'FAIL'
+            ${actual_state}=    Set Variable    not present
+        ELSE
+            ${actual_state}=    Set Variable If    ${is_enabled}    enabled    disabled
+        END
+        ${effective_actual}=    Set Variable    ${actual_state}
+        IF    '${expected_state_norm}' == 'disabled' and '${actual_state}' == 'not present'
+            ${effective_actual}=    Set Variable    disabled
+            Log    ${group_label} tool '${name}' is not present in the UI; counting as disabled.
+        END
+        Run Keyword And Continue On Failure    Should Be Equal As Strings    ${effective_actual}    ${expected_state_norm}
+        ...    ${group_label} tool '${name}' should be ${expected_state_norm} but is ${actual_state}.
+    END
+    Reset Retry Timeout
+    Log    All ${group_label} tools verified for '${expected_state_norm}' state.
+
 Verify Annotation Count In Status Bar
     [Arguments]    ${expected_count}
 
@@ -271,6 +463,16 @@ Verify SNR value in status bar
     ...    Expected SNR ${expected_snr_clean} dB but status bar shows ${displayed_snr} dB
     Should Be Equal As Numbers    ${displayed_noise}    ${expected_noise_clean}
     ...    Expected Noise ${expected_noise_clean}% but status bar shows ${displayed_noise}%
+
+Verify Status Bar Message
+    [Arguments]    ${expected_message}
+    [Documentation]    Verify that the message currently displayed in the status bar's primary message slot matches the expected text exactly.
+    ...    ${expected_message}: Full text to compare against (e.g. 'Loaded 6 file(s) from folder'). Match is case-sensitive and exact.
+
+    Should Not Be Empty    ${expected_message}    Expected message cannot be empty.
+    ${displayed_message}=    Get Name From Element    ${Status_Bar_Message_XPATH}
+    Should Be Equal As Strings    ${displayed_message}    ${expected_message}
+    ...    Expected status bar message '${expected_message}' but found '${displayed_message}'.
 
 Apply Color Table To Image Viewer
     [Arguments]    ${color_name}
@@ -437,6 +639,66 @@ Toggle Pan Sync Option in Dual View Mode
     ${current_state}=    Get Toggle State    ${Dual_View_SyncPan_Toggle_Button_XPATH}
     Run Keyword If    '${current_state}' != '${target_state}'    Click    ${Dual_View_SyncPan_Toggle_Button_XPATH}
     Sleep    0.1s
+
+Select Tab In Right Panel
+    [Arguments]    ${tab_name}
+    [Documentation]    Click the named tab in the right panel of the main window.
+    ...    ${tab_name} accepts: Files | Filters. A direct XPath (starting with '/' or '(') can also be passed for ad-hoc tabs that don't have a friendly name yet.
+
+    ${tab_xpath}=    Resolve Right Panel Tab XPath    ${tab_name}
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    Click    ${tab_xpath}
+    Sleep    0.1s
+
+Resolve Right Panel Tab XPath
+    [Arguments]    ${tab_name}
+    [Documentation]    Translate a friendly right-panel tab name to its TabItem XPath. Pass-through if an XPath is already provided.
+    Should Not Be Empty    ${tab_name}    Tab name cannot be empty.
+    ${tab_value}=    Evaluate    str($tab_name).strip()
+    Should Not Be Empty    ${tab_value}    Tab name cannot be blank.
+    ${is_xpath}=    Evaluate    str($tab_value).startswith(('/', '('))
+    IF    ${is_xpath}
+        RETURN    ${tab_value}
+    END
+
+    ${tab_key}=    Evaluate    ''.join(ch.lower() for ch in str($tab_name).strip() if ch.isalnum())
+    IF    '${tab_key}' == 'files' or '${tab_key}' == 'maintabfiles'
+        RETURN    ${Files_Tab_XPATH}
+    ELSE IF    '${tab_key}' == 'filters' or '${tab_key}' == 'maintabfilters'
+        RETURN    ${Filters_Tab_XPATH}
+    END
+
+    Fail    Unsupported right panel tab '${tab_name}'. Supported tabs: Files, Filters.
+
+Close Tab In Right Panel
+    [Arguments]    ${tab_name}
+    [Documentation]    Click the close (X) button on the named tab in the right panel.
+    ...    ${tab_name} accepts: Filters. (Files tab has no close button.) A direct XPath (starting with '/' or '(') can also be passed.
+
+    ${close_button_xpath}=    Resolve Right Panel Tab Close Button XPath    ${tab_name}
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    Click    ${close_button_xpath}
+    Sleep    0.1s
+
+Resolve Right Panel Tab Close Button XPath
+    [Arguments]    ${tab_name}
+    [Documentation]    Translate a friendly right-panel tab name to its close button XPath. Pass-through if an XPath is already provided.
+    Should Not Be Empty    ${tab_name}    Tab name cannot be empty.
+    ${tab_value}=    Evaluate    str($tab_name).strip()
+    Should Not Be Empty    ${tab_value}    Tab name cannot be blank.
+    ${is_xpath}=    Evaluate    str($tab_value).startswith(('/', '('))
+    IF    ${is_xpath}
+        RETURN    ${tab_value}
+    END
+
+    ${tab_key}=    Evaluate    ''.join(ch.lower() for ch in str($tab_name).strip() if ch.isalnum())
+    IF    '${tab_key}' == 'filters' or '${tab_key}' == 'maintabfilters' or '${tab_key}' == 'imgfiltersbtnclose'
+        RETURN    ${Filters_Tab_Close_Button_XPATH}
+    END
+
+    Fail    Unsupported right panel tab '${tab_name}' for close action. Supported tabs: Filters.
 
 Export Image
     [Arguments]    ${file_name}    ${folder_path}    ${save_as_type}=PNG

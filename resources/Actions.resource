@@ -287,9 +287,9 @@ Click Export Pdf Button
         END
     END
     Wait Until Element Exist    ${Report_open_report_button_XPATH}    10
-    Sleep    1s
+    Sleep    0.2s
     Click    ${Report_close_report_button_XPATH}
-    Sleep    1s
+    Sleep    0.2s
 
 Click Report Viewer Settings Button
     Click    ${Report_Viewer_Settings_Button_XPATH}

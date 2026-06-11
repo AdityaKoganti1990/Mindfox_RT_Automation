@@ -32,13 +32,17 @@ MODULE_LABELS: list[tuple[str, str]] = [
     ("03_Annotations.robot", "Annotations"),
     ("04_Tools.robot", "Tools"),
     ("05_Actions.robot", "Actions"),
-    ("06_Image Viewer Operations.robot", "Image Viewer"),
-    ("07_Online Mode.robot", "Online Mode"),
+    ("06_Image_Viewer_Operations.robot", "Image Viewer"),
+    ("07_Online_Mode.robot", "Online Mode"),
+    ("08_Bug_Cases.robot", "Bug Cases"),
 ]
 
 
 _TEST_ID_TOKEN = r"[A-Z]+\d+(?:-\d+)?"
 _RANGE_PATTERN = re.compile(rf"\b({_TEST_ID_TOKEN})(\s*-\s*)({_TEST_ID_TOKEN})\b")
+# Numbered test case IDs must have a digit immediately after the MFRT* prefix.
+# This excludes scratch placeholders like "MFRTB - Test".
+_NUMBERED_TEST_ID = re.compile(r"^MFRT[A-Z]+\d")
 
 
 def scan_test_cases(robot_file: Path) -> tuple[int, str | None]:
@@ -58,9 +62,12 @@ def scan_test_cases(robot_file: Path) -> tuple[int, str | None]:
             continue
         # Test case names sit at column 0; steps are indented.
         if raw_line and raw_line[0] not in (" ", "\t"):
-            count += 1
             # First whitespace-delimited token of the test name line is the ID.
-            last_id = stripped.split(maxsplit=1)[0]
+            first_token = stripped.split(maxsplit=1)[0]
+            if not _NUMBERED_TEST_ID.match(first_token):
+                continue
+            count += 1
+            last_id = first_token
     return count, last_id
 
 

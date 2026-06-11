@@ -11,7 +11,7 @@ ${line_profiler_tool_button_xpath}           /Window[@AutomationId="FoxRTProMain
 ${line_profiler_window_xpath}    //*[@AutomationId="ProfilePanel"]
 ${roi_statistics_tool_button_xpath}    //*[@AutomationId="Main_Tgl_RoiStats"]
 ${roi_statistics_window_xpath}    //*[@AutomationId="RoiPanel"]
-${window_level_tool_button_xpath}    //*[@AutomationId="Main_Tgl_AreaAdjust"]
+${window_level_tool_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_AreaAdjust"]
 ${window_Level_tool_panel_button_xpath}    //*[@AutomationId="Main_Tgl_WindowLevel"]
 ${window_level_center_input_xpath}    //*[@AutomationId="WinLevel_Txt_WindowCenter"]
 ${window_level_width_input_xpath}    //*[@AutomationId="WinLevel_Txt_WindowWidth"]
@@ -39,7 +39,7 @@ ${cnr_measurement_tool_button_xpath}    //*[@AutomationId="Main_Tgl_Cnr"]
 ${mtf_measurement_tool_button_xpath}    //*[@AutomationId="Main_Tgl_Mtf"]
 ${mtf_measurement_window_xpath}    /Window/Tab[@AutomationId="BottomPanelTabs"]
 ${IQI_wire_phantom_tool_button_xpath}    //*[@AutomationId="Main_Tgl_IqiDetect"]
-${IQI_wire_phantom_cancel_button_xpath}    //*[@AutomationId="Main_Btn_CancelIqiDetection"]
+${IQI_wire_phantom_cancel_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]//Button[@AutomationId="Main_Btn_CancelIqiDetection"]
 ${IQI_wire_phantom_detecting_text_xpath}    //*[contains(@Name,"Detecting IQI")]
 ${IQI_wire_detected_text_xpath}    //*[@Name="IQI DETECTED"]
 ${IQI_wire_detected_summary_xpath}    //*[contains(@Name,"IQI detected:")]
@@ -48,6 +48,13 @@ ${IQI_wire_phantom_window_xpath}    /Window/Tab[2]/TabItem/Custom[@AutomationId=
 ${defect_marking_tool_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_DefectMarking"]
 ${defect_marking_window_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom[@AutomationId="DefectPanel"]
 ${Defect_Cmb_DefectType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/ComboBox[@AutomationId="Defect_Cmb_DefectType"]
+${Defect_Txt_CustomLabel_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Edit[@AutomationId="Defect_Txt_CustomLabel"]
+${Defect_Cmb_AcceptanceCode_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Pane/ComboBox[@AutomationId="Defect_Cmb_AcceptanceCode"]
+${Defect_Btn_Accept_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Pane/Button[@AutomationId="Defect_Btn_Accept"]
+${Defect_Btn_Reject_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Pane/Button[@AutomationId="Defect_Btn_Reject"]
+${Defect_Txt_Notes_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Edit[@AutomationId="Defect_Txt_Notes"]
+${Confirm_Status_Change_Window_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Confirm Status Change"]
+${Confirm_Status_Change_Yes_Button_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Confirm Status Change"]/Button[@Name="Yes"]
 ${defect_marking_radio_rectangle_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/RadioButton[@AutomationId="Defect_Rdo_ShapeRectangle"]
 ${defect_marking_radio_line_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/RadioButton[@AutomationId="Defect_Rdo_ShapeLine"]
 ${defect_marking_radio_ellipse_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/RadioButton[@AutomationId="Defect_Rdo_ShapeEllipse"]
@@ -434,6 +441,13 @@ Detect IQI Wire Phantom Tool
     Wait Until Element Exist    ${IQI_wire_phantom_window_xpath}
     Sleep    0.2s
 
+Click Cancel IQI Detection
+    [Documentation]    Cancel an in-progress IQI Wire Phantom detection by clicking the Cancel button, then wait for the Cancel button to disappear (confirms the detection has actually been cancelled).
+
+    Wait Until Element Exist    ${IQI_wire_phantom_cancel_button_xpath}    5
+    Click    ${IQI_wire_phantom_cancel_button_xpath}
+    Wait Until Element Does Not Exist    ${IQI_wire_phantom_cancel_button_xpath}    5
+
 Take IQI Wire Phantom Tool window Screenshot
     [Arguments]    ${filename}
     Wait Until Element Exist    ${IQI_wire_phantom_window_xpath}    5
@@ -448,16 +462,30 @@ Take IQI Wire Phantom Tool window Screenshot
     RETURN    ${dest}
     
 Add Defect Marking and Classification Tool over image
-    [Arguments]    ${DefectType}    ${radioButtonType}    ${x1}    ${y1}    ${x2}    ${y2}
+    [Arguments]    ${DefectType}    ${radioButtonType}    ${x1}    ${y1}    ${x2}    ${y2}    ${custom_label}=${EMPTY}
+    [Documentation]    Add a defect marking on the image viewer.
+    ...    ${DefectType}: Defect type to select from the dropdown. When 'Other', ${custom_label} is required and is entered into the Custom Label field.
+    ...    ${radioButtonType}: Shape — Rectangle, Line, or Ellipse.
+    ...    ${x1}, ${y1}, ${x2}, ${y2}: Top-left and bottom-right pixel coordinates of the defect rectangle.
+    ...    ${custom_label}: Free-text label entered into the Custom Label field. Required when ${DefectType}='Other'; ignored for any other defect type.
 
     Focus    ${window_XPATH}
     Sleep    0.2s
-    Click    ${defect_marking_tool_button_xpath}
-    Sleep    0.2s
+    ${current_state}=    Get Toggle State    ${defect_marking_tool_button_xpath}
+    IF    '${current_state}' != 'ON'
+        Click    ${defect_marking_tool_button_xpath}
+        Sleep    0.2s
+    END
     Wait Until Element Exist    ${defect_marking_window_xpath}    5
     Sleep    0.2s
     Select Combobox Item By Name    ${Defect_Cmb_DefectType_XPATH}    ${DefectType}
     Sleep    0.2s
+    IF    '${DefectType}' == 'Other'
+        Should Not Be Empty    ${custom_label}    Custom label is required when DefectType is 'Other'.
+        Wait Until Element Exist    ${Defect_Txt_CustomLabel_XPATH}    5
+        Set Text To Textbox    ${Defect_Txt_CustomLabel_XPATH}    ${custom_label}
+        Sleep    0.2s
+    END
     Run Keyword If    '${radioButtonType}'=='Rectangle'    click    ${defect_marking_radio_rectangle_button_xpath}
     Run Keyword If    '${radioButtonType}'=='Line'    click    ${defect_marking_radio_line_button_xpath}
     Run Keyword If    '${radioButtonType}'=='Ellipse'    click    ${defect_marking_radio_ellipse_button_xpath}
@@ -513,6 +541,51 @@ Evaluate Defect Marked
     Sleep    0.2s
     Click    ${evaluate_defect_marking_button_xpath}
     Sleep    0.2s
+
+Select Acceptance Criteria Code
+    [Arguments]    ${acceptance_code}
+    [Documentation]    Select an option from the Acceptance Criteria Code combobox in the Defect Marking panel.
+    ...    ${acceptance_code}: The display name of the option to select (e.g. 'Manual'). Must match exactly as shown in the dropdown.
+
+    Should Not Be Empty    ${acceptance_code}    Acceptance criteria code cannot be empty.
+    Wait Until Element Exist    ${Defect_Cmb_AcceptanceCode_XPATH}    5
+    Select Combobox Item By Name    ${Defect_Cmb_AcceptanceCode_XPATH}    ${acceptance_code}
+    Sleep    0.2s
+
+Select Acceptance Criteria
+    [Arguments]    ${decision}    ${notes}
+    [Documentation]    Enter notes (mandatory) and click the Accept or Reject button in the Defect Marking panel.
+    ...    ${decision}: 'Accept' to click the Accept button, 'Reject' to click the Reject button. Case-insensitive.
+    ...    ${notes}: Text to enter into the mandatory Notes field before submitting the decision.
+    ...
+    ...    Returns: ${True} if the 'Confirm Status Change' dialog appeared (and was dismissed with Yes), ${False} otherwise. Use the return value to assert the dialog's expected presence/absence in your test.
+
+    Should Not Be Empty    ${decision}    Decision cannot be empty.
+    Should Not Be Empty    ${notes}    Notes cannot be empty — the Notes field is mandatory for marking.
+    ${decision_norm}=    Evaluate    str($decision).strip().lower()
+
+    Wait Until Element Exist    ${Defect_Txt_Notes_XPATH}    5
+    Set Text To Textbox    ${Defect_Txt_Notes_XPATH}    ${notes}
+    Sleep    0.2s
+
+    IF    '${decision_norm}' == 'accept'
+        Wait Until Element Exist    ${Defect_Btn_Accept_XPATH}    5
+        Click    ${Defect_Btn_Accept_XPATH}
+    ELSE IF    '${decision_norm}' == 'reject'
+        Wait Until Element Exist    ${Defect_Btn_Reject_XPATH}    5
+        Click    ${Defect_Btn_Reject_XPATH}
+    ELSE
+        Fail    Invalid decision '${decision}'. Use 'Accept' or 'Reject'.
+    END
+    Sleep    0.2s
+
+    ${confirm_visible}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${Confirm_Status_Change_Window_XPATH}    2
+    IF    ${confirm_visible}
+        Click    ${Confirm_Status_Change_Yes_Button_XPATH}
+        Sleep    0.2s
+    END
+    RETURN    ${confirm_visible}
 
 Click Image Filter Tool
     [Arguments]    ${status}=True

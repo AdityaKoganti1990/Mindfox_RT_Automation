@@ -124,13 +124,19 @@ Find Center Point Curved Object
 
 Delete the annotation
     [Documentation]    Delete/Clear the annotations.
+    ...    Returns ${True} if the confirmation warning popup appeared (Yes button was visible and clicked), ${False} otherwise.
     Focus    ${window_XPATH}
     Sleep    1s
     Click    ${delete_annotation_button_xpath}
     Sleep    1s
-    ${result}=    Win Exists    FoXpert    strText=${EMPTY}
-    Run Keyword If    '${result}'=='1'    Click    /Window/Window/Button[@Name="Yes"]
-    Sleep    1s
+    Set Retry Timeout    0
+    ${warning_shown}=    Run Keyword And Return Status    Element Should Exist    /Window/Window/Button[@Name="Yes"]
+    Reset Retry Timeout
+    IF    ${warning_shown}
+        Click    /Window/Window/Button[@Name="Yes"]
+        Sleep    1s
+    END
+    RETURN    ${warning_shown}
 
     
 Draw Polygon On Image

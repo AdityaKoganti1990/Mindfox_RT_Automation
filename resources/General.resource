@@ -46,7 +46,11 @@ ${PROJECT_DUPLICATE_FILES_OK_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMai
 ${PROJECT_DUPLICATE_FILES_OK_BUTTON_FALLBACK_XPATH}    /Window/Window[@Name="Duplicate Files"]/Button[@Name="OK"]
 ${User_Manual_Button_XPATH}    //*[@AutomationId="Main_Btn_UserManual"]
 ${open_about_menu_XPATH}          //*[@AutomationId="Main_Btn_About"]
-${open_user_management_menu_XPATH}    //*[@AutomationId="Main_Btn_UserManagement"]
+${open_user_management_menu_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_UserManagement"]
+${delete_user_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="UserMgmt_Btn_DeleteUser"]
+${save_changes_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="UserMgmt_Btn_SaveChanges"]
+${user_management_users_list_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/List[@AutomationId="UserMgmt_List_Users"]
+${user_management_status_bar_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[12]
 ${UI_Scale_Combobox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//ComboBox[@AutomationId="Main_Cmb_UiScale"]
 ${audit_log_window_xpath}                /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Audit Log"]
 ${audit_log_from_date_xpath}             ${audit_log_window_xpath}//*[@AutomationId="FromDate"]
@@ -59,20 +63,33 @@ ${audit_log_export_dialog_filename_xpath}    ${audit_log_window_xpath}/Window//C
 ${audit_log_export_dialog_filename_fallback_xpath}    ${audit_log_window_xpath}/Window//Edit[@Name="File name:"]
 ${audit_log_export_dialog_save_button_xpath}    ${audit_log_window_xpath}/Window//Button[@Name="Save"]
 ${audit_log_export_overwrite_yes_button_xpath}    ${audit_log_window_xpath}/Window/Window/Button[@Name="Yes"]
-${audit_log_export_confirmation_ok_button_xpath}    /Window/Window[1]/Button[@Name="OK"]
+${audit_log_export_confirmation_ok_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[1]/Button[@Name="OK"]
 ${audit_log_export_confirmation_ok_button_fallback_xpath}    ${MAIN_WINDOW_XPATH}//Window/Button[@Name="OK"]
 ${audit_log_exports_directory}           ${CURDIR}\\..\\Exports\\Audit Logs\\
 ${project_Directory_Path}    ${CURDIR}\\..\\Test_Data\\
 ${folder_Directory_Path}     ${CURDIR}\\..\\Test_Data\\Project Folder_Set1
 ${Stitch_Files_Directory_Path}     ${CURDIR}\\..\\Test_Data\\StitchTestData\\
 ${Login_window_name}    FoXpert RT - Login
+${import_reference_image_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="RefAtlas_Btn_ImportImage"]
+${tags_overlay_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_OverlayConfig"]    
+${Annotations_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/CheckBox[@AutomationId="UserMgmt_Chk_PermAnnotations"]
+${Analysis_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/CheckBox[@AutomationId="UserMgmt_Chk_PermAnalysis"]
+${Filters_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/CheckBox[@AutomationId="UserMgmt_Chk_PermFilters"]
+${ImageTools_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/CheckBox[@AutomationId="UserMgmt_Chk_PermImageTools"]
+${fileoperations_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/CheckBox[@AutomationId="UserMgmt_Chk_PermFileOps"]
+${reporting_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/CheckBox[@AutomationId="UserMgmt_Chk_PermReporting"]
+${DICOMTags_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/CheckBox[@AutomationId="UserMgmt_Chk_PermDicomTags"]
+${Calibration_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/CheckBox[@AutomationId="UserMgmt_Chk_PermCalibration"]
+${ImageStitching_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/CheckBox[@AutomationId="UserMgmt_Chk_PermImageStitching"]    
 *** Keywords ***
 
 Open ProjectFile
     [Arguments]    @{project_file_paths}
     ${project_file_path}=    Evaluate    ' '.join(['"' + p + '"' for p in $project_file_paths]) if len($project_file_paths) > 1 else $project_file_paths[0]
     ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
+    Set Retry Timeout    0
     ${clear_enabled_before_open}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Clear_XPATH}
+    Reset Retry Timeout
     Wait Until Element Exist    ${project_menu_item_xpaths}    2
     Click    ${project_menu_item_xpaths}
     ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
@@ -181,6 +198,17 @@ Close Reference Radiograph Atlas
     Win Activate   Reference Radiograph Atlas
     Win Close    Reference Radiograph Atlas
     Win Wait Close    Reference Radiograph Atlas    ${EMPTY}    2
+
+Select User In User Management Window
+    [Arguments]    ${user_name}
+    [Documentation]    Click the user with the given display name in the User Management window's user list.
+    ...    ${user_name}: The name shown for the user in the list (e.g. 'admin'). Case-sensitive — must match exactly.
+
+    Should Not Be Empty    ${user_name}    User name cannot be empty.
+    ${user_item_xpath}=    Set Variable    ${user_management_users_list_xpath}/ListItem/Text[@Name="${user_name}"]
+    Wait Until Element Exist    ${user_item_xpath}    5
+    Click    ${user_item_xpath}
+    Sleep    0.2s
 
 Open audit Logs
     Click    //*[@AutomationId="Main_Btn_AuditLog"]
@@ -354,7 +382,7 @@ Close Project
     ...    Unsupported close-project action: ${warning_action}. Use Yes, No or Cancel.
     Click    ${Button_Clear_XPATH}
     ${warning_visible}=    Run Keyword And Return Status
-    ...    Wait Until Element Exist    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    2
+    ...    Wait Until Element Exist    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    1
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'Yes'
     ...    Click    ${PROJECT_CLOSE_WARNING_YES_BUTTON_XPATH}
     Run Keyword If    ${warning_visible} and '${warning_action}' == 'No'
@@ -452,9 +480,17 @@ Add New User In UserManagement Window
 Verify New User Added In UserManagement Window
     [Arguments]    ${userName}
 
-    ${user_added}=    Element Should Exist    //*[@Name="${userName}"]
-    Should Be True    ${user_added}
-    Element Should Exist    //*[@Name="User '' created"]
+    Element Should Exist    //*[@Name="${userName}"]
+
+    ${expected_message}=    Set Variable    User '${userName}' created
+    Set Retry Timeout    0
+    ${status}    ${displayed_message}=    Run Keyword And Ignore Error
+    ...    Get Name From Element    ${user_management_status_bar_xpath}
+    Reset Retry Timeout
+    Should Be Equal As Strings    ${status}    PASS
+    ...    Status bar message was not shown after adding user '${userName}'.
+    Should Be Equal As Strings    ${displayed_message}    ${expected_message}
+    ...    Expected status bar message '${expected_message}' but found '${displayed_message}'.
 
 Delete User From UserManagement Window
     [Arguments]    ${userName}
@@ -466,11 +502,75 @@ Delete User From UserManagement Window
 
 Verify User Deleted From UserManagement Window
     [Arguments]    ${userName}
-    
+
     ${user_deleted}=    Listbox Should Not Contain    //*[@AutomationId="UserMgmt_List_Users"]    ${userName}
     Should Be Equal As Strings    ${user_deleted}    None
-    Element Should Exist    //*[@Name="User '${userName}' deleted"]
+
+    ${expected_message}=    Set Variable    User '${userName}' deleted
+    Set Retry Timeout    0
+    ${status}    ${displayed_message}=    Run Keyword And Ignore Error
+    ...    Get Name From Element    ${user_management_status_bar_xpath}
+    Reset Retry Timeout
+    Should Be Equal As Strings    ${status}    PASS
+    ...    Status bar message was not shown after deleting user '${userName}'.
+    Should Be Equal As Strings    ${displayed_message}    ${expected_message}
+    ...    Expected status bar message '${expected_message}' but found '${displayed_message}'.
     
+Verify Image Info
+    [Arguments]    ${file_type}    @{params}
+    [Documentation]    Verify each Image Info field shown in the right-panel tab matches its expected value.
+    ...
+    ...    ${file_type}: image format identifier (e.g., DCM, PNG, BMP, TIFF). Currently informational only — every format shares the same field set; this argument is forward-looking for per-format routing once the UI distinguishes them.
+    ...    @{params}: variadic list of 'Key:Value' strings (e.g., 'Dimensions:1762 × 2144 px'). All mismatches across all fields are collected and reported together at the end.
+
+    @{failures}=    Create List
+    FOR    ${param}    IN    @{params}
+        ${param}=    Strip String    ${param}
+        IF    '${param}' == '${EMPTY}'    CONTINUE
+        @{parts}=    Split String    ${param}    :    1
+        ${num_parts}=    Get Length    ${parts}
+        IF    ${num_parts} != 2
+            Append To List    ${failures}    Malformed argument '${param}'. Expected 'Key:Value' format.
+            CONTINUE
+        END
+        ${key}=    Strip String    ${parts}[0]
+        ${expected_value}=    Strip String    ${parts}[1]
+        ${xpath}=    Resolve Image Info Field XPath    ${key}
+        IF    '${xpath}' == '${EMPTY}'
+            Append To List    ${failures}    Unknown field '${key}'. Add it to Resolve Image Info Field XPath.
+            CONTINUE
+        END
+        ${get_status}    ${displayed}=    Run Keyword And Ignore Error    Get Name From Element    ${xpath}
+        IF    '${get_status}' != 'PASS'
+            Append To List    ${failures}    Field '${key}': could not read displayed value (xpath '${xpath}' did not match).
+            CONTINUE
+        END
+        IF    '${displayed}' != '${expected_value}'
+            Append To List    ${failures}    Field '${key}': expected '${expected_value}' but found '${displayed}'.
+        END
+    END
+    ${num_failures}=    Get Length    ${failures}
+    IF    ${num_failures} > 0
+        ${all_failures}=    Catenate    SEPARATOR=\n - \    @{failures}
+        Fail    Verify Image Info (${file_type}) found ${num_failures} mismatch(es):\n - ${all_failures}
+    END
+
+Resolve Image Info Field XPath
+    [Arguments]    ${key}
+    [Documentation]    Return the xpath of the value-Text element for the given Image Info field key, or empty string if the key is unknown. Update this dictionary when the UI exposes new fields.
+
+    ${map}=    Create Dictionary
+    ...    Dimensions=/Window/Tab/TabItem/Text[5]
+    ...    Pixel spacing=/Window/Tab/TabItem/Text[7]
+    ...    Bit depth=/Window/Tab/TabItem/Text[9]
+    ...    Intensity min=/Window/Tab/TabItem/Text[11]
+    ...    Intensity max=/Window/Tab/TabItem/Text[13]
+    ...    Window C / W=/Window/Tab/TabItem/Text[15]
+    ${has_key}=    Run Keyword And Return Status    Dictionary Should Contain Key    ${map}    ${key}
+    IF    not ${has_key}    RETURN    ${EMPTY}
+    ${xpath}=    Get From Dictionary    ${map}    ${key}
+    RETURN    ${xpath}
+
 Set UI Scale For RT Application
     [Arguments]    ${scale_value}
     Select Combobox Item By Name    ${UI_Scale_Combobox_XPATH}    ${scale_value}
@@ -510,7 +610,7 @@ Press Shortcut Keys
     ${key_spec}=    Resolve Shortcut Spec    ${shortcut}
     @{keys}=    Create List    s'${key_spec}'
     Focus    ${MAIN_WINDOW_XPATH}
-    Click    ${MAIN_WINDOW_XPATH}
+    # Click    ${MAIN_TITLEBAR_XPATH}
     Press Keys    ${keys}    ${MAIN_WINDOW_XPATH}
     Sleep    0.5s
     Run Keyword If    '${shortcut}' == 'Open File'    Wait Until Element Exist    ${INPUT_FILE_DIALOG_XPATH}    5

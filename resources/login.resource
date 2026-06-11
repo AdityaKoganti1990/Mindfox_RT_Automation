@@ -30,13 +30,18 @@ ${WebSite_TEXT_XPATH}            //*[@Name="Web: www.mindfox.in"]
 
 # ─────────────────── Main Window ───────────────────
 ${MAIN_WINDOW_XPATH}             /Window[@AutomationId="FoxRTProMainWindow"]
+${MAIN_TITLEBAR_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Text[@Name="FoXpert RT"]    
 ${MAIN_CLOSE_BTN_XPATH}          /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_Close"]
+${MAIN_CLOSE_CONFIRMATION_YES_BTN_XPATH}    /Window/Window/Button[@Name="Yes"]
+${MAIN_CLOSE_CONFIRMATION_NO_BTN_XPATH}    /Window/Window/Button[@Name="No"]
+${MAIN_CONFIRM_CLOSE_TEXT_XPATH}    /Window/Window/Text[@Name="Confirm Close"]
+${MAIN_UNSAVED_CHANGES_TEXT_XPATH}    /Window/Window/Text[@Name="Unsaved Changes"]
 ${MAIN_MINIMIZE_BTN_XPATH}       /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_Minimize"]
 ${MAIN_RESTORE_BTN_XPATH}        /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_MaximizeRestore"]
 ${MAIN_MAXIMIZE_BTN_XPATH}       /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_MaximizeRestore"]
 ${About_close_btn_XPATH}         //*[@AutomationId="About_Btn_CloseAbout"]
-${ALREADY_RUNNING_WARNING_XPATH}    //Text[contains(@Name,"FoXpert RT is already running.")]
-${ALREADY_RUNNING_WARNING_OK_BUTTON_XPATH}    //Window[@Name="FoXpert RT"]/Button[@Name="OK"]
+${ALREADY_RUNNING_WARNING_XPATH}    /Window/Text[contains(@Name,"FoXpert RT is already running.")]
+${ALREADY_RUNNING_WARNING_OK_BUTTON_XPATH}    /Window/Button[@Name="OK"]
 ${ALREADY_RUNNING_WARNING_OK_BUTTON_FALLBACK_XPATH}    //Window/Button[@Name="OK"]
 ${APP_PID}                       NONE
 
@@ -45,15 +50,68 @@ ${APP_PID}                       NONE
 # ─────────────────── Application Startup ───────────────────
 
 Open FoxViewerDesktop Application
+    [Documentation]    Launch the FoxViewerDesktop application. If a previous instance is already running, the 'FoXpert RT is already running.' warning appears — it is detected, captured, and auto-dismissed with the OK button.
+    ...
+    ...    Returns: the displayed warning text if the 'already running' dialog appeared, or an empty string if the app launched cleanly. PID is stored in suite variable ${APP_PID}.
+
     ${pid}=    Launch Application    ${APP_PATH}
     Attach Application By Pid        ${pid}
     Set Suite Variable    ${APP_PID}    ${pid}
-    Wait Until Element Is Enabled    ${LOGIN_BUTTON_XPATH}    5
-    Sleep    1s
-    ${result}=    Win Exists    FoXpert RT    OK
-    Run Keyword If    ${result}==1    Click    ${ALREADY_RUNNING_WARNING_OK_BUTTON_XPATH}
-    Sleep    0.2s       
-    RETURN    ${pid}
+
+    ${warning_visible}=    Set Variable    ${False}
+    Set Retry Timeout    0
+    FOR    ${i}    IN RANGE    10
+        ${warning_visible}=    Run Keyword And Return Status
+        ...    Element Should Exist    ${ALREADY_RUNNING_WARNING_XPATH}
+        IF    ${warning_visible}    BREAK
+        ${login_visible}=    Run Keyword And Return Status
+        ...    Element Should Exist    ${LOGIN_BUTTON_XPATH}
+        IF    ${login_visible} and ${i} >= 4    BREAK
+        Sleep    0.5s
+    END
+    Reset Retry Timeout
+
+    ${warning_message}=    Set Variable    ${EMPTY}
+    IF    ${warning_visible}
+        Set Retry Timeout    0
+        ${status}    ${msg}=    Run Keyword And Ignore Error
+        ...    Get Name From Element    ${ALREADY_RUNNING_WARNING_XPATH}
+        Reset Retry Timeout
+        IF    '${status}' == 'PASS'
+            ${warning_message}=    Set Variable    ${msg}
+        ELSE
+            ${warning_message}=    Set Variable    FoXpert RT is already running.
+        END
+
+        Run Keyword And Ignore Error    Invoke Button    ${ALREADY_RUNNING_WARNING_OK_BUTTON_XPATH}
+        ${dismissed}=    Run Keyword And Return Status
+        ...    Wait Until Element Does Not Exist    ${ALREADY_RUNNING_WARNING_XPATH}    2
+
+        IF    not ${dismissed}
+            Run Keyword And Ignore Error    Click    ${ALREADY_RUNNING_WARNING_OK_BUTTON_XPATH}
+            ${dismissed}=    Run Keyword And Return Status
+            ...    Wait Until Element Does Not Exist    ${ALREADY_RUNNING_WARNING_XPATH}    2
+        END
+
+        IF    not ${dismissed}
+            Run Keyword And Ignore Error    Click    /Window/*[@Name="OK"]
+            ${dismissed}=    Run Keyword And Return Status
+            ...    Wait Until Element Does Not Exist    ${ALREADY_RUNNING_WARNING_XPATH}    2
+        END
+
+        IF    not ${dismissed}
+            Run Keyword And Ignore Error    Focus    ${ALREADY_RUNNING_WARNING_XPATH}
+            Run Keyword And Ignore Error    Press Key    s'ENTER'    ${ALREADY_RUNNING_WARNING_XPATH}
+            ${dismissed}=    Run Keyword And Return Status
+            ...    Wait Until Element Does Not Exist    ${ALREADY_RUNNING_WARNING_XPATH}    2
+        END
+
+        IF    not ${dismissed}
+            Run Keyword And Ignore Error    Send    {ENTER}
+            Sleep    0.5s
+        END
+    END
+    RETURN    ${warning_message}
     
     
 Close FoxViewerDesktop Application
@@ -214,11 +272,31 @@ Resize FoxRT Application Window
     Sleep    1s
 
 Close FoxRT Application Window
+    [Documentation]    Click the main Close button and dismiss whichever confirmation dialog appears.
+    ...    Two possible dialogs are handled:
+    ...    - 'Confirm Close' (no unsaved work)  → click Yes to confirm the close.
+    ...    - 'Unsaved Changes' (work in progress) → click No to discard changes and continue closing.
+    ...    If neither dialog appears within the wait windows, the keyword returns silently — the close completed without prompting.
+
     ${has_close}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${MAIN_CLOSE_BTN_XPATH}    3
     Should Be True    ${has_close}    Close button not found.
     Invoke Button    ${MAIN_CLOSE_BTN_XPATH}
     Sleep    1s
-    Invoke Button    /Window/Window/Button[@Name="Yes"]
+
+    ${confirm_close_visible}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${MAIN_CONFIRM_CLOSE_TEXT_XPATH}    2
+    IF    ${confirm_close_visible}
+        Invoke Button    ${MAIN_CLOSE_CONFIRMATION_YES_BTN_XPATH}
+        RETURN
+    END
+
+    Set Retry Timeout    0
+    ${unsaved_changes_visible}=    Run Keyword And Return Status
+    ...    Element Should Exist    ${MAIN_UNSAVED_CHANGES_TEXT_XPATH}
+    Reset Retry Timeout
+    IF    ${unsaved_changes_visible}
+        Invoke Button    ${MAIN_CLOSE_CONFIRMATION_NO_BTN_XPATH}
+    END
 
 
