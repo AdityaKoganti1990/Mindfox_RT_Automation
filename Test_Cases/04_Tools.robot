@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Tools test suite. Total Test Cases: 64 (MFRTT01, MFRTT01-2, MFRTT02 - MFRTT38_2, plus _2 variants of MFRTT27-29 and MFRTT32-38).
+Documentation     Tools test suite. Total Test Cases: 64 (MFRTT01, MFRTT01-2, MFRTT02 - MFRTT53, plus _2 variants of MFRTT27-29 and MFRTT32-38).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary

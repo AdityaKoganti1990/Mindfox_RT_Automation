@@ -31,17 +31,17 @@ MFRTG03 - Verify whether able to load Project folder into application
     [Tags]    smoke    general
     Open FolderSet    ${folder_Directory_Path}
     Sleep    1s
-    ${result1}=    Element Should Exist    //*[@Name="dp080922 .dcm"]
+    ${result1}=    Element Should Exist    /Window/Tab/TabItem/List/ListItem/Text[@Name="dp080922 .dcm"]
     Should Be Equal As Strings    ${result1}    True
-    ${result2}=    Element Should Exist    //*[@Name="dp081522a.dcm"]
+    ${result2}=    Element Should Exist    /Window/Tab/TabItem/List/ListItem/Text[@Name="dp081522a.dcm"]
     Should Be Equal As Strings    ${result2}    True
-    ${result3}=    Element Should Exist    //*[@Name="DuplexPlate_With_RT.dcm"]
+    ${result3}=    Element Should Exist    /Window/Tab/TabItem/List/ListItem/Text[@Name="DuplexPlate_With_RT.dcm"]
     Should Be Equal As Strings    ${result3}    True
-    ${result4}=    Element Should Exist    //*[@Name="MLE_4_0.237.dcm"]
+    ${result4}=    Element Should Exist    /Window/Tab/TabItem/List/ListItem/Text[@Name="MLE_4_0.237.dcm"]
     Should Be Equal As Strings    ${result4}    True
-    ${result5}=    Element Should Exist    //*[@Name="MLE_6_0.280.dcm"]
+    ${result5}=    Element Should Exist    /Window/Tab/TabItem/List/ListItem/Text[@Name="MLE_6_0.280.dcm"]
     Should Be Equal As Strings    ${result5}    True
-    ${result6}=    Element Should Exist    //*[@Name="MLE_8''0.322.dcm"]
+    ${result6}=    Element Should Exist    /Window/Tab/TabItem/List/ListItem/Text[@Name="MLE_8''0.322.dcm"]
     Should Be Equal As Strings    ${result6}    True
     ${result7}=    Element Should Exist    ${Button_Clear_XPATH}
     Should Be Equal As Strings    ${result7}    True

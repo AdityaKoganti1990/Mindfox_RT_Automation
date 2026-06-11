@@ -1,13 +1,13 @@
 *** Settings ***
-Documentation     Mindfox RT Automation root suite. Total Test Cases: 243.
-...    Login: 5 | General: 43 | Annotations: 31 | Tools: 64 | Actions: 20 | Image Viewer: 65 | Online Mode: 15.
+Documentation     Mindfox RT Automation root suite. Total Test Cases: 333.
+...    Login: 5 | General: 43 | Annotations: 31 | Tools: 64 | Actions: 20 | Image Viewer: 65 | Online Mode: 15 | Bug Cases: 90.
 Library           FlaUILibrary
 Library           Process
 Library           ../lib/display_check.py
 Resource          ../resources/login.resource
 
-Suite Setup        Verify Display Settings
-Suite Teardown     Run Keywords    Restore Display Settings    AND    Shutdown PC
+# Suite Setup        Verify Display Settings
+# Suite Teardown     Run Keywords    Restore Display Settings    AND    Shutdown PC
 #Suite Teardown    Close Application For Suite
 
 *** Variables ***
@@ -20,8 +20,8 @@ Open Application For Suite
     ...    Get Process Id    FoxViewerDesktop.exe
 
     IF    not ${is_running}
-        ${app_pid}=    Open FoxViewerDesktop Application
-        Set Suite Variable    ${pid}    ${app_pid}
+        Open FoxViewerDesktop Application
+        Set Suite Variable    ${pid}    ${APP_PID}
         Sleep    2s
         Login To FoxViewerDesktop    admin    admin
         Main Window Should Be Open
