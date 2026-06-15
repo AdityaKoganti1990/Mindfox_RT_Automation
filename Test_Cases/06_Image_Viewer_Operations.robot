@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Image Viewer Operations test suite. Total Test Cases: 65 (MFRTIV01 - MFRTIV65).
+Documentation     Image Viewer Operations test suite. Total Test Cases: 76 (MFRTIV01 - MFRTIV76).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -935,4 +935,114 @@ MFRTIV65 - Verify whether able to export image after analyzing the image in imag
     Apply Auto Best BNC
     Close Project
     Close FoxRT Application Window
+
+MFRTIV66 - Verify whether annotations are shown properly after rotating the image.
+    [Documentation]    This test case is to verify whether annotations are shown properly after rotating the image.
+    
+    Open FoxViewerDesktop Application
+    Login To FoxViewerDesktop    admin    admin
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Add Text Annotation    This is a text annotation
+    Rotate Image Viewer    Rotate CW
+    Rotate Image Viewer    Rotate CW
+    Take Actual Screenshot    MFRTIV66_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV66_Actual.png    MFRTIV66_Actual.png
+    Rotate Image Viewer    Rotate CCW
+    Take Actual Screenshot    MFRTIV66_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV66_Actual2.png    MFRTIV66_Actual2.png    
+    Rotate Image Viewer    Rotate CCW
+
+MFRTIV67 - Verify whether annotations are shown properly after flipping the image.
+    [Documentation]    This test case is to verify whether annotations are shown properly after flipping the image.
+    
+    Flip Image Viewer    Horizontal
+    Take Actual Screenshot    MFRTIV67_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV67_Actual.png    MFRTIV67_Actual.png
+    Flip Image Viewer    Horizontal
+    Flip Image Viewer    Vertical
+    Take Actual Screenshot    MFRTIV67_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV67_Actual2.png    MFRTIV67_Actual2.png
+    Flip Image Viewer    Vertical
+    Delete the annotation
+    Close Project
+
+MFRTIV68 - Verify whether intensity values are shown in status bar for .png files.
+    [Documentation]    This test case is to verify whether intensity values are shown in status bar for .png files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.png
+    Hover Mouse Over Image Viewer    930    460
+    Verify Intensity Value Not Exists In Status Bar
+    Close Project
+
+MFRTIV69 - Verify whether intensity values are shown in status bar for .jpg files.
+    [Documentation]    This test case is to verify whether intensity values are shown in status bar for .jpg files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.jpg
+    Hover Mouse Over Image Viewer    930    460
+    Verify Intensity Value Not Exists In Status Bar
+    Close Project
+
+MFRTIV70 - Verify whether intensity values are shown in status bar for .tiff files.
+    [Documentation]    This test case is to verify whether intensity values are shown in status bar for .tiff files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.tiff
+    Hover Mouse Over Image Viewer    930    460
+    Verify Intensity Value Not Exists In Status Bar
+    Close Project
+
+MFRTIV71 - Verify whether intensity values are shown in status bar for .bmp files.
+    [Documentation]    This test case is to verify whether intensity values are shown in status bar for .bmp files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.bmp
+    Hover Mouse Over Image Viewer    930    460
+    Verify Intensity Value Not Exists In Status Bar
+    Close Project
+
+MFRTIV72 - Verify whether RGB values are shown in status bar for .png files.
+    [Documentation]    This test case is to verify whether RGB values are shown in status bar for .png files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.png
+    Hover Mouse Over Image Viewer    930    460
+    Verify RGB Value Exists In Status Bar    135,135,135
+    Close Project
+
+MFRTIV73 - Verify whether RGB values are shown in status bar for .jpg files.
+    [Documentation]    This test case is to verify whether RGB values are shown in status bar for .jpg files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.jpg
+    Hover Mouse Over Image Viewer    930    460
+    Verify RGB Value Exists In Status Bar    135,135,135
+    Close Project
+
+MFRTIV74 - Verify whether RGB values are shown in status bar for .tiff files.
+    [Documentation]    This test case is to verify whether RGB values are shown in status bar for .tiff files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.tiff
+    Hover Mouse Over Image Viewer    930    460
+    Verify RGB Value Exists In Status Bar    135,135,135
+    Close Project
+
+MFRTIV75 - Verify whether RGB values are shown in status bar for .bmp files.
+    [Documentation]    This test case is to verify whether RGB values are shown in status bar for .bmp files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.bmp
+    Hover Mouse Over Image Viewer    930    460
+    Verify RGB Value Exists In Status Bar    135,135,135
+    Close Project
+
+MFRTIV76 - Verify whether export path is persisted on reopening the export window.
+    [Documentation]    This test case is to verify whether export path is persisted on reopening the export window.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Export Image    MFRTIV76_Image    ${Actual_Image_Exports}MFRTIV76_Image    PNG     False
+    sleep    0.2s
+    Click    ${Export_Image_Button_XPATH}
+    sleep    0.2s
+    Wait Until Element Exist    ${Export_Image_Window_XPATH}    5
+    ${persisted_value}=    Get Name From Element    ${Export_Image_SaveIn_TextField_Xpath}
+    Run Keyword And Continue On Failure    Should Contain    ${persisted_value}    Exports\\Image Exports\\Actual
+    ...    Expected the export folder to be persisted in the Save In field, but got: '${persisted_value}'.
+    sleep    0.2s
+    Click    ${Export_Image_Cancel_Button_XPATH}
+    sleep    0.2s
 

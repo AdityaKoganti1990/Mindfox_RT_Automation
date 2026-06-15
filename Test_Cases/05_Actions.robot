@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Actions test suite. Total Test Cases: 20 (MFRTA01 - MFRTA20).
+Documentation     Actions test suite. Total Test Cases: 23 (MFRTA01 - MFRTA23).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -215,4 +215,65 @@ MFRTA20 - Verify whether able to close RT simulator.
 
 
 
+
+MFRTA21 - Verify whether annotations are shown in generated report.
+    [Documentation]    This test case is to verify whether annotations are shown in generated report.
+    
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Add Text Annotation    This is a text annotation
+    Open Report Viewer
+    Set Report Viewer Params    TestReport1    2026-04-15    Test Report Title    True    True    True    True
+    Click Export Pdf Button    MFRTA21
+    Run Keyword And Continue On Failure    Compare Result Files    MFRTA21.pdf    MFRTA21.pdf    95
+    Delete the annotation
+
+MFRTA22 - Verify whether tools are shown in generated report.
+    [Documentation]    This test case is to verify whether tools are shown in generated report.
+    
+    Close Project
+    Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
+    Detect IQI Wire Phantom Tool
+    Open Report Viewer
+    Set Report Viewer Params    TestReport2    2026-04-15    Test Report Title    True    True    True    True
+    Click Export Pdf Button    MFRTA22
+    Run Keyword And Continue On Failure    Compare Result Files    MFRTA22.pdf    MFRTA22.pdf    95
+    Click    ${IQI_wire_phantom_tool_button_xpath}
+    Close Project
+
+MFRTA23 - Verify whether option is provided to open generated report from the application.
+    [Documentation]    This test case is to verify whether option is provided to open generated report from the application.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Open Report Viewer
+    Set Report Viewer Params    TestReport3    2026-04-15    Test Report Title    True    True    True    True
+    sleep    0.5s
+    click    ${REPORT_VIEWER_EXPORT-PDF_BUTTON_XPATH}
+    sleep    0.5s
+    Set Text To Textbox    ${EXPORT_PDF_DIALOG_FILENAME_XPATH}    ${CURDIR}\\..\\Actual\\MFRTA23.pdf
+    Sleep    0.5s
+    Click    ${Export_PDF_DIALOG_SAVE_BUTTON_XPATH}
+    Sleep    0.5s
+    ${replace_prompt_visible}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${EXPORT_PDF_REPLACE_YES_BUTTON_XPATH}    3
+    IF    ${replace_prompt_visible}
+        IF    'Yes' == 'no'
+            Click    ${EXPORT_PDF_REPLACE_NO_BUTTON_XPATH}
+        ELSE
+            Click    ${EXPORT_PDF_REPLACE_YES_BUTTON_XPATH}
+        END
+    ELSE
+        ${replace_prompt_visible_fallback}=    Run Keyword And Return Status
+        ...    Wait Until Element Exist    ${EXPORT_PDF_REPLACE_YES_BUTTON_FALLBACK_XPATH}    2
+        IF    ${replace_prompt_visible_fallback}
+            IF    'Yes' == 'no'
+                Click    ${EXPORT_PDF_REPLACE_NO_BUTTON_FALLBACK_XPATH}
+            ELSE
+                Click    ${EXPORT_PDF_REPLACE_YES_BUTTON_FALLBACK_XPATH}
+            END
+        END
+    END
+    Wait Until Element Exist    ${Report_open_report_button_XPATH}    10
+    Run Keyword And Continue On Failure    VerifyControlState    ${Report_open_report_button_XPATH}    exists    2
+    sleep    0.2s
+    Click    ${Report_close_report_button_XPATH}
 

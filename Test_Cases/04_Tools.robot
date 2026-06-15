@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Tools test suite. Total Test Cases: 64 (MFRTT01, MFRTT01-2, MFRTT02 - MFRTT53, plus _2 variants of MFRTT27-29 and MFRTT32-38).
+Documentation     Tools test suite. Total Test Cases: 75 (MFRTT01, MFRTT01-2, MFRTT02 - MFRTT64, plus _2 variants of MFRTT27-29 and MFRTT32-38).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -759,3 +759,194 @@ MFRTT53 - Verify whether able to apply Bilateral Smooth filter using GPU Renderi
     Click Image Filter Tool    False
     Close Project
     Close FoxRT Application Window
+
+MFRTT54 - Verify whether able to add wallthickness tool over the testCR.dcm file.
+    [Documentation]    This test case is to verify whether able to add wallthickness tool over the testCR.dcm file.
+
+    Open ProjectFile    ${project_Directory_Path}testCR.dcm
+    Add Wall Thickness Measurement tool over image    480    340    545    340
+    Take Actual Screenshot    MFRTT54_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT54_Actual.png    MFRTT54_Actual.png
+    Take wall thickness measurement window Screenshot    MFRTT54_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT54_Actual2.png    MFRTT54_Actual2.png
+    Click Delete Wall Thickness Measurement Annotation    580    270
+    Close Project
+
+MFRTT55 - Verify whether custom defect type is getting added properly and shown in the defect marking and classification tool.
+    [Documentation]    This test case is to verify whether custom defect type is getting added properly and shown in the defect marking and classification tool.
+
+    Add Defect Marking and Classification Tool over image    Other    Rectangle    821    372    1008    416    Custom Defect
+    Take Actual Screenshot    MFRTT55_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT55_Actual.png    MFRTT55_Actual.png
+    Delete Selected Defect    1
+    Click    ${defect_marking_tool_button_xpath}
+    Fail    Known bug: Custom defect type is showing large text which is odd over the image, need to change screenshot once fixed.
+
+MFRTT56 - Verify whether able to evalute custom defect type in the defect marking and classification tool.
+    [Documentation]    This test case is to verify whether able to evalute custom defect type in the defect marking and classification tool.
+
+    Add Defect Marking and Classification Tool over image    Other    Rectangle    821    372    1008    416    Custom Defect
+    Select Acceptance Criteria Code    Manual
+    Select Acceptance Criteria    Accept    Accepted By Manual Inspection
+    Take Actual Screenshot    MFRTT56_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT56_Actual.png    MFRTT56_Actual.png
+    Select Acceptance Criteria    Reject    Rejected By Manual Inspection
+    Take Actual Screenshot    MFRTT56_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT56_Actual2.png    MFRTT56_Actual2.png
+    Delete Selected Defect    1
+    Click    ${defect_marking_tool_button_xpath}
+    Fail    Known bug: Custom defect type is showing large text which is odd over the image, need to change screenshot once fixed.
+
+MFRTT57 - Verify whether able to export images with defects added over the image.
+    [Documentation]    This test case is to verify whether able to export images with defects added over the image.
+
+    Add Defect Marking and Classification Tool over image    Porosity    Rectangle    821    372    1008    416
+    Select Acceptance Criteria Code    ASME B31.3
+    Evaluate Defect Marked    1
+    Add Defect Marking and Classification Tool over image    Crack    Ellipse    821    549    1009    631
+    Select Acceptance Criteria Code    ASME B31.3
+    Evaluate Defect Marked    2
+    Click    ${defect_marking_tool_button_xpath}
+    Export Image    MFRTT57_Image    ${Actual_Image_Exports}MFRTT57_Image    PNG     False
+    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTT57_Image.png    ${Expected_Image_Exports}MFRTT57_Image.png
+    Click    ${defect_marking_tool_button_xpath}
+    Delete Selected Defect    2
+    Delete Selected Defect    1
+    Click    ${defect_marking_tool_button_xpath}
+    Close Project
+
+MFRTT58 - Verify whether able to Cancel IQI detection.
+    [Documentation]    This test case is to verify whether able to Cancel IQI detection.
+
+    Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
+    Click    ${IQI_wire_phantom_tool_button_xpath}
+    sleep    0.2s
+    Click Cancel IQI Detection
+    Take Actual Screenshot    MFRTT58_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT58_Actual.png    MFRTT58_Actual.png
+
+MFRTT59 - Verify whether IQI detection is working over a filtered image.
+    [Documentation]    This test case is to verify whether IQI detection is working over a filtered image.
+
+    Apply Fox Bleach Filter    True
+    Run Keyword And Continue On Failure   Detect IQI Wire Phantom Tool
+    Take Actual Screenshot    MFRTT59_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT59_Actual.png    MFRTT59_Actual.png
+    Click    ${IQI_wire_phantom_tool_button_xpath}
+    Close Project
+    Fail    Known bug: IQI detection over filtered image does not work.
+
+MFRTT60 - Verify whether Clear All button is disabled in Batch processing window when no files are loaded into it.
+   [Documentation]    This test case is to verify whether Clear All button is disabled in Batch processing window when no files are loaded into it.
+
+    Open Batch Processing Window
+    Run Keyword And Continue On Failure    VerifyControlState    ${batch_procession_window_clearall_button_XPATH}    disabled
+    Close Batch Processing Window
+
+MFRTT61 - Verify whether Run Batch button is disabled in Batch processing window when no files are loaded into it.
+    [Documentation]    This test case is to verify whether Run Batch button is disabled in Batch processing window when no files are loaded into it.
+
+    Open Batch Processing Window
+    Run Keyword And Continue On Failure    VerifyControlState    ${batch_procession_window_run_batch_button_XPATH}    disabled
+    Close Batch Processing Window
+
+MFRTT62 - Verify whether able to move the labels of wall-thickness tool over the image.
+    [Documentation]    This test case is to verify whether able to move the labels of the wall-thickness tool over the image in image viewer.
+
+    Add Wall Thickness Measurement tool over image    790    400    840    400
+    Take Actual Screenshot    MFRTT62_Actual1.png
+    Move annotation Label    840    337    740    310
+    Take Actual Screenshot    MFRTT62_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT62_Actual2.png    MFRTT62_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT62_Actual1.png    MFRTT62_Actual2.png    100    False
+    Click Delete Wall Thickness Measurement Annotation    799    313
+
+MFRTT63 - Verify whether clear all button in defect marking window is disabled when no defects are added over the image.
+    [Documentation]    This test case is to verify whether clear all button in defect marking window is disabled when no defects are added over the image.
+
+    Click    ${defect_marking_tool_button_xpath}
+    Run Keyword And Continue On Failure    VerifyControlState    ${clear_all_defects_xpath}    disabled
+    click    ${defect_marking_tool_button_xpath}
+
+MFRTT64 - Verify whether pressing Esc key cleares all the tool selection.
+    [Documentation]    This test case is to verify whether pressing Esc key cleares all the tool selection.
+
+    Click    ${line_profiler_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${line_profiler_tool_button_xpath}    de-selected
+    Click    ${roi_statistics_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${roi_statistics_tool_button_xpath}    de-selected
+    Sleep    0.2s
+    Click    ${roi_statistics_tool_button_xpath}
+    sleep    0.2s
+    Click    ${window_level_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${window_level_tool_button_xpath}    de-selected
+    Sleep    0.2s
+    Click    ${window_level_tool_button_xpath}
+    sleep    0.2s
+    Click    ${window_Level_tool_panel_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${window_Level_tool_panel_button_xpath}    de-selected
+    Sleep    0.2s
+    Click    ${window_Level_tool_panel_button_xpath}
+    sleep    0.2s
+    Click    ${pixel_intensity_histogram_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${pixel_intensity_histogram_button_xpath}    de-selected
+    Sleep    0.2s
+    Click    ${pixel_intensity_histogram_button_xpath}
+    sleep    0.2s
+    Click    ${calibration_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${calibration_tool_button_xpath}    de-selected
+    Click    ${snr_measurement_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${snr_measurement_tool_button_xpath}    de-selected
+    Click    ${surface_plot_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${surface_plot_tool_button_xpath}    de-selected
+    Sleep    0.2s
+    Click    ${surface_plot_tool_button_xpath}
+    sleep    0.2s
+    Click    ${wall_thickness_measurement_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${wall_thickness_measurement_tool_button_xpath}    de-selected
+    Click    ${cnr_measurement_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${cnr_measurement_tool_button_xpath}    de-selected
+    Click    ${mtf_measurement_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${mtf_measurement_tool_button_xpath}    de-selected
+    Sleep    0.2s
+    Click    ${mtf_measurement_tool_button_xpath}
+    sleep    0.2s
+    Click    ${defect_marking_tool_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${defect_marking_tool_button_xpath}    de-selected
+    Sleep    0.2s
+    Click    ${defect_marking_tool_button_xpath}
+    sleep    0.2s
+    Click    ${Image_Filter_Tool_Button_XPATH}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${Image_Filter_Tool_Button_XPATH}    de-selected
+    Sleep    0.2s
+    Click    ${Image_Filter_Tool_Button_XPATH}
+    sleep    0.2s
+    Click    ${percentile_brightness_contrast_filter_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${percentile_brightness_contrast_filter_button_xpath}    de-selected
+    Sleep    0.2s
+    Click    ${window_XPATH}
+    sleep    0.2s
+    Click    ${fox_bleach_filter_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${fox_bleach_filter_button_xpath}    de-selected
+    Sleep    0.2s
+    Click    ${fox_bleach_filter_button_xpath}
+    sleep    0.2s
+    Apply Auto Best BNC
+    Close Project
+    Close FoxRT Application Window
+

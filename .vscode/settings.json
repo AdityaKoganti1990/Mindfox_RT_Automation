@@ -1,11 +1,11 @@
 {
     "workbench.colorTheme": "Dark Modern",
-    "python.defaultInterpreterPath": "C:/Users/kogan/AppData/Local/Programs/Python/Python311/python.exe",
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
     "robot.pythonpath": [
         "${workspaceFolder}/lib",
         "${workspaceFolder}/resources"
     ],
-    "robot.python.executable": "C:/Users/kogan/AppData/Local/Programs/Python/Python311/python.exe",
+    "robot.python.executable": "${workspaceFolder}/.venv/Scripts/python.exe",
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.pythonProjects": [],
     "emeraldwalk.runonsave": {

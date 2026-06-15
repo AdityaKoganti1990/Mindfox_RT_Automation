@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Annotations test suite. Total Test Cases: 31 (MFRTANN01 - MFRTANN31).
+Documentation     Annotations test suite. Total Test Cases: 33 (MFRTANN01 - MFRTANN33).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -329,3 +329,52 @@ MFRTANN31 - Verify whether able to add multiple point(intensity) annotations at 
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN31.png    MFRTANN31.png
     Delete the annotation
     Close FoxRT Application Window
+
+MFRTANN32 - Verify whether able to move annotation labels over the image in image viewer.
+    [Documentation]    This test case is to verify whether able to move annotation labels over the image in image viewer.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Add Annotation    annotation_type=Ruler
+    Take Actual Screenshot    MFRTANN32_Actual1.png
+    Move annotation Label    886    606    844    515
+    Take Actual Screenshot    MFRTANN32_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN32_Actual2.png    MFRTANN32_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN32_Actual1.png    MFRTANN32_Actual2.png    100    False
+    Delete the annotation
+
+MFRTANN33 - Verify whether shortcut key Esc clears all the annotation selection.
+    [Documentation]    This test case is to verify whether shortcut key Esc clears all the annotation selection.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Click    ${arrow_annotation_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${arrow_annotation_button_xpath}    de-selected
+    Click    ${ruler_annotation_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${ruler_annotation_button_xpath}    de-selected
+    Click    ${line_annotation_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${line_annotation_button_xpath}    de-selected
+    Click    ${rectangle_annotation_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${rectangle_annotation_button_xpath}    de-selected
+    Click    ${circle_annotation_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${circle_annotation_button_xpath}    de-selected
+    Click    ${freehand_annotation_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${freehand_annotation_button_xpath}    de-selected
+    Click    ${text_annotation_button_xpath}
+    Press Shortcut Keys    Esc
+    Sleep    0.2s
+    ${ann_props_visible}=    Run Keyword And Return Status    Wait Until Element Exist    /Window/Window[@Name="Annotation Properties"]    1
+    IF    ${ann_props_visible}
+        Click    /Window/Window[@Name="Annotation Properties"]/Button[@AutomationId="AnnProps_Btn_Cancel"]
+        Sleep    0.2s
+    END
+    Run Keyword And Continue On Failure    VerifyControlState    ${text_annotation_button_xpath}    de-selected
+    Click    ${point_intensity_annotation_button_xpath}
+    Press Shortcut Keys    Esc
+    Run Keyword And Continue On Failure    VerifyControlState    ${point_intensity_annotation_button_xpath}    de-selected
+    Delete the annotation
+

@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     General application test suite. Total Test Cases: 43 (MFRTG01 - MFRTG43).
+Documentation     General application test suite. Total Test Cases: 72 (MFRTG01 - MFRTG72).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -362,4 +362,266 @@ MFRTG43 - Verify whether CPU/GPU Info window is opening successfully.
 
 
 
+
+MFRTG44 - Verify whether able to open .png files in image viewer.
+    [Documentation]    This test case is to verify whether able to open .png files in image viewer.
+    
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.png
+    Take Actual Screenshot    MFRTG44_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG44_Actual.png    MFRTG44_Actual.png
+
+MFRTG45 - Verify whether able to add annotations to .png files in image viewer.
+    [Documentation]    This test case is to verify whether able to add annotations to .png files in image viewer.
+    
+    Add Text Annotation    This is a text annotation
+    Take Actual Screenshot    MFRTG45_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG45_Actual.png    MFRTG45_Actual.png
+    Delete the annotation
+
+MFRTG46 - Verify whether able to apply window level to .png files in image viewer.
+    [Documentation]    This test case is to verify whether able to apply window level to .png files in image viewer.
+    
+    Apply Window Level    2    845    470    1050    570
+    Take Actual Screenshot    MFRTG46_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG46_Actual.png    MFRTG46_Actual.png
+    Click    ${window_level_tool_button_xpath}
+
+MFRTG47 - Verify whether able to apply filter to .png files in image viewer.
+    [Documentation]    This test case is to verify whether able to apply filter to .png files in image viewer.
+
+    Apply Fox Bleach Filter    True
+    Take Actual Screenshot    MFRTG47_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG47_Actual.png    MFRTG47_Actual.png
+    Reset View
+
+MFRTG48 - Verify whether able to open .jpg files in image viewer.
+    [Documentation]    This test case is to verify whether able to open .jpg files in image viewer.
+
+    Close Project
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.jpg
+    Take Actual Screenshot    MFRTG48_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG48_Actual.png    MFRTG48_Actual.png
+
+MFRTG49 - Verify whether able to add annotations to .jpg files in image viewer.
+    [Documentation]    This test case is to verify whether able to add annotations to .jpg files in image viewer.
+
+    Add Text Annotation    This is a text annotation
+    Take Actual Screenshot    MFRTG49_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG49_Actual.png    MFRTG49_Actual.png
+    Delete the annotation    
+
+MFRTG50 - Verify whether able to apply window level to .jpg files in image viewer.
+    [Documentation]    This test case is to verify whether able to apply window level to .jpg files in image viewer.
+
+    Apply Window Level    2    845    470    1050    570
+    Take Actual Screenshot    MFRTG50_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG50_Actual.png    MFRTG50_Actual.png
+    Click    ${window_level_tool_button_xpath}
+
+MFRTG51 - Verify whether able to apply filter to .jpg files in image viewer.
+    [Documentation]    This test case is to verify whether able to apply filter to .jpg files in image viewer.
+
+    Apply Fox Bleach Filter    True
+    Take Actual Screenshot    MFRTG51_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG51_Actual.png    MFRTG51_Actual.png
+    Reset View
+
+MFRTG52 - Verify whether able to open .bmp files in image viewer.
+    [Documentation]    This test case is to verify whether able to open .bmp files in image viewer.
+
+    Close Project
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.bmp
+    Take Actual Screenshot    MFRTG52_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG52_Actual.png    MFRTG52_Actual.png
+
+MFRTG53 - Verify whether able to add annotations to .bmp files in image viewer.
+    [Documentation]    This test case is to verify whether able to add annotations to .bmp files in image viewer.
+
+    Add Text Annotation    This is a text annotation
+    Take Actual Screenshot    MFRTG53_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG53_Actual.png    MFRTG53_Actual.png
+    Delete the annotation
+
+MFRTG54 - Verify whether able to apply window level to .bmp files in image viewer.
+    [Documentation]    This test case is to verify whether able to apply window level to .bmp files in image viewer.
+
+    Apply Window Level    2    845    470    1050    570
+    Take Actual Screenshot    MFRTG54_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG54_Actual.png    MFRTG54_Actual.png
+    Click    ${window_level_tool_button_xpath}
+
+MFRTG55 - Verify whether able to apply filter to .bmp files in image viewer.
+    [Documentation]    This test case is to verify whether able to apply filter to .bmp files in image viewer.
+
+    Apply Fox Bleach Filter    True
+    Take Actual Screenshot    MFRTG55_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG55_Actual.png    MFRTG55_Actual.png
+    Reset View
+
+MFRTG56 - Verify whether able to open .tiff files in image viewer.
+    [Documentation]    This test case is to verify whether able to open .tiff files in image viewer.
+
+    Close Project
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.tiff
+    Take Actual Screenshot    MFRTG56_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG56_Actual.png    MFRTG56_Actual.png
+
+MFRTG57 - Verify whether able to add annotations to .tiff files in image viewer.
+    [Documentation]    This test case is to verify whether able to add annotations to .tiff files in image viewer.
+
+    Add Text Annotation    This is a text annotation
+    Take Actual Screenshot    MFRTG57_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG57_Actual.png    MFRTG57_Actual.png
+    Delete the annotation
+
+MFRTG58 - Verify whether able to apply window level to .tiff files in image viewer.
+    [Documentation]    This test case is to verify whether able to apply window level to .tiff files in image viewer.
+
+    Apply Window Level    2    845    470    1050    570
+    Take Actual Screenshot    MFRTG58_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG58_Actual.png    MFRTG58_Actual.png
+    Click    ${window_level_tool_button_xpath}
+
+MFRTG59 - Verify whether able to apply filter to .tiff files in image viewer.
+    [Documentation]    This test case is to verify whether able to apply filter to .tiff files in image viewer.
+
+    Apply Fox Bleach Filter    True
+    Take Actual Screenshot    MFRTG59_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG59_Actual.png    MFRTG59_Actual.png
+    Reset View
+    Close Project
+
+MFRTG60 - Verify whether able to export audit log in csv format.
+    [Documentation]    This test case is to verify whether able to export audit log in csv format.
+
+    Open audit Logs
+    Apply Audit Log Filter Params    2026-05-01    2026-05-08    All    All
+    Export Audit Log    MFRTG60_Audit.csv
+    Run Keyword And Continue On Failure   Verify Exported File Saved    MFRTG60_Audit.csv    ${audit_log_exports_directory}
+    Close audit Logs
+    
+
+MFRTG61 - Verify whether Clear all files button is disabled when there are no files under the Files tab.
+    [Documentation]    This test case is to verify whether Clear all files button is disabled when there are no files under the Files tab.
+
+    Close Project
+    Run Keyword And Continue On Failure   VerifyControlState    control_name=${Button_Clear_XPATH}    expected_state=disabled    timeout=1
+
+MFRTG62 - Verify whether application theme is getting persisted after close and open application.
+    [Documentation]    This test case is to verify whether application theme is getting persisted after close and open application.
+
+    Switch Between Window Theme
+    Take Actual Screenshot    MFRTG62_Actual.png
+    Close FoxRT Application Window
+    Open FoxViewerDesktop Application
+    Login To FoxViewerDesktop    admin    admin
+    Take Actual Screenshot    MFRTG62_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG62_Actual.png    MFRTG62_Actual2.png
+    Switch Between Window Theme
+
+MFRTG63 - Verify whether status bar message is shown properly after loading files into files tab.
+    [Documentation]    This test case is to verify whether status bar message is shown properly after loading files into files tab.
+
+    Open FolderSet    ${folder_Directory_Path}
+    Run Keyword And Continue On Failure    Verify Status Bar Message    Loaded 6 file(s) from folder
+    Close Project
+
+MFRTG64 - Verify whether units set in application settings are persisted on re-opening the application.
+    [Documentation]    This test case is to verify whether units set in application settings are persisted on re-opening the application.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Change Units Across Application    inch
+    Add Annotation    Ruler
+    Take Actual Screenshot    MFRTG64_Actual.png
+    Close FoxRT Application Window
+    Open FoxViewerDesktop Application
+    Login To FoxViewerDesktop    admin    admin
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Add Annotation    Ruler
+    Take Actual Screenshot    MFRTG64_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTG64_Actual.png    MFRTG64_Actual2.png
+    Delete the annotation
+    Change Units Across Application    mm
+
+MFRTG65 - Verify whether able to open multiple instances of FoxRT application.
+    [Documentation]    This test case is to verify that the 'FoXpert RT is already running.' warning is displayed when a second instance of FoxRT is launched while the first is still running.
+
+    ${warning_message}=    Open FoxViewerDesktop Application
+    Run Keyword And Continue On Failure    Should Contain    ${warning_message}    FoXpert RT is already running.
+    ...    Expected the 'FoXpert RT is already running.' warning when launching a second instance, but got: '${warning_message}'.
+
+MFRTG66 - Verify whether when new user is created, status is shown correct in user management window.
+    [Documentation]    This test case is to verify whether when new user is created, status is shown correct in user management window.
+
+    Open User Management Window
+    Add New User In UserManagement Window    TestUser    TestPassword123    Level I    5555    Mindfox
+    Run Keyword And Continue On Failure   Verify New User Added In UserManagement Window    TestUser
+    Close User Management Window
+
+MFRTG67 - Verify whether when new user is removed, status is shown correct in user management window.
+    [Documentation]    This test case is to verify whether when new user is removed, status is shown correct in user management window.
+
+    Open User Management Window
+    Delete User From UserManagement Window    TestUser
+    Run Keyword And Continue On Failure   Verify User Deleted From UserManagement Window    TestUser
+    Close User Management Window
+
+MFRTG68 - Verify whether image info is showing correctly for DICOM files.
+    [Documentation]    This test case is to verify whether image info is showing correctly for DICOM files.
+
+    Run Keyword And Continue On Failure    Verify Image Info    DCM    
+    ...    Dimensions:1762 × 2144 px    
+    ...    Pixel spacing:0.1000 × 0.1000 mm/px    
+    ...    Bit depth:16-bit unsigned    
+    ...    Intensity min:8520    Intensity max:51798    
+    ...    Window C / W:30670 / 36944
+    Close Project
+
+MFRTG69 - Verify whether image info is showing correctly for PNG files.
+    [Documentation]    This test case is to verify whether image info is showing correctly for PNG files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.png
+    Run Keyword And Continue On Failure    Verify Image Info    PNG    
+    ...    Dimensions:1762 × 2144 px    
+    ...    Pixel spacing:—    
+    ...    Bit depth:16-bit unsigned    
+    ...    Intensity min:0    Intensity max:4096    
+    ...    Window C / W:128 / 255
+    Close Project
+
+MFRTG70 - Verify whether image info is showing correctly for JPG files.
+    [Documentation]    This test case is to verify whether image info is showing correctly for JPG files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.jpg
+    Run Keyword And Continue On Failure    Verify Image Info    JPG    
+    ...    Dimensions:1762 × 2144 px    
+    ...    Pixel spacing:—    
+    ...    Bit depth:16-bit unsigned    
+    ...    Intensity min:0    Intensity max:4096    
+    ...    Window C / W:128 / 255
+    Close Project
+
+MFRTG71 - Verify whether image info is showing correctly for TIFF files.
+    [Documentation]    This test case is to verify whether image info is showing correctly for TIFF files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.tiff
+    Run Keyword And Continue On Failure    Verify Image Info    TIFF    
+    ...    Dimensions:1762 × 2144 px    
+    ...    Pixel spacing:—    
+    ...    Bit depth:16-bit unsigned    
+    ...    Intensity min:0    Intensity max:4096    
+    ...    Window C / W:128 / 255
+    Close Project
+
+MFRTG72 - Verify whether image info is showing correctly for BMP files.
+    [Documentation]    This test case is to verify whether image info is showing correctly for BMP files.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.bmp
+    Run Keyword And Continue On Failure    Verify Image Info    BMP    
+    ...    Dimensions:1762 × 2144 px    
+    ...    Pixel spacing:—    
+    ...    Bit depth:16-bit unsigned    
+    ...    Intensity min:0    Intensity max:4096    
+    ...    Window C / W:128 / 255
+    Close Project
 

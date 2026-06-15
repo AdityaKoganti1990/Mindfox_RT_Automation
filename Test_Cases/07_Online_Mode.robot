@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Online Mode test suite. Total Test Cases: 15 (MFRTO01 - MFRTO15).
+Documentation     Online Mode test suite. Total Test Cases: 17 (MFRTO01 - MFRTO17).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -116,3 +116,20 @@ MFRTO15 - Verify whether able to hide the Motion Controller window in online mod
     Run Keyword And Continue On Failure    VerifyControlState    control_name=${MOTION_CONTROLLER_Connection_Combobox_XPATH}    expected_state=not exists    timeout=1
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${MOTION_CONTROLLER_WINDOW_XPATH}    expected_state=not exists    timeout=1
     Close FoxRT Application Window
+
+MFRTO16 - Verify whether Batch processing option is disabled in online mode.
+    [Documentation]    This test case is to verify whether Batch processing option is disabled in online mode.
+
+    Toggle Online Or Offline Mode    Online
+    Show or Hide XRay Controller    Hide
+    Toggle Motion Controller Window    Hide
+    Run Keyword And Continue On Failure    VerifyControlState    ${BATCH_PROCESSING_BUTTON_XPATH}    not exists
+    Toggle Online Or Offline Mode    Offline
+
+MFRTO17 - Verify whether Tags Overlay button is disabled in Online mode.
+    [Documentation]    This test case is to verify whether Tags Overlay button is disabled in Online mode.
+
+    Toggle Online Or Offline Mode    Online
+    Run Keyword And Continue On Failure    VerifyControlState    ${tags_overlay_button_xpath}    disabled
+    Toggle Online Or Offline Mode    Offline
+
