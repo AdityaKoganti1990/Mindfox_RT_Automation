@@ -118,6 +118,28 @@ Open ProjectFile
     END
     Reset Retry Timeout
     Should Be True    ${loaded}    Project did not load within expected time.
+    Verify Project Load Status Bar Message
+
+Verify Project Load Status Bar Message
+    [Documentation]    Extra safeguard for large files: wait until the status bar's primary message slot shows the
+    ...    'Loaded <n> file(s)' confirmation before returning. The file count varies, so only the 'Loaded ... file(s)'
+    ...    pattern is matched. Guards against the Clear button / dialog signals firing before a large project has
+    ...    finished loading.
+    Set Retry Timeout    0
+    ${status_confirmed}=    Set Variable    ${False}
+    ${displayed_message}=    Set Variable    ${EMPTY}
+    FOR    ${i}    IN RANGE    150
+        ${read_ok}    ${displayed_message}=    Run Keyword And Ignore Error    Get Name From Element    ${Status_Bar_Message_XPATH}
+        IF    '${read_ok}' == 'PASS'
+            ${status_confirmed}=    Evaluate    $displayed_message.startswith('Loaded') and 'file(s)' in $displayed_message
+            IF    ${status_confirmed}
+                BREAK
+            END
+        END
+        Sleep    0.2s
+    END
+    Reset Retry Timeout
+    Should Be True    ${status_confirmed}    Status bar did not confirm project load (expected 'Loaded <n> file(s)', last saw '${displayed_message}').
 
 Dismiss Project Open Warning Popup If Present
     Set Retry Timeout    0

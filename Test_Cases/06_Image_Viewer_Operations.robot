@@ -934,13 +934,9 @@ MFRTIV65 - Verify whether able to export image after analyzing the image in imag
     Reset View
     Apply Auto Best BNC
     Close Project
-    Close FoxRT Application Window
-
 MFRTIV66 - Verify whether annotations are shown properly after rotating the image.
     [Documentation]    This test case is to verify whether annotations are shown properly after rotating the image.
     
-    Open FoxViewerDesktop Application
-    Login To FoxViewerDesktop    admin    admin
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
     Add Text Annotation    This is a text annotation
     Rotate Image Viewer    Rotate CW
@@ -951,7 +947,6 @@ MFRTIV66 - Verify whether annotations are shown properly after rotating the imag
     Take Actual Screenshot    MFRTIV66_Actual2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV66_Actual2.png    MFRTIV66_Actual2.png    
     Rotate Image Viewer    Rotate CCW
-
 MFRTIV67 - Verify whether annotations are shown properly after flipping the image.
     [Documentation]    This test case is to verify whether annotations are shown properly after flipping the image.
     
@@ -965,7 +960,6 @@ MFRTIV67 - Verify whether annotations are shown properly after flipping the imag
     Flip Image Viewer    Vertical
     Delete the annotation
     Close Project
-
 MFRTIV68 - Verify whether intensity values are shown in status bar for .png files.
     [Documentation]    This test case is to verify whether intensity values are shown in status bar for .png files.
 
@@ -973,7 +967,6 @@ MFRTIV68 - Verify whether intensity values are shown in status bar for .png file
     Hover Mouse Over Image Viewer    930    460
     Verify Intensity Value Not Exists In Status Bar
     Close Project
-
 MFRTIV69 - Verify whether intensity values are shown in status bar for .jpg files.
     [Documentation]    This test case is to verify whether intensity values are shown in status bar for .jpg files.
 
@@ -981,7 +974,6 @@ MFRTIV69 - Verify whether intensity values are shown in status bar for .jpg file
     Hover Mouse Over Image Viewer    930    460
     Verify Intensity Value Not Exists In Status Bar
     Close Project
-
 MFRTIV70 - Verify whether intensity values are shown in status bar for .tiff files.
     [Documentation]    This test case is to verify whether intensity values are shown in status bar for .tiff files.
 
@@ -989,7 +981,6 @@ MFRTIV70 - Verify whether intensity values are shown in status bar for .tiff fil
     Hover Mouse Over Image Viewer    930    460
     Verify Intensity Value Not Exists In Status Bar
     Close Project
-
 MFRTIV71 - Verify whether intensity values are shown in status bar for .bmp files.
     [Documentation]    This test case is to verify whether intensity values are shown in status bar for .bmp files.
 
@@ -997,7 +988,6 @@ MFRTIV71 - Verify whether intensity values are shown in status bar for .bmp file
     Hover Mouse Over Image Viewer    930    460
     Verify Intensity Value Not Exists In Status Bar
     Close Project
-
 MFRTIV72 - Verify whether RGB values are shown in status bar for .png files.
     [Documentation]    This test case is to verify whether RGB values are shown in status bar for .png files.
 
@@ -1005,7 +995,6 @@ MFRTIV72 - Verify whether RGB values are shown in status bar for .png files.
     Hover Mouse Over Image Viewer    930    460
     Verify RGB Value Exists In Status Bar    135,135,135
     Close Project
-
 MFRTIV73 - Verify whether RGB values are shown in status bar for .jpg files.
     [Documentation]    This test case is to verify whether RGB values are shown in status bar for .jpg files.
 
@@ -1013,7 +1002,6 @@ MFRTIV73 - Verify whether RGB values are shown in status bar for .jpg files.
     Hover Mouse Over Image Viewer    930    460
     Verify RGB Value Exists In Status Bar    135,135,135
     Close Project
-
 MFRTIV74 - Verify whether RGB values are shown in status bar for .tiff files.
     [Documentation]    This test case is to verify whether RGB values are shown in status bar for .tiff files.
 
@@ -1021,7 +1009,6 @@ MFRTIV74 - Verify whether RGB values are shown in status bar for .tiff files.
     Hover Mouse Over Image Viewer    930    460
     Verify RGB Value Exists In Status Bar    135,135,135
     Close Project
-
 MFRTIV75 - Verify whether RGB values are shown in status bar for .bmp files.
     [Documentation]    This test case is to verify whether RGB values are shown in status bar for .bmp files.
 
@@ -1029,7 +1016,6 @@ MFRTIV75 - Verify whether RGB values are shown in status bar for .bmp files.
     Hover Mouse Over Image Viewer    930    460
     Verify RGB Value Exists In Status Bar    135,135,135
     Close Project
-
 MFRTIV76 - Verify whether export path is persisted on reopening the export window.
     [Documentation]    This test case is to verify whether export path is persisted on reopening the export window.
 
@@ -1045,4 +1031,6 @@ MFRTIV76 - Verify whether export path is persisted on reopening the export windo
     sleep    0.2s
     Click    ${Export_Image_Cancel_Button_XPATH}
     sleep    0.2s
+    Close Project
+    Close FoxRT Application Window
 

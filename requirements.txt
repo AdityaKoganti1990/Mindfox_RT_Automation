@@ -4,3 +4,5 @@ robotframework-autoitlibrary
 PyAutoGUI
 Pillow
 pythonnet
+# Required by the RobotCode VS Code extension (d-biehl.robotcode) for test discovery/running; keep version matched to the installed extension.
+robotcode[all]==2.6.2

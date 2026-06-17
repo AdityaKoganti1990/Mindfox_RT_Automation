@@ -5,11 +5,9 @@ Library           FlaUILibrary
 Library           Process
 Library           ../lib/display_check.py
 Resource          ../resources/login.resource
-
-# Suite Setup        Verify Display Settings
-# Suite Teardown     Run Keywords    Restore Display Settings    AND    Shutdown PC
-#Suite Teardown    Close Application For Suite
-
+Suite Setup        Verify Display Settings
+Suite Teardown     Run Keywords    Restore Display Settings    AND    Shutdown PC
+# Suite Teardown    Close Application For Suite
 *** Variables ***
 ${pid}    NONE
 

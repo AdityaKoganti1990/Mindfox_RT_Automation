@@ -6,6 +6,7 @@ Library           AutoItLibrary
 Library           OperatingSystem
 Resource          ../resources/login.resource
 Resource          ../resources/Online.resource
+Resource          ../resources/Actions.resource
 
 *** Variables ***
 *** Test Cases ***
@@ -76,7 +77,7 @@ MFRTO09 - Verify the detectors list in the detector tab when switched to online 
     [Documentation]    Verify the detectors list in the detector tab when switched to online mode.
     [Tags]    MFRTO09
 
-    Verify Detectors List In Detector Tab    Simulator    DRTech    iRay 1717ME    XRD Detector    PaxScan 4343HE
+    Verify Detectors List In Detector Tab    Simulator    DRTech    iRay 1717ME    XRD Detector    PaxScan 4343HE    Detection Tech 4343
 MFRTO10 - Verify the Binning options in the detector tab when switched to online mode.
     [Documentation]    Verify the Binning options in the detector tab when switched to online mode.
     [Tags]    MFRTO10
@@ -115,8 +116,6 @@ MFRTO15 - Verify whether able to hide the Motion Controller window in online mod
     Toggle Motion Controller Window    Hide
     Run Keyword And Continue On Failure    VerifyControlState    control_name=${MOTION_CONTROLLER_Connection_Combobox_XPATH}    expected_state=not exists    timeout=1
     Run Keyword And Continue On Failure   VerifyControlState    control_name=${MOTION_CONTROLLER_WINDOW_XPATH}    expected_state=not exists    timeout=1
-    Close FoxRT Application Window
-
 MFRTO16 - Verify whether Batch processing option is disabled in online mode.
     [Documentation]    This test case is to verify whether Batch processing option is disabled in online mode.
 
@@ -125,11 +124,10 @@ MFRTO16 - Verify whether Batch processing option is disabled in online mode.
     Toggle Motion Controller Window    Hide
     Run Keyword And Continue On Failure    VerifyControlState    ${BATCH_PROCESSING_BUTTON_XPATH}    not exists
     Toggle Online Or Offline Mode    Offline
-
 MFRTO17 - Verify whether Tags Overlay button is disabled in Online mode.
     [Documentation]    This test case is to verify whether Tags Overlay button is disabled in Online mode.
 
     Toggle Online Or Offline Mode    Online
     Run Keyword And Continue On Failure    VerifyControlState    ${tags_overlay_button_xpath}    disabled
     Toggle Online Or Offline Mode    Offline
-
+    Close FoxRT Application Window

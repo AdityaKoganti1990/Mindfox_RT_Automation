@@ -6,6 +6,7 @@ Library           AutoItLibrary
 Library           OperatingSystem
 Resource          ../resources/login.resource
 Resource          ../resources/Actions.resource
+Resource          ../resources/Online.resource
 *** Variables ***
 @{BATCH_TEST_FILES}    ${project_Directory_Path}MLE_4_0.237.dcm    ${project_Directory_Path}MLE_6_0.280.dcm    ${project_Directory_Path}MLE_8''0.322.dcm
 @{BATCH_EXPECTED_OUTPUT_FILES}    MLE_4_0.237.png    MLE_6_0.280.png    MLE_8''0.322.png
@@ -195,42 +196,19 @@ MFRTA20 - Verify whether able to close RT simulator.
     Close RT Simulator
     Sleep    0.1s
     Run Keyword And Continue On Failure   Verify RT Simulator Window Is Closed
-    Close FoxRT Application Window
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
 MFRTA21 - Verify whether annotations are shown in generated report.
     [Documentation]    This test case is to verify whether annotations are shown in generated report.
     
-    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
     Add Text Annotation    This is a text annotation
     Open Report Viewer
     Set Report Viewer Params    TestReport1    2026-04-15    Test Report Title    True    True    True    True
     Click Export Pdf Button    MFRTA21
     Run Keyword And Continue On Failure    Compare Result Files    MFRTA21.pdf    MFRTA21.pdf    95
     Delete the annotation
-
+    Close Project
 MFRTA22 - Verify whether tools are shown in generated report.
     [Documentation]    This test case is to verify whether tools are shown in generated report.
     
-    Close Project
     Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
     Detect IQI Wire Phantom Tool
     Open Report Viewer
@@ -239,7 +217,6 @@ MFRTA22 - Verify whether tools are shown in generated report.
     Run Keyword And Continue On Failure    Compare Result Files    MFRTA22.pdf    MFRTA22.pdf    95
     Click    ${IQI_wire_phantom_tool_button_xpath}
     Close Project
-
 MFRTA23 - Verify whether option is provided to open generated report from the application.
     [Documentation]    This test case is to verify whether option is provided to open generated report from the application.
 
@@ -276,4 +253,6 @@ MFRTA23 - Verify whether option is provided to open generated report from the ap
     Run Keyword And Continue On Failure    VerifyControlState    ${Report_open_report_button_XPATH}    exists    2
     sleep    0.2s
     Click    ${Report_close_report_button_XPATH}
+    Close Project
+    Close FoxRT Application Window
 

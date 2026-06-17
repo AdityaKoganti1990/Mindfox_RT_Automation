@@ -1,11 +1,11 @@
 {
     "workbench.colorTheme": "Dark Modern",
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
-    "robot.pythonpath": [
+    "robotcode.robot.pythonPath": [
         "${workspaceFolder}/lib",
         "${workspaceFolder}/resources"
     ],
-    "robot.python.executable": "${workspaceFolder}/.venv/Scripts/python.exe",
+    "robotcode.robocop.enabled": false,
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.pythonProjects": [],
     "emeraldwalk.runonsave": {

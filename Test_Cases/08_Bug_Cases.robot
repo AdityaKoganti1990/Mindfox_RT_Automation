@@ -340,5 +340,6 @@ MFRTB32 - Verify whether able to switch to next and previous image using next an
     Close FoxRT Application Window
     Fail    Known bug: After loading the same folder set twice, the next and previous buttons do not work to switch between images, 
     ...    once fixed make sure correct screenshot is saved in expected result folder.
+   
 
 
