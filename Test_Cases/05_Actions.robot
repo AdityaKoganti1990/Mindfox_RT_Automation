@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Actions test suite. Total Test Cases: 23 (MFRTA01 - MFRTA23).
+Documentation     Actions test suite. Total Test Cases: 24 (MFRTA01 - MFRTA24).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -253,6 +253,21 @@ MFRTA23 - Verify whether option is provided to open generated report from the ap
     Run Keyword And Continue On Failure    VerifyControlState    ${Report_open_report_button_XPATH}    exists    2
     sleep    0.2s
     Click    ${Report_close_report_button_XPATH}
+MFRTA24 - Verify whether able to run batch processing with only filters option selected.
+    [Documentation]    Verify whether able to run batch processing with only filters option selected.
+    [Tags]    MFRTA24
+
+    Open Batch Processing Window
+    Add files to Batch Processing Window    @{BATCH_TEST_FILES}
+    Sleep    0.1s
+    Click    ${batch_operation_export_images_checkbox_XPATH}
+    sleep    0.1s
+    Run Keyword And Continue On Failure    Verify ControlState    ${batch_operation_apply_filter_checkbox_XPATH}    disabled
+    Sleep    0.1s
+    Click    ${batch_operation_export_images_checkbox_XPATH}
+    sleep    0.1s
+    Run Keyword And Continue On Failure    Verify ControlState    ${batch_operation_apply_filter_checkbox_XPATH}    enabled
+    Close Batch Processing Window
     Close Project
     Close FoxRT Application Window
 

@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Image Viewer Operations test suite. Total Test Cases: 76 (MFRTIV01 - MFRTIV76).
+Documentation     Image Viewer Operations test suite. Total Test Cases: 78 (MFRTIV01 - MFRTIV78).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -1031,6 +1031,39 @@ MFRTIV76 - Verify whether export path is persisted on reopening the export windo
     sleep    0.2s
     Click    ${Export_Image_Cancel_Button_XPATH}
     sleep    0.2s
+MFRTIV77 - Verify whether able to apply window level over image using left mouse click drag.
+    [Documentation]    This test case is to verify whether able to apply window level over image using left mouse click drag.
+
+    Apply Window Level using mouse drag    2    845    470    1050    570
+    Take Actual Screenshot    MFRTIV77_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV77_Actual.png    MFRTIV77_Actual.png
+    Reset View
+    Close Project
+MFRTIV78 - Verify whether dual viewer bounds are maintained properly after loading two images of different resolution.
+    [Documentation]    This test case is to verify whether dual viewer bounds are maintained properly after loading two images of different resolution.
+
+    Open ProjectFile    ${project_Directory_Path}dp080922 .dcm
+    Open/Close Dual View Mode    True
+    Select ImageViewer    Secondary
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Select Files From Files Tab    MLE_4_0.237.dcm
+    Reset View
+    Select ImageViewer    Primary
+    Add Annotation at custom position    Rectangle    370    480    445    575
+    Move Annotation    370    480    145    135
+    Take DualView Screenshot    Primary    MFRTIV78_Primary_Annotation_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV78_Primary_Annotation_1.png    MFRTIV78_Primary_Annotation_1.png
+    Move Annotation    275    361    230    945
+    Take DualView Screenshot    Primary    MFRTIV78_Primary_Annotation_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV78_Primary_Annotation_2.png    MFRTIV78_Primary_Annotation_2.png
+    Move Annotation    276    723    795    740
+    Take DualView Screenshot    Primary    MFRTIV78_Primary_Annotation_3.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV78_Primary_Annotation_3.png    MFRTIV78_Primary_Annotation_3.png
+    Move Annotation    660    720    740    120
+    Take DualView Screenshot    Primary    MFRTIV78_Primary_Annotation_4.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV78_Primary_Annotation_4.png    MFRTIV78_Primary_Annotation_4.png
+    Delete the annotation
     Close Project
     Close FoxRT Application Window
+
 

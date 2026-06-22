@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Online Mode test suite. Total Test Cases: 17 (MFRTO01 - MFRTO17).
+Documentation     Online Mode test suite. Total Test Cases: 18 (MFRTO01 - MFRTO18).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -129,5 +129,11 @@ MFRTO17 - Verify whether Tags Overlay button is disabled in Online mode.
 
     Toggle Online Or Offline Mode    Online
     Run Keyword And Continue On Failure    VerifyControlState    ${tags_overlay_button_xpath}    disabled
+    Toggle Online Or Offline Mode    Offline
+MFRTO18 - Verify whether dual viewer mode is disbaled in online mode.
+    [Documentation]    This test case is to verify whether dual viewer mode is disbaled in online mode.
+
+    Toggle Online Or Offline Mode    Online
+    Run Keyword And Continue On Failure    VerifyControlState    ${Dual_View_Toggle_Button_XPATH}    disabled
     Toggle Online Or Offline Mode    Offline
     Close FoxRT Application Window

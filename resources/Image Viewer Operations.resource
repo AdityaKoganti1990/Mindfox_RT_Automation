@@ -138,6 +138,21 @@ Pan Image Viewer Using Pan Tool
     Click    ${Pan_Tool_Button_XPATH}
     Sleep    0.1s
 
+Apply Window Level using mouse drag
+    [Arguments]    ${iterations}    ${start_x}    ${start_y}    ${end_x}    ${end_y}
+    [Documentation]    Apply window level on the image by dragging the mouse with the left button held down, over the image, from the start position to the end position.
+    ...    ${iterations}: Number of times the left-button drag is repeated. Window/Level is adjusted on each drag.
+    ...    ${start_x}, ${start_y}: Screen coordinates over the image where each drag begins.
+    ...    ${end_x}, ${end_y}: Screen coordinates over the image where each drag ends.
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    ${iterations}=    Convert To Integer    ${iterations}
+    FOR    ${i}    IN RANGE    ${iterations}
+        AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${end_x}    ${end_y}
+        Sleep    0.1s
+    END
+
 Apply Scale To Image Viewer
     [Arguments]    ${show_scale}
 

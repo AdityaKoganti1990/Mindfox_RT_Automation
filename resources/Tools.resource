@@ -30,6 +30,7 @@ ${surface_plot_window_xpath}    //*[@AutomationId="SurfacePlotPanel"]
 ${surface_plot_colormap_combobox_xpath}    //*[@AutomationId="SurfacePlot_Cmb_Colormap"]
 ${surface_plot_invert_button_xpath}    //*[@AutomationId="SurfacePlot_Tgl_Invert"]
 ${surface_plot_resetview_button_xpath}    //*[@AutomationId="SurfacePlot_Btn_FitView"]
+${surface_plot_reset_button_xpath}    //*[@AutomationId="SurfacePlot_Btn_ResetView"]
 ${wall_thickness_measurement_tool_button_xpath}    //*[@AutomationId="Main_Tgl_WallThickness"]
 ${wall_thickness_measurement_window_xpath}    //*[@AutomationId="WallThicknessPanel"]
 ${Manual_wall_thickness_detection_method_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Text[@Name="MANUAL"]
@@ -75,8 +76,8 @@ ${percentile_brightness_contrast_preset_10_90_button_xpath}    /Window[@Automati
 ${percentile_brightness_contrast_preset_20_80_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="Pct_Btn_Preset_20_80"]
 ${percentile_brightness_contrast_low_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Slider[1]
 ${percentile_brightness_contrast_high_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Slider[2]
-${percentile_brightness_contrast_low_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[3]
-${percentile_brightness_contrast_high_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[5]
+${percentile_brightness_contrast_low_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[@AutomationId="Pct_Txt_LowValue"]
+${percentile_brightness_contrast_high_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[@AutomationId="Pct_Txt_HighValue"]
 ${percentile_brightness_contrast_load_preset_button}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/List/DataItem/Button[1]
 ${selectNormalProfilerType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//Tab[2]/TabItem/Custom/RadioButton[@AutomationId="ModeNormal"]
 ${selectIQIProfilerType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//Tab[2]/TabItem/Custom/RadioButton[@AutomationId="ModeIqi"]
@@ -297,12 +298,20 @@ Apply Invert on Surface Plot 3D Image
     Click    ${surface_plot_invert_button_xpath}
     Sleep    0.2s
 
-Click Surface Plot Window Fit View Button 
+Click Surface Plot Window Fit View Button
     [Documentation]    Click Surface Plot Window Fit View Button.
 
     Focus    ${window_XPATH}
     Sleep    0.2s
     Click    ${surface_plot_resetview_button_xpath}
+    Sleep    0.2s
+
+Reset Surface Plot 3D Image
+    [Documentation]    Click the Reset button (SurfacePlot_Btn_ResetView) in the Surface Plot 3D view to reset the view to its default state.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${surface_plot_reset_button_xpath}
     Sleep    0.2s
 
 Zoom Surface Plot 3D Image
@@ -331,6 +340,20 @@ Rotate Surface Plot 3D Image
     Sleep    0.2s
     Click    ${surface_plot_window_xpath}
     Sleep    0.2s
+    AutoItLibrary.Mouse Click Drag    right    ${start_x}    ${start_y}    ${end_x}    ${end_y}
+    Sleep    0.5s
+
+Move Surface Plot 3D Image
+    [Arguments]    ${start_x}    ${start_y}    ${end_x}    ${end_y}
+    [Documentation]    Move (pan) the surface plot 3D image by holding the Shift key and right-click dragging on the viewer using user-provided start and end coordinates.
+    ...    The Shift key is always released in the keyword teardown, even if the drag fails, so it can never stay stuck down for later tests.
+    [Teardown]    AutoItLibrary.Send    {SHIFTUP}
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Click    ${surface_plot_window_xpath}
+    Sleep    0.2s
+    AutoItLibrary.Send    {SHIFTDOWN}
     AutoItLibrary.Mouse Click Drag    right    ${start_x}    ${start_y}    ${end_x}    ${end_y}
     Sleep    0.5s
 
@@ -744,6 +767,48 @@ Apply Percentile Brightness and Contrast
     Click    ${window_XPATH}
     Wait Until Element Does Not Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
     Sleep    0.2s
+
+Get Percentile BnC Displayed Value
+    [Arguments]    ${xpath}
+    [Documentation]    Read the displayed numeric value from a Percentile B&C text field.
+    ...    The control's Name is a descriptive label (e.g. "Percentile High Value"), not the number, so the value is read with `Get Text From Textbox` (which tries the Value pattern, then the Text pattern). Falls back to the Name only if neither pattern is supported.
+
+    ${status}    ${raw}=    Run Keyword And Ignore Error    Get Text From Textbox    ${xpath}
+    IF    '${status}' == 'FAIL'
+        ${raw}=    Get Name From Element    ${xpath}
+    END
+    Log    Percentile B&C value read from ${xpath}: '${raw}' (read via ${status}).
+    RETURN    ${raw}
+
+Verify Percentile Brightness and Contrast Values
+    [Arguments]    ${expected_low}    ${expected_high}
+    [Documentation]    Open the Percentile B&C popup (if not already open) and verify the displayed Low % and High % values match the expected values.
+    ...    ${expected_low}: Expected Low % value shown in the Pct_Txt_LowValue field.
+    ...    ${expected_high}: Expected High % value shown in the Pct_Txt_HighValue field.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${popup_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    1
+    Run Keyword If    not ${popup_open}    Click    ${percentile_brightness_contrast_filter_button_xpath}
+    Run Keyword If    not ${popup_open}    Wait Until Element Exist    ${percentile_brightness_contrast_savePreset_button_xpath}    5
+    Sleep    0.2s
+
+    # The text fields (Pct_Txt_LowValue / Pct_Txt_HighValue) expose only their static
+    # accessibility label ("Percentile Low/High Value") via UIA, not the displayed number,
+    # so read the live Low %/High % from the slider RangeValue pattern instead.
+    ${displayed_low}=    Get Percentile Slider Current Value    ${percentile_brightness_contrast_low_slider_xpath}
+    ${displayed_high}=    Get Percentile Slider Current Value    ${percentile_brightness_contrast_high_slider_xpath}
+    Log    Percentile B&C displayed Low/High %: ${displayed_low}/${displayed_high}
+    # Diagnostic only (non-failing): logs what the text fields actually expose via UIA.
+    Run Keyword And Ignore Error    Get Percentile BnC Displayed Value    ${percentile_brightness_contrast_low_value_text_xpath}
+    Run Keyword And Ignore Error    Get Percentile BnC Displayed Value    ${percentile_brightness_contrast_high_value_text_xpath}
+    ${expected_low_clean}=    Evaluate    str($expected_low).strip().replace('%', '')
+    ${expected_high_clean}=    Evaluate    str($expected_high).strip().replace('%', '')
+    Run Keyword And Continue On Failure    Should Be Equal As Numbers    ${displayed_low}    ${expected_low_clean}
+    ...    Expected Low % ${expected_low_clean} but popup shows ${displayed_low}.
+    Run Keyword And Continue On Failure    Should Be Equal As Numbers    ${displayed_high}    ${expected_high_clean}
+    ...    Expected High % ${expected_high_clean} but popup shows ${displayed_high}.
 
 Apply Percentile Brightness and Contrast Preset
     [Arguments]    ${preset}
