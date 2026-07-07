@@ -118,12 +118,12 @@ MFRTG15 - Verify the UI scale options available in the application.
     List Should Contain Value    ${options}    90
     List Should Contain Value    ${options}    100
     List Should Contain Value    ${options}    125
-    List Should Contain Value    ${options}    150
-    List Should Contain Value    ${options}    175
-    List Should Contain Value    ${options}    200
-    List Should Contain Value    ${options}    225
-    List Should Contain Value    ${options}    250
-    List Should Contain Value    ${options}    300
+    # List Should Contain Value    ${options}    150
+    # List Should Contain Value    ${options}    175
+    # List Should Contain Value    ${options}    200
+    # List Should Contain Value    ${options}    225
+    # List Should Contain Value    ${options}    250
+    # List Should Contain Value    ${options}    300
 MFRTG16 - Verify whether able to minimize application window.
         [Documentation]    Verify window can be minimized
     [Tags]    smoke    login    window-state

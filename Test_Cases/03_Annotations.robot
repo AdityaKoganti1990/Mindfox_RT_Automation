@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Annotations test suite. Total Test Cases: 33 (MFRTANN01 - MFRTANN33).
+Documentation     Annotations test suite. Total Test Cases: 34 (MFRTANN01 - MFRTANN34).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -374,5 +374,24 @@ MFRTANN33 - Verify whether shortcut key Esc clears all the annotation selection.
     Run Keyword And Continue On Failure    VerifyControlState    ${point_intensity_annotation_button_xpath}    de-selected
     Delete the annotation
     Close Project
+MFRTANN34 - Verify whether added annotations are persisted after switching between images.
+    [Documentation]    This test case is to verify whether added annotations are persisted after switching between images.
+    [Tags]    annotations
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm    
+    ...    ${project_Directory_Path}MLE_6_0.280.dcm    
+    ...    ${project_Directory_Path}MLE_8''0.322.dcm
+    Add Annotation    annotation_type=Rectangle
+    Take Actual Screenshot    MFRTANN34_Actual1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN34_Actual1.png    MFRTANN34_Actual1.png
+    Select Files From Files Tab    MLE_6_0.280.dcm
+    Select Files From Files Tab    MLE_4_0.237.dcm
+    Take Actual Screenshot    MFRTANN34_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN34_Actual2.png    MFRTANN34_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN34_Actual1.png    MFRTANN34_Actual2.png
+    Delete the annotation
+    Close Project
     Close FoxRT Application Window
+
+
 

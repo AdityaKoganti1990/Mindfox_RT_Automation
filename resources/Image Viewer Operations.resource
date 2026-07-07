@@ -70,6 +70,7 @@ ${Export_Image_PostExport_Yes_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Butto
 ${Fit_To_View_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Button[@AutomationId="Main_Btn_FitToView"]
 ${Tags_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Button[@AutomationId="Main_Btn_TagBrowser"]
 ${Overlay_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Button[@AutomationId="Main_Btn_OverlayConfig"]
+${DICOM_Tags_Toggle_Button_XPATH}    ${MAIN_WINDOW_XPATH}/Button[@AutomationId="Main_Tgl_OverlayVisibility"]
 ${Files_Tab_XPATH}    ${MAIN_WINDOW_XPATH}//TabItem[@AutomationId="Main_Tab_Files"]
 ${Filters_Tab_XPATH}    ${MAIN_WINDOW_XPATH}//TabItem[@AutomationId="Main_Tab_Filters"]
 ${Filters_Tab_Close_Button_XPATH}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="ImgFilters_Btn_Close"]
@@ -162,6 +163,20 @@ Apply Scale To Image Viewer
     ${target_state}=    Set Variable If    '${show_scale}' in ('true', '1', 'yes', 'on')    ON    OFF
     ${current_state}=    Get Toggle State    ${Scale_Toggle_Button_XPATH}
     Run Keyword If    '${current_state}' != '${target_state}'    Click    ${Scale_Toggle_Button_XPATH}
+    Sleep    0.1s
+
+Show/Hide DICOM Tags
+    [Arguments]    ${show_tags}
+    [Documentation]    Show or hide the DICOM tags overlay on the image viewer using the Tags toolbar button.
+    ...    ${show_tags}: Truthy (True/1/yes/on) shows the tags; falsy (False/0/no/off) hides them.
+    ...    If the tags are already in the requested state, nothing is clicked (the button is toggled only when the state must change).
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.1s
+    ${show_tags}=    Evaluate    str($show_tags).strip().lower()
+    ${target_state}=    Set Variable If    '${show_tags}' in ('true', '1', 'yes', 'on')    ON    OFF
+    ${current_state}=    Get Toggle State    ${DICOM_Tags_Toggle_Button_XPATH}
+    Run Keyword If    '${current_state}' != '${target_state}'    Click    ${DICOM_Tags_Toggle_Button_XPATH}
     Sleep    0.1s
 
 Rotate Image Viewer

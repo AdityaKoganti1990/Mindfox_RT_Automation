@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Bug cases test suite. Total Test Cases: 32 (MFRTB01 - MFRTB32).
+Documentation     Bug cases test suite. Total Test Cases: 34 (MFRTB01 - MFRTB34).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -274,6 +274,7 @@ MFRTB27 - Verify whether reset view button is getting diabled after closing the 
     Close Project
     Run Keyword And Continue On Failure    VerifyControlState    ${reset_view_button_xpath}    disabled
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Run keyword And Continue On Failure    VerifyControlState    ${reset_view_button_xpath}    disabled
 MFRTB28 - Verify whether able to remove the user that is currently logged in.
     [Documentation]    This test case is to verify whether able to remove the user that is currently logged in.
 
@@ -337,9 +338,57 @@ MFRTB32 - Verify whether able to switch to next and previous image using next an
     Take Actual Screenshot    MFRTB32_Actual.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTB32_Actual.png    MFRTB32_Actual.png
     Close Project
-    Close FoxRT Application Window
     Fail    Known bug: After loading the same folder set twice, the next and previous buttons do not work to switch between images, 
     ...    once fixed make sure correct screenshot is saved in expected result folder.
+MFRTB33 - Verify whether deleted annotations are getting persisted after switching between images.
+    [Documentation]    This test case is to verify whether deleted annotations are getting persisted after switching between images.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm    
+    ...    ${project_Directory_Path}MLE_6_0.280.dcm    
+    ...    ${project_Directory_Path}MLE_8''0.322.dcm
+    Add Annotation    annotation_type=Rectangle
+    Take Actual Screenshot    MFRTB33_Actual1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB33_Actual1.png    MFRTB33_Actual1.png
+    Select Files From Files Tab    MLE_6_0.280.dcm
+    Select Files From Files Tab    MLE_4_0.237.dcm
+    Take Actual Screenshot    MFRTB33_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB33_Actual2.png    MFRTB33_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB33_Actual1.png    MFRTB33_Actual2.png
+    Delete the annotation
+    Select Files From Files Tab    MLE_6_0.280.dcm
+    Select Files From Files Tab    MLE_4_0.237.dcm
+    Take Actual Screenshot    MFRTB33_Actual3.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB33_Actual3.png    MFRTB33_Actual3.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB33_Actual1.png    MFRTB33_Actual3.png    100    False
+    Close Project
+MFRTB34 - Verify whether removed defects over image are getting persisted after switching between images.
+    [Documentation]    This test case is to verify whether removed defects over image are getting persisted after switching between images.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm    
+    ...    ${project_Directory_Path}MLE_6_0.280.dcm    
+    ...    ${project_Directory_Path}MLE_8''0.322.dcm
+    Add Defect Marking and Classification Tool over image    Porosity    Rectangle    821    372    1008    416
+    Sleep    0.2s
+    Click    ${defect_marking_tool_button_xpath}
+    Sleep    0.2s
+    Take Actual Screenshot    MFRTB34_Actual1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB34_Actual1.png    MFRTB34_Actual1.png
+    Select Files From Files Tab    MLE_6_0.280.dcm
+    Select Files From Files Tab    MLE_4_0.237.dcm
+    Take Actual Screenshot    MFRTB34_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB34_Actual2.png    MFRTB34_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB34_Actual1.png    MFRTB34_Actual2.png
+    Delete Selected Defect    1
+    Sleep    0.2s
+    Click    ${defect_marking_tool_button_xpath}
+    Sleep    0.2s
+    Select Files From Files Tab    MLE_6_0.280.dcm
+    Select Files From Files Tab    MLE_4_0.237.dcm
+    Take Actual Screenshot    MFRTB34_Actual3.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB34_Actual3.png    MFRTB34_Actual3.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTB34_Actual1.png    MFRTB34_Actual3.png    100    False
+    Close Project
+    Close FoxRT Application Window
    
 
 

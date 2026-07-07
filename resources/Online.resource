@@ -51,8 +51,8 @@ ${COMPONENT_WINDOW_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="DICONDE Setup"]
 ${COMPONENT_WINDOW_Close_BUTTON_XPATH}    ${MAIN_WINDOW_XPATH}/Window/Button[@AutomationId="Diconde_Btn_CloseDialog"]
 ${RESUME_ACQUISITION_WINDOW_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="Resume Component"]
 ${RESUME_ACQUISITION_CANCEL_BUTTON_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@Name="Resume Component"]/Button[@Name="Cancel"]
-${XRay_Controller_Connection_Combobox_XPATH}    ${MAIN_WINDOW_XPATH}/Tab[2]/TabItem[1]/Custom/Pane/ComboBox[@AutomationId="XRayCtrl_Cmb_Controller"]
-${MOTION_CONTROLLER_Connection_Combobox_XPATH}    ${MAIN_WINDOW_XPATH}/Tab[2]/TabItem[2]/Custom/Pane/ComboBox[@AutomationId="MotionCtrl_Cmb_Controller"]
+${XRay_Controller_Connection_Combobox_XPATH}    ${MAIN_WINDOW_XPATH}//Custom/Pane/ComboBox[@AutomationId="XRayCtrl_Cmb_Controller"]
+${MOTION_CONTROLLER_Connection_Combobox_XPATH}    ${MAIN_WINDOW_XPATH}//Custom/Pane/ComboBox[@AutomationId="MotionCtrl_Cmb_Controller"]
 *** Keywords ***
 
 Toggle Online Or Offline Mode

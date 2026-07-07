@@ -38,6 +38,8 @@ ${PROJECT_CLOSE_WARNING_MESSAGE_XPATH}    //*[@AutomationId="MessageText"]
 ${PROJECT_CLOSE_WARNING_YES_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Yes"]
 ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="No"]
 ${PROJECT_CLOSE_WARNING_CANCEL_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Cancel"]
+# Unsaved-changes export prompt shown when switching files (reuses the Yes/No/Cancel warning buttons above).
+${UNSAVED_CHANGES_EXPORT_PROMPT_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[@Name="The current image has unsaved changes. Would you like to export before continuing?"]
 ${PROJECT_WARNING_OK_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="OK"]
 ${PROJECT_WARNING_OK_BUTTON_FALLBACK_XPATH}    /Window/Window/Button[@Name="OK"]
 ${PROJECT_DUPLICATE_FILES_WINDOW_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Duplicate Files"]
@@ -210,6 +212,11 @@ Open FolderSet
 Select Files From Files Tab
     [Arguments]    ${list_item_name}
     Click    //*[@Name="${list_item_name}"]
+    Sleep    0.2s
+    # Switching files with unsaved changes prompts to export first — decline with No.
+    ${unsaved_changes_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${UNSAVED_CHANGES_EXPORT_PROMPT_XPATH}    1
+    Run Keyword If    ${unsaved_changes_present}    Click    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}
     Sleep    0.2s
 
 Open Reference Radiograph Atlas

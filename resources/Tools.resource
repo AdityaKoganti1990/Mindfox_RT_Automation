@@ -92,6 +92,20 @@ ${render_mode_cpu_option_xpath}    /Window/Window/Menu/MenuItem[contains(@Name,"
 ${render_mode_info_option_xpath}    /Window/Window/Menu/MenuItem[contains(@Name,"GPU Info")]
 ${render_mode_info_window_xpath}    /Window/Window[@Name="GPU Rendering Info"]
 ${render_mode_info_window_Ok_Button_xpath}    /Window/Window[@Name="GPU Rendering Info"]/Button[@Name="OK"]
+# --- Graph view (Line Profiler etc.) data export controls ---
+# Line Profiler export buttons (AutomationIds confirmed against the app).
+${line_profiler_export_png_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="LineProfile_Btn_ExportPng"]
+${line_profiler_export_csv_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="LineProfile_Btn_ExportCsv"]
+# Wall Thickness Measurement export buttons (AutomationIds confirmed against the app).
+${wall_thickness_measurement_export_png_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="WallThick_Btn_ExportPng"]
+${wall_thickness_measurement_export_csv_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="WallThick_Btn_ExportCsv"]
+# Native "Save As" dialog (selectors confirmed against the app).
+${graph_view_save_dialog_window_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Save As"]
+${graph_view_save_dialog_filename_xpath}    ${graph_view_save_dialog_window_xpath}/Pane[1]/ComboBox[@AutomationId="FileNameControlHost"]
+${graph_view_save_dialog_save_button_xpath}    ${graph_view_save_dialog_window_xpath}/Button[@Name="Save"]
+${graph_view_save_dialog_overwrite_yes_button_xpath}    ${graph_view_save_dialog_window_xpath}/Window/Button[@Name="Yes"]
+# Post-save confirmation message box.
+${graph_view_export_confirmation_ok_button_xpath}    /Window/Window/Button[@Name="OK"]
 *** Keywords ***
 
 Add Line Profiler Tool
@@ -119,6 +133,74 @@ Take Line Profiler window Screenshot
 
     Log    Screenshot moved to: ${dest}
     RETURN    ${dest}
+
+Export Graph View Data
+    [Arguments]    ${tool_type}    ${save_type}    ${file_name}    ${folder_path}=${Actual_Image_Exports}
+    [Documentation]    Export a graph-view tool's data via its PNG or CSV export button.
+    ...    Clicks the PNG or CSV button (per ${save_type}), types the destination path into the
+    ...    native Save As dialog, clicks Save, and confirms the overwrite warning when a file of
+    ...    the same name already exists.
+    ...
+    ...    ${tool_type}: Graph-view tool whose data is exported (e.g. Line Profiler). Selects which export button is used.
+    ...    ${save_type}: 'PNG' or 'CSV' (case-insensitive) — picks the matching export button.
+    ...    ${file_name}: Output file name. Extension is optional; it is added from ${save_type} when missing.
+    ...    ${folder_path}: Destination directory. Defaults to ${Actual_Image_Exports} (= <repo>\\Exports\\Image Exports\\Actual\\). Pass the full path (e.g. ${Actual_Image_Exports}${file_name}) to Compare Result Images.
+    ...
+    ...    Example:
+    ...    | Export Graph View Data    Line Profiler    PNG    MFRTT68_LineProfilerData.png
+
+    ${save_type}=    Evaluate    str($save_type).strip().lstrip('.').lower()
+    Should Be True    '${save_type}' in ('png', 'csv')    Unsupported save type '${save_type}'. Use 'PNG' or 'CSV'.
+
+    # Resolve the export button for this tool + save type.
+    ${export_button_xpath}=    Get Graph View Export Button    ${tool_type}    ${save_type}
+
+    # Build the full destination path (with the correct extension) and make sure the folder exists.
+    ${has_ext}=    Evaluate    str($file_name).lower().endswith('.' + $save_type)
+    ${file_with_ext}=    Set Variable If    ${has_ext}    ${file_name}    ${file_name}.${save_type}
+    Create Directory    ${folder_path}
+    ${full_path}=    Evaluate    __import__('os').path.join($folder_path, $file_with_ext)
+
+    # Click the PNG/CSV button -> native Save As dialog pops up.
+    Click    ${export_button_xpath}
+    Wait Until Element Exist    ${graph_view_save_dialog_filename_xpath}    5
+    Sleep    0.5s
+    Set Text To Textbox    ${graph_view_save_dialog_filename_xpath}    ${full_path}
+    Sleep    0.3s
+    Click    ${graph_view_save_dialog_save_button_xpath}
+    Sleep    0.5s
+
+    # Handle the overwrite confirmation that appears when a file of the same name already exists.
+    ${overwrite_present}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${graph_view_save_dialog_overwrite_yes_button_xpath}    2
+    Run Keyword If    ${overwrite_present}    Click    ${graph_view_save_dialog_overwrite_yes_button_xpath}
+    Sleep    0.3s
+
+    # Wait for the post-save confirmation message box and dismiss it with OK.
+    Wait Until Element Exist    ${graph_view_export_confirmation_ok_button_xpath}    30
+    Sleep    0.5s
+    Click    ${graph_view_export_confirmation_ok_button_xpath}
+    Sleep    0.3s
+
+    Log    Graph view data exported to: ${full_path}
+    RETURN    ${full_path}
+
+Get Graph View Export Button
+    [Arguments]    ${tool_type}    ${save_type}
+    [Documentation]    Return the PNG/CSV export-button XPATH for the given graph-view tool.
+    ...    Extend the IF chain as more graph-view tools gain export buttons.
+
+    ${tool_key}=    Evaluate    str($tool_type).strip().lower()
+    IF    '${tool_key}' == 'line profiler'
+        ${button}=    Set Variable If    '${save_type}' == 'png'
+        ...    ${line_profiler_export_png_button_xpath}    ${line_profiler_export_csv_button_xpath}
+    ELSE IF    '${tool_key}' == 'wall thickness measurement'
+        ${button}=    Set Variable If    '${save_type}' == 'png'
+        ...    ${wall_thickness_measurement_export_png_button_xpath}    ${wall_thickness_measurement_export_csv_button_xpath}
+    ELSE
+        Fail    Unsupported graph-view tool '${tool_type}'. Add its export-button XPATHs to Get Graph View Export Button.
+    END
+    RETURN    ${button}
 
 Add ROI Statistics Tool
     [Arguments]    ${x1}    ${y1}    ${x2}    ${y2}
@@ -542,9 +624,14 @@ Clear AllDefects
 Delete Selected Defect
     [Arguments]    ${listItemNo}
     [Documentation]    Delete a defect marked on the image by the Defect Marking and Classification tool by clicking on it to select it and then pressing delete key.
+    ...    Opens the Defect Marking window first if it is not already open.
 
     Focus    ${window_XPATH}
     Sleep    0.2s
+    # Open the Defect Marking window first if it is not already open (the tool button is a toggle, so only click when closed).
+    ${defect_window_open}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${defect_marking_window_xpath}    1
+    Run Keyword If    not ${defect_window_open}    Click    ${defect_marking_tool_button_xpath}
     Wait Until Element Exist    ${defect_marking_window_xpath}    5
     Sleep    0.2s
     Click    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/List/ListItem[${listItemNo}]  

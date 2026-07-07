@@ -4,7 +4,7 @@ Library           Process
 Library           ../lib/image_comparator.py
 Library           ../lib/ironpy_remote_client.py
 Library           AutoItLibrary
-Variables         ../lib/app_version.py
+Variables         ../lib/app_version.py    %{FOXRT_APP_PATH=C:\Program Files\MindFox Software Solutions\FoxRT Pro\FoxViewerDesktop.exe}
 *** Variables ***
 
 # ─────────────────── Application Info ───────────────────

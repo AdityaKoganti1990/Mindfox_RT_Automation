@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Image Viewer Operations test suite. Total Test Cases: 78 (MFRTIV01 - MFRTIV78).
+Documentation     Image Viewer Operations test suite. Total Test Cases: 79 (MFRTIV01 - MFRTIV79).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -1063,7 +1063,19 @@ MFRTIV78 - Verify whether dual viewer bounds are maintained properly after loadi
     Take DualView Screenshot    Primary    MFRTIV78_Primary_Annotation_4.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTIV78_Primary_Annotation_4.png    MFRTIV78_Primary_Annotation_4.png
     Delete the annotation
+MFRTIV79 - Verify whether able to show/hide the dicom tags over image viewer.
+    [Documentation]    This test case is to verify whether able to show/hide the dicom tags over image viewer.
+
+    Show/Hide DICOM Tags    True
+    Take Actual Screenshot    MFRTIV79_Actual_ShowTags.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV79_Actual_ShowTags.png    MFRTIV79_Actual_ShowTags.png
+    Show/Hide DICOM Tags    False
+    Take Actual Screenshot    MFRTIV79_Actual_HideTags.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTIV79_Actual_HideTags.png    MFRTIV79_Actual_HideTags.png
+    Show/Hide DICOM Tags    True
     Close Project
     Close FoxRT Application Window
+
+    
 
 

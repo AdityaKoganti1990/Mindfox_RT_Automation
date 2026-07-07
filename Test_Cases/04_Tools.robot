@@ -1,5 +1,10 @@
 *** Settings ***
-Documentation     Tools test suite. Total Test Cases: 78 (MFRTT01 - MFRTT38_2, plus MFRTT01-2 and _2 variants of MFRTT27-29 and MFRTT32-38).
+Documentation     Tools test suite. 82 test cases in total, made up of:
+...               1) MFRTT01 to MFRTT71 - the 71 base test cases (one per feature/scenario).
+...               2) MFRTT01-2 - the IQI line profiler variant of MFRTT01 (which covers the normal line profiler).
+...               3) Ten "_2" cases that re-run the GPU-rendering filter tests under CPU rendering:
+...               MFRTT27_2, 28_2, 29_2, 32_2, 33_2, 34_2, 35_2, 36_2, 37_2, 38_2.
+...               (71 base + 1 + 10 = 82.)
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -22,7 +27,6 @@ MFRTT01 - Verify whether able to add normal line profiler tool in image viewer
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT01_1.png    MFRTT01_1.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT01_2.png    MFRTT01_2.png
     Click    ${line_profiler_tool_button_xpath}
-
 MFRTT01-2 - Verify whether able to add IQI line profiler tool in image viewer
     [Documentation]    Verify whether able to open add line profiler tool in image viewer
     [Tags]    smoke    tools
@@ -34,7 +38,6 @@ MFRTT01-2 - Verify whether able to add IQI line profiler tool in image viewer
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT01-2_2.png    MFRTT01-2_2.png
     Click    ${line_profiler_tool_button_xpath}
     Close Project
-
 MFRTT02 - Verify whether able to add ROI statistics tool in image viewer
     [Documentation]    Verify whether able to open add ROI statistics tool in image viewer
     [Tags]    smoke    tools
@@ -45,7 +48,6 @@ MFRTT02 - Verify whether able to add ROI statistics tool in image viewer
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT02_1.png    MFRTT02_1.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT02_2.png    MFRTT02_2.png
     Click    ${roi_statistics_tool_button_xpath}
-
 MFRTT03 - Verify whether able to apply window level over the image.
     [Documentation]    Verify whether able to apply window level over the image.
     [Tags]    smoke    tools
@@ -55,7 +57,6 @@ MFRTT03 - Verify whether able to apply window level over the image.
     Click    ${window_level_tool_button_xpath}
     Reset View
     Apply Auto Best BNC
-
 MFRTT04 - Verify whether able to open and apply window level from window level panel.
     [Documentation]    Verify whether able to open and apply window level from window level panel.
     [Tags]    smoke    tools
@@ -69,7 +70,6 @@ MFRTT04 - Verify whether able to open and apply window level from window level p
     Click    ${window_Level_tool_panel_button_xpath}
     Reset View
     Apply Auto Best BNC
-
 MFRTT05 - Verify whether able to open Pixel Intensity Histogram.
     [Documentation]    Verify whether able to open Pixel Intensity Histogram.
     [Tags]    smoke    tools
@@ -86,7 +86,6 @@ MFRTT05 - Verify whether able to open Pixel Intensity Histogram.
     Click    ${pixel_intensity_histogram_button_xpath}
     Reset View
     Apply Auto Best BNC
-
 MFRTT06 - Verify whether able to calibrate the image by adding calibration tool.
     [Documentation]    Verify whether able to calibrate the image by adding calibration tool.
     [Tags]    smoke    tools
@@ -102,7 +101,6 @@ MFRTT06 - Verify whether able to calibrate the image by adding calibration tool.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT06_2.png    MFRTT06_2.png
     Delete the annotation
     Reset View
-
 MFRTT07 - Verify whether able to add SNR Measurement tool over the image.
     [Documentation]    Verify whether able to add SNR Measurement tool over the image.
     [Tags]    smoke    tools
@@ -1001,6 +999,62 @@ MFRTT67 - Verify whether able to reset surface plot 3D view after moving it arou
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT67_2.png    MFRTT67_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT67_1.png    MFRTT67_2.png    100    False
     Close Project
+MFRTT68 - Verify whether able to export line profiler data to a png file.
+    [Documentation]    This test case is to verify whether able to export line profiler data to a png file.
+
+    Login To FoxViewerDesktop    admin    admin
+    Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
+    Add Line Profiler Tool    590    290    967    252    Normal
+    Export Graph View Data    Line Profiler    PNG    MFRTT68_LineProfilerData.png
+    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTT68_LineProfilerData.png    ${Expected_Image_Exports}MFRTT68_LineProfilerData.png
+MFRTT69 - Verify whether able to export line profiler data to a csv file.
+    [Documentation]    This test case is to verify whether able to export line profiler data to a csv file.
+
+    Export Graph View Data    Line Profiler    CSV    MFRTT69_LineProfilerData.csv
+    Run Keyword And Continue On Failure    Compare Result Files     ${Actual_Image_Exports}MFRTT69_LineProfilerData.csv    ${Expected_Image_Exports}MFRTT69_LineProfilerData.csv
+    Sleep    0.2s
+    Click    ${line_profiler_tool_button_xpath}
+    Sleep    0.2s
+    Close Project
+MFRTT70 - Verify whether able to export wall-thickness graph data to a png file.
+    [Documentation]    This test case is to verify whether able to export wall-thickness graph data to a png file.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Add Wall Thickness Measurement tool over image    805    400    860    403
+    Export Graph View Data    Wall Thickness Measurement    PNG    MFRTT70_WallThicknessGraphData.png
+    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTT70_WallThicknessGraphData.png    ${Expected_Image_Exports}MFRTT70_WallThicknessGraphData.png
+MFRTT71 - Verify whether able to export wall-thickness graph data to a csv file.
+    [Documentation]    This test case is to verify whether able to export wall-thickness graph data to a csv file.
+
+    Export Graph View Data    Wall Thickness Measurement    CSV    MFRTT71_WallThicknessGraphData.csv
+    Run Keyword And Continue On Failure    Compare Result Files     ${Actual_Image_Exports}MFRTT71_WallThicknessGraphData.csv    ${Expected_Image_Exports}MFRTT71_WallThicknessGraphData.csv
+    Sleep    0.2s
+    Click Delete Wall Thickness Measurement Annotation    812    312
+    Close Project
+MFRTT72 - Verify whether defects added over image are getting persisted after switching between images.
+    [Documentation]    This test case is to verify whether defects added over image are getting persisted after switching between images.
+
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm    
+    ...    ${project_Directory_Path}MLE_6_0.280.dcm    
+    ...    ${project_Directory_Path}MLE_8''0.322.dcm
+    Add Defect Marking and Classification Tool over image    Porosity    Rectangle    821    372    1008    416
+    Sleep    0.2s
+    Click    ${defect_marking_tool_button_xpath}
+    Sleep    0.2s
+    Take Actual Screenshot    MFRTT72_Actual1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT72_Actual1.png    MFRTT72_Actual1.png
+    Select Files From Files Tab    MLE_6_0.280.dcm
+    Select Files From Files Tab    MLE_4_0.237.dcm
+    Take Actual Screenshot    MFRTT72_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT72_Actual2.png    MFRTT72_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT72_Actual1.png    MFRTT72_Actual2.png
+    Delete Selected Defect    1
+    sleep    0.2s
+    Click    ${defect_marking_tool_button_xpath}
+    sleep    0.2s
+    Close Project
     Close FoxRT Application Window
+
+    
 
 
