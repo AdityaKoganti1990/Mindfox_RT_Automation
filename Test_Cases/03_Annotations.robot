@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Annotations test suite. Total Test Cases: 34 (MFRTANN01 - MFRTANN34).
+Documentation     Annotations test suite. Total Test Cases: 50 (MFRTANN01 - MFRTANN50).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -391,7 +391,195 @@ MFRTANN34 - Verify whether added annotations are persisted after switching betwe
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN34_Actual1.png    MFRTANN34_Actual2.png
     Delete the annotation
     Close Project
+# ---------------------------------------------------------------------------
+# Move & Resize annotation tests (MFRTANN35 - MFRTANN50) - scaffolds for manual review.
+# Positions are intentionally left blank (${EMPTY}); fill in real image-viewer coordinates before running.
+# NOTE: 'Add Annotation at custom position' currently supports Arrow, Ruler, Line, Rectangle and Circle only.
+# For ROI, Text and Point Cursor, extend that keyword (add the matching tool-button click) or the annotation will not be drawn.
+# ---------------------------------------------------------------------------
+MFRTANN35 - Verify whether able to move Arrow annotation over the image in image viewer.
+    [Documentation]    This test case is to verify whether able to move Arrow annotation over the image in image viewer.
+    [Tags]    annotations    move
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Add Annotation at custom position    Arrow    700    385    900    330
+    Take Actual Screenshot    MFRTANN35_Actual1.png
+    Move Annotation    900    330    900    205
+    Take Actual Screenshot    MFRTANN35_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN35_Actual2.png    MFRTANN35_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN35_Actual1.png    MFRTANN35_Actual2.png    100    False
+    Delete the annotation
+MFRTANN36 - Verify whether able to move Ruler annotation over the image in image viewer.
+    [Documentation]    This test case is to verify whether able to move Ruler annotation over the image in image viewer.
+    [Tags]    annotations    move
+
+    Add Annotation at custom position    Ruler    700    385    900    330
+    Take Actual Screenshot    MFRTANN36_Actual1.png
+    Move Annotation    900    330    900    205
+    Take Actual Screenshot    MFRTANN36_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN36_Actual2.png    MFRTANN36_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN36_Actual1.png    MFRTANN36_Actual2.png    100    False
+    Delete the annotation
+MFRTANN37 - Verify whether able to move Line annotation over the image in image viewer.
+    [Documentation]    This test case is to verify whether able to move Line annotation over the image in image viewer.
+    [Tags]    annotations    move
+
+    Add Annotation at custom position    Line    700    385    900    330
+    Take Actual Screenshot    MFRTANN37_Actual1.png
+    Move Annotation    900    330    900    205
+    Take Actual Screenshot    MFRTANN37_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN37_Actual2.png    MFRTANN37_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN37_Actual1.png    MFRTANN37_Actual2.png    100    False
+    Delete the annotation
+MFRTANN38 - Verify whether able to move Rectangle annotation over the image in image viewer.
+    [Documentation]    This test case is to verify whether able to move Rectangle annotation over the image in image viewer.
+    [Tags]    annotations    move
+
+    Add Annotation at custom position    Rectangle    790    310    1070    370
+    Take Actual Screenshot    MFRTANN38_Actual1.png
+    Move Annotation    1070    370    1070    920
+    Take Actual Screenshot    MFRTANN38_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN38_Actual2.png    MFRTANN38_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN38_Actual1.png    MFRTANN38_Actual2.png    100    False
+    Delete the annotation
+MFRTANN39 - Verify whether able to move Circle annotation over the image in image viewer.
+    [Documentation]    This test case is to verify whether able to move Circle annotation over the image in image viewer.
+    [Tags]    annotations    move
+
+    Add Annotation at custom position    Circle    790    310    1070    370
+    Take Actual Screenshot    MFRTANN39_Actual1.png
+    Move Annotation    930    370    940    945
+    Take Actual Screenshot    MFRTANN39_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN39_Actual2.png    MFRTANN39_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN39_Actual1.png    MFRTANN39_Actual2.png    100    False
+    Delete the annotation
+MFRTANN40 - Verify whether able to move ROI annotation over the image in image viewer.
+    [Documentation]    This test case is to verify whether able to move ROI annotation over the image in image viewer.
+    [Tags]    annotations    move
+
+    Add Freehand Annotation at custom position    845    220    960    125    1030    290    905    395    845    220
+    Take Actual Screenshot    MFRTANN40_Actual1.png
+    Move Annotation    975    340    1030    705
+    Take Actual Screenshot    MFRTANN40_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN40_Actual2.png    MFRTANN40_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN40_Actual1.png    MFRTANN40_Actual2.png    100    False
+    Delete the annotation
+MFRTANN41 - Verify whether able to move Text annotation over the image in image viewer.
+    [Documentation]    This test case is to verify whether able to move Text annotation over the image in image viewer.
+    [Tags]    annotations    move
+
+    Add Text Annotation    This is a text annotation
+    Take Actual Screenshot    MFRTANN41_Actual1.png
+    Move Annotation    950    600    930    245
+    Take Actual Screenshot    MFRTANN41_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN41_Actual2.png    MFRTANN41_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN41_Actual1.png    MFRTANN41_Actual2.png    100    False
+    Delete the annotation
+MFRTANN42 - Verify whether able to move Point Cursor annotation over the image in image viewer.
+    [Documentation]    This test case is to verify whether able to move Point Cursor annotation over the image in image viewer.
+    [Tags]    annotations    move
+
+    Add Point Intensity Annotation at custom position    930    385    1
+    Take Actual Screenshot    MFRTANN42_Actual1.png
+    Move Annotation    930    385    935    890
+    Take Actual Screenshot    MFRTANN42_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN42_Actual2.png    MFRTANN42_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN42_Actual1.png    MFRTANN42_Actual2.png    100    False
+    Delete the annotation
+MFRTANN43 - Verify whether able to resize Arrow annotation in image viewer.
+    [Documentation]    This test case is to verify whether able to resize Arrow annotation in image viewer.
+    [Tags]    annotations    resize
+
+    Add Annotation at custom position    Arrow    700    385    900    330
+    Take Actual Screenshot    MFRTANN43_Actual1.png
+    Resize Annotation    900    330    1045    285
+    Take Actual Screenshot    MFRTANN43_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN43_Actual2.png    MFRTANN43_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN43_Actual1.png    MFRTANN43_Actual2.png    100    False
+    Delete the annotation
+MFRTANN44 - Verify whether able to resize Ruler annotation in image viewer.
+    [Documentation]    This test case is to verify whether able to resize Ruler annotation in image viewer.
+    [Tags]    annotations    resize
+
+    Add Annotation at custom position    Ruler    700    385    900    330
+    Take Actual Screenshot    MFRTANN44_Actual1.png
+    Resize Annotation    900    330    1045    285
+    Take Actual Screenshot    MFRTANN44_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN44_Actual2.png    MFRTANN44_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN44_Actual1.png    MFRTANN44_Actual2.png    100    False
+    Delete the annotation
+MFRTANN45 - Verify whether able to resize Line annotation in image viewer.
+    [Documentation]    This test case is to verify whether able to resize Line annotation in image viewer.
+    [Tags]    annotations    resize
+
+    Add Annotation at custom position    Line    700    385    900    330
+    Take Actual Screenshot    MFRTANN45_Actual1.png
+    Resize Annotation    900    330    1045    285
+    Take Actual Screenshot    MFRTANN45_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN45_Actual2.png    MFRTANN45_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN45_Actual1.png    MFRTANN45_Actual2.png    100    False
+    Delete the annotation
+MFRTANN46 - Verify whether able to resize Rectangle annotation in image viewer.
+    [Documentation]    This test case is to verify whether able to resize Rectangle annotation in image viewer.
+    [Tags]    annotations    resize
+
+    Add Annotation at custom position    Rectangle    790    310    1070    370
+    Take Actual Screenshot    MFRTANN46_Actual1.png
+    Resize Annotation    790    310    990    310
+    Take Actual Screenshot    MFRTANN46_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN46_Actual2.png    MFRTANN46_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN46_Actual1.png    MFRTANN46_Actual2.png    100    False
+    Delete the annotation
+MFRTANN47 - Verify whether able to resize Circle annotation in image viewer.
+    [Documentation]    This test case is to verify whether able to resize Circle annotation in image viewer.
+    [Tags]    annotations    resize
+
+    Add Annotation at custom position    Circle    790    310    1070    370
+    Take Actual Screenshot    MFRTANN47_Actual1.png
+    Select Annotation    915    310
+    Resize Annotation    790    310    995    310
+    Take Actual Screenshot    MFRTANN47_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN47_Actual2.png    MFRTANN47_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN47_Actual1.png    MFRTANN47_Actual2.png    100    False
+    Delete the annotation
+MFRTANN48 - Verify whether able to resize ROI annotation in image viewer.
+    [Documentation]    This test case is to verify whether able to resize ROI annotation in image viewer.
+    [Tags]    annotations    resize
+
+    Add Freehand Annotation at custom position    845    220    960    125    1030    290    905    395    845    220
+    Take Actual Screenshot    MFRTANN48_Actual1.png
+    Resize Annotation    905    395    905    550
+    Take Actual Screenshot    MFRTANN48_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN48_Actual2.png    MFRTANN48_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN48_Actual1.png    MFRTANN48_Actual2.png    100    False
+    Delete the annotation
+MFRTANN49 - Verify whether able to resize Text annotation in image viewer.
+    [Documentation]    This test case is to verify whether able to resize Text annotation in image viewer.
+    [Tags]    annotations    resize
+
+    Add Text Annotation    This is a text annotation
+    Take Actual Screenshot    MFRTANN49_Actual1.png
+    Resize Annotation    950    600    930    245
+    Take Actual Screenshot    MFRTANN49_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN49_Actual2.png    MFRTANN49_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN49_Actual1.png    MFRTANN49_Actual2.png    100    False
+    Delete the annotation
+MFRTANN50 - Verify whether able to resize Point Cursor annotation in image viewer.
+    [Documentation]    This test case is to verify whether able to resize Point Cursor annotation in image viewer.
+    [Tags]    annotations    resize
+
+    Add Point Intensity Annotation at custom position    930    385    1
+    Take Actual Screenshot    MFRTANN50_Actual1.png
+    Resize Annotation    930    385    935    890
+    Take Actual Screenshot    MFRTANN50_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN50_Actual2.png    MFRTANN50_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTANN50_Actual1.png    MFRTANN50_Actual2.png    100    False
+    Delete the annotation
+    Close Project
     Close FoxRT Application Window
+
+
 
 
 

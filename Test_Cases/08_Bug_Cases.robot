@@ -389,6 +389,7 @@ MFRTB34 - Verify whether removed defects over image are getting persisted after 
     Run Keyword And Continue On Failure    Compare Result Images    MFRTB34_Actual1.png    MFRTB34_Actual3.png    100    False
     Close Project
     Close FoxRT Application Window
+    
    
 
 

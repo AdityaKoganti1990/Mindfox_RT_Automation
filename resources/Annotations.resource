@@ -445,10 +445,36 @@ Move Annotation
     [Arguments]    ${start_x}    ${start_y}    ${end_x}    ${end_y}
     [Documentation]    Move an annotation by left-click dragging it from (${start_x}, ${start_y}) to (${end_x}, ${end_y}).
     ...    All coordinates are absolute screen coordinates. The first pair grabs the annotation; the second pair is the destination it is dragged to.
+    ...    Presses Esc at the end to clear the annotation selection.
 
     Focus    ${window_XPATH}
     Sleep    0.5s
     AutoItLibrary.Mouse Click Drag    left    ${start_x}    ${start_y}    ${end_x}    ${end_y}
+    Sleep    0.5s
+    Press Shortcut Keys    Esc
+    Sleep    0.2s
+
+Select Annotation
+    [Arguments]    ${handle_x}    ${handle_y}
+    [Documentation]    Select an annotation by left-clicking it at (${handle_x}, ${handle_y}). Coordinates are absolute screen coordinates.
+    Focus    ${window_XPATH}
+    Sleep    0.5s
+    AutoItLibrary.Mouse Click    left    ${handle_x}    ${handle_y}
+    Sleep    0.5s
+
+Resize Annotation
+    [Arguments]    ${handle_x}    ${handle_y}    ${target_x}    ${target_y}
+    [Documentation]    Resize an annotation. The app only resizes a selected annotation, so it is first
+    ...    selected by clicking the (${target_x}, ${target_y}) point (the X2/Y2 pair, which must land on the
+    ...    annotation), then a resize handle is dragged from (${handle_x}, ${handle_y}) to (${target_x}, ${target_y}).
+    ...    All coordinates are absolute screen coordinates.
+
+    Focus    ${window_XPATH}
+    Sleep    0.5s
+    # Select the annotation first — the app only resizes an already-selected annotation.
+    AutoItLibrary.Mouse Click    left    ${handle_x}    ${handle_y}
+    Sleep    0.5s
+    AutoItLibrary.Mouse Click Drag    left    ${handle_x}    ${handle_y}    ${target_x}    ${target_y}
     Sleep    0.5s
 
 Resolve Annotation Tool XPath
