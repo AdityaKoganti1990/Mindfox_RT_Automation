@@ -28,10 +28,18 @@ ${DPI_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Na
 ${X_Coordinate_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"X:")]
 ${Y_Coordinate_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"Y:")]
 ${Intensity_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"Intensity:")]
-${RGB_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[6]
+# Matched by name, not position: Text[6] is the Intensity slot. "starts-with" is required here because
+# contains(@Name,"R:") also matches the "SNR: ..." slot.
+${RGB_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[starts-with(@Name,"R:")]
 ${Annotation_Count_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"Annotations:")]
 ${SNR_Status_Bar_Text_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[contains(@Name,"SNR:")]
-${Status_Bar_Message_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[1]/Text
+# Primary (left-most) status bar slot. The message is a TextBlock rendered directly under the StatusBar,
+# so its Name holds the text; the legacy XPath below covers builds that wrapped it in another Text element.
+${Status_Bar_Message_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[1]
+${Status_Bar_Message_Legacy_XPATH}    ${MAIN_WINDOW_XPATH}/StatusBar/Text[1]/Text
+# Slots that are always present in the status bar. If the message slot is empty the app drops it from the
+# tree and Text[1] resolves to one of these, which must not be mistaken for a message.
+@{Status_Bar_Metric_Prefixes}    Zoom:    DPI:    X:    Y:    Intensity:    Annotations:    SNR:    UI:    User:
 ${Color_Table_Grayscale_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Grayscale"]
 ${Color_Table_HotIron_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_HotIron"]
 ${Color_Table_Rainbow_Menu_Item_XPATH}    Window/Menu/MenuItem[@AutomationId="ImageViewer_Ctx_ColorTable_Rainbow"]
@@ -494,13 +502,30 @@ Verify SNR value in status bar
     Should Be Equal As Numbers    ${displayed_noise}    ${expected_noise_clean}
     ...    Expected Noise ${expected_noise_clean}% but status bar shows ${displayed_noise}%
 
+Get Status Bar Message
+    [Documentation]    Return the text currently shown in the status bar's primary (left-most) message slot, or an
+    ...    empty string when no message is displayed. Tries the current layout first and falls back to the legacy
+    ...    nested layout, so it works regardless of how the build renders the slot.
+
+    ${message}=    Set Variable    ${EMPTY}
+    FOR    ${xpath}    IN    ${Status_Bar_Message_XPATH}    ${Status_Bar_Message_Legacy_XPATH}
+        ${read_ok}    ${value}=    Run Keyword And Ignore Error    Get Name From Element    ${xpath}
+        IF    '${read_ok}' == 'PASS'
+            ${message}=    Set Variable    ${value}
+            BREAK
+        END
+    END
+    ${is_metric_slot}=    Evaluate    str($message).strip().startswith(tuple($Status_Bar_Metric_Prefixes))
+    IF    ${is_metric_slot}    RETURN    ${EMPTY}
+    RETURN    ${message}
+
 Verify Status Bar Message
     [Arguments]    ${expected_message}
     [Documentation]    Verify that the message currently displayed in the status bar's primary message slot matches the expected text exactly.
     ...    ${expected_message}: Full text to compare against (e.g. 'Loaded 6 file(s) from folder'). Match is case-sensitive and exact.
 
     Should Not Be Empty    ${expected_message}    Expected message cannot be empty.
-    ${displayed_message}=    Get Name From Element    ${Status_Bar_Message_XPATH}
+    ${displayed_message}=    Get Status Bar Message
     Should Be Equal As Strings    ${displayed_message}    ${expected_message}
     ...    Expected status bar message '${expected_message}' but found '${displayed_message}'.
 

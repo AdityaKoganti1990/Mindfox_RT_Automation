@@ -322,7 +322,7 @@ MFRTT23 - Verify whether able to mark defects using defect marking & classificat
     [Tags]    smoke    tools
 
     Click    ${window_XPATH}
-    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Open ProjectFile    ${project_Directory_Path}WELD DEFECT CLUSTER OF POROSITY.tif
     Add Defect Marking and Classification Tool over image    Porosity    Rectangle    821    372    1008    416
     Take Actual Screenshot    MFRTT23_1.png
     Take Defect Marking and Classification Tool window Screenshot    MFRTT23_2.png
@@ -337,17 +337,16 @@ MFRTT24 - Verify whether able to evaluate the defect marked using defect marking
     Take Defect Marking and Classification Tool window Screenshot    MFRTT24_2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT24_1.png    MFRTT24_1.png
     Run Keyword And Continue On Failure   Compare Result Images    MFRTT24_2.png    MFRTT24_2.png    95
-    Click    ${defect_marking_tool_button_xpath}
+    Delete Selected Defect    1
 MFRTT25 - Verify whether able to delete the defect.
     [Documentation]    Verify whether able to delete the defect.
     [Tags]    smoke    tools
 
     Add Defect Marking and Classification Tool over image    Crack    Ellipse    821    549    1009    631
-    Click    ${defect_marking_tool_button_xpath}
-    Add Defect Marking and Classification Tool over image    Undercut    Line    825    172    1012    239
+    Add Defect Marking and Classification Tool over image    Undercut    Line    825    465    1005    475
     Take Actual Screenshot    MFRTT25_1.png
     Take Defect Marking and Classification Tool window Screenshot    MFRTT25_2.png
-    Delete Selected Defect    3
+    Delete Selected Defect    2
     Take Actual Screenshot    MFRTT25_3.png
     Take Defect Marking and Classification Tool window Screenshot    MFRTT25_4.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT25_1.png    MFRTT25_1.png
@@ -355,7 +354,6 @@ MFRTT25 - Verify whether able to delete the defect.
     Run Keyword And Continue On Failure    Compare Result Images    MFRTT25_3.png    MFRTT25_3.png
     Run Keyword And Continue On Failure   Compare Result Images    MFRTT25_4.png    MFRTT25_4.png    95
     Clear AllDefects
-    Click    ${defect_marking_tool_button_xpath}
     Reset View
 MFRTT26 - Verify whether filters tab is enabled when Image filter tool item is clicked.
     [Documentation]    Verify whether filters tab is enabled when Image filter tool item is clicked.

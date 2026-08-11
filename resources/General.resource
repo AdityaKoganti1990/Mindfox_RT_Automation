@@ -46,6 +46,11 @@ ${PROJECT_DUPLICATE_FILES_WINDOW_XPATH}    /Window[@AutomationId="FoxRTProMainWi
 ${PROJECT_DUPLICATE_FILES_WINDOW_FALLBACK_XPATH}    /Window/Window[@Name="Duplicate Files"]
 ${PROJECT_DUPLICATE_FILES_OK_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Duplicate Files"]/Button[@Name="OK"]
 ${PROJECT_DUPLICATE_FILES_OK_BUTTON_FALLBACK_XPATH}    /Window/Window[@Name="Duplicate Files"]/Button[@Name="OK"]
+# Cheap gate for the popup probe below. A UIA lookup that finds nothing has to scan the whole subtree
+# (~0.4s each, and tens of seconds while the app is busy loading a file), while one that hits its target
+# stops early (~0.08s). Every dialog the app shows is parented to the main window, so when the main window
+# has no child Window at all there is no popup to dismiss — one lookup instead of four.
+${ANY_MODAL_DIALOG_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window
 ${User_Manual_Button_XPATH}    //*[@AutomationId="Main_Btn_UserManual"]
 ${open_about_menu_XPATH}          //*[@AutomationId="Main_Btn_About"]
 ${open_user_management_menu_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_UserManagement"]
@@ -94,20 +99,30 @@ Open ProjectFile
     Reset Retry Timeout
     Wait Until Element Exist    ${project_menu_item_xpaths}    2
     Click    ${project_menu_item_xpaths}
-    ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
-    ${input_xpath}=    Get Open File Dialog Input Locator
+    # The file dialog is itself a child window, so the popup gate cannot rule a warning out here and the full
+    # scan would run every time. Look for the dialog's own input first — a positive lookup that stops as soon
+    # as it hits (~0.3s). A warning popup is only plausible when that input never appears, so only then is the
+    # probe worth paying for.
+    ${input_found}    ${input_xpath}=    Run Keyword And Ignore Error    Get Open File Dialog Input Locator
+    IF    '${input_found}' != 'PASS'
+        ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
+        ${input_xpath}=    Get Open File Dialog Input Locator
+    END
     Set Text To Textbox    ${input_xpath}    ${project_file_path}
     Click Open File Dialog Button
     Set Retry Timeout    0
     ${loaded}=    Set Variable    ${False}
     FOR    ${i}    IN RANGE    90
-        ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
-        IF    ${warning_clicked} and ${duplicate_warning}
+        # Load signals first: they are positive lookups that stop as soon as they hit their target (~0.08s),
+        # whereas the popup probe scans for elements that are usually absent — cheap here, but tens of seconds
+        # while the app is busy decoding the file, which is exactly when this loop is running.
+        ${clear_enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Clear_XPATH}
+        IF    ${clear_enabled} and not ${clear_enabled_before_open}
             ${loaded}=    Set Variable    ${True}
             BREAK
         END
-        ${clear_enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Clear_XPATH}
-        IF    ${clear_enabled} and not ${clear_enabled_before_open}
+        ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
+        IF    ${warning_clicked} and ${duplicate_warning}
             ${loaded}=    Set Variable    ${True}
             BREAK
         END
@@ -120,6 +135,10 @@ Open ProjectFile
     END
     Reset Retry Timeout
     Should Be True    ${loaded}    Project did not load within expected time.
+    # The loop can now exit on a load signal while a duplicate-files popup is still up, so clear it here.
+    # Previously the popup was always probed first, which guaranteed dismissal at the cost of a full scan
+    # on every iteration; this keeps the guarantee without paying for it on the critical path.
+    Dismiss Project Open Warning Popup If Present
     Verify Project Load Status Bar Message
 
 Verify Project Load Status Bar Message
@@ -131,12 +150,10 @@ Verify Project Load Status Bar Message
     ${status_confirmed}=    Set Variable    ${False}
     ${displayed_message}=    Set Variable    ${EMPTY}
     FOR    ${i}    IN RANGE    150
-        ${read_ok}    ${displayed_message}=    Run Keyword And Ignore Error    Get Name From Element    ${Status_Bar_Message_XPATH}
-        IF    '${read_ok}' == 'PASS'
-            ${status_confirmed}=    Evaluate    $displayed_message.startswith('Loaded') and 'file(s)' in $displayed_message
-            IF    ${status_confirmed}
-                BREAK
-            END
+        ${displayed_message}=    Get Status Bar Message
+        ${status_confirmed}=    Evaluate    $displayed_message.startswith('Loaded') and 'file(s)' in $displayed_message
+        IF    ${status_confirmed}
+            BREAK
         END
         Sleep    0.2s
     END
@@ -144,7 +161,16 @@ Verify Project Load Status Bar Message
     Should Be True    ${status_confirmed}    Status bar did not confirm project load (expected 'Loaded <n> file(s)', last saw '${displayed_message}').
 
 Dismiss Project Open Warning Popup If Present
+    [Documentation]    Dismiss the duplicate-files or generic warning popup when one is showing.
+    ...    Returns: whether a popup was clicked, and whether it was the duplicate-files one.
+
     Set Retry Timeout    0
+    # Skip the four specific lookups when no dialog is open at all — see ${ANY_MODAL_DIALOG_XPATH}.
+    ${dialog_open}=    Run Keyword And Return Status    Element Should Exist    ${ANY_MODAL_DIALOG_XPATH}
+    IF    not ${dialog_open}
+        Reset Retry Timeout
+        RETURN    ${False}    ${False}
+    END
     ${duplicate_warning_visible}=    Run Keyword And Return Status
     ...    Element Should Exist    ${PROJECT_DUPLICATE_FILES_WINDOW_XPATH}
     IF    not ${duplicate_warning_visible}

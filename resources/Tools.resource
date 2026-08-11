@@ -47,21 +47,30 @@ ${IQI_wire_detected_summary_xpath}    //*[contains(@Name,"IQI detected:")]
 ${IQI_wire_pair_count_text_xpath}    //*[@AutomationId="WireCountText"]
 ${IQI_wire_phantom_window_xpath}    /Window/Tab[2]/TabItem/Custom[@AutomationId="ProfilePanel"]
 ${defect_marking_tool_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_DefectMarking"]
-${defect_marking_window_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom[@AutomationId="DefectPanel"]
-${Defect_Cmb_DefectType_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/ComboBox[@AutomationId="Defect_Cmb_DefectType"]
-${Defect_Txt_CustomLabel_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Edit[@AutomationId="Defect_Txt_CustomLabel"]
-${Defect_Cmb_AcceptanceCode_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Pane/ComboBox[@AutomationId="Defect_Cmb_AcceptanceCode"]
-${Defect_Btn_Accept_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Pane/Button[@AutomationId="Defect_Btn_Accept"]
-${Defect_Btn_Reject_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Pane/Button[@AutomationId="Defect_Btn_Reject"]
-${Defect_Txt_Notes_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Edit[@AutomationId="Defect_Txt_Notes"]
+# The Defects UI moved out of the bottom tab strip into the right-hand dock (FILES | DEFECTS). Its tab
+# header carries AutomationId Main_Tab_DefectMarking and hosts the DefectPanel, whose controls now sit
+# one level deeper, under a Pane. Everything below is derived from ${defect_marking_panel_xpath}, so if
+# the panel moves again only that one line needs updating.
+${defect_marking_tab_header_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[@AutomationId="Main_Tab_DefectMarking"]
+${defect_marking_window_xpath}    ${defect_marking_tab_header_xpath}/Custom[@AutomationId="DefectPanel"]
+${defect_marking_panel_xpath}    ${defect_marking_window_xpath}/Pane
+${Defect_Cmb_DefectType_XPATH}    ${defect_marking_panel_xpath}/ComboBox[@AutomationId="Defect_Cmb_DefectType"]
+${Defect_Txt_CustomLabel_XPATH}    ${defect_marking_panel_xpath}/Edit[@AutomationId="Defect_Txt_CustomLabel"]
+${Defect_Cmb_AcceptanceCode_XPATH}    ${defect_marking_panel_xpath}/ComboBox[@AutomationId="Defect_Cmb_AcceptanceCode"]
+${Defect_Btn_Accept_XPATH}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_Accept"]
+${Defect_Btn_Reject_XPATH}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_Reject"]
+${Defect_Txt_Notes_XPATH}    ${defect_marking_panel_xpath}/Edit[@AutomationId="Defect_Txt_Notes"]
 ${Confirm_Status_Change_Window_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Confirm Status Change"]
 ${Confirm_Status_Change_Yes_Button_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Confirm Status Change"]/Button[@Name="Yes"]
-${defect_marking_radio_rectangle_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/RadioButton[@AutomationId="Defect_Rdo_ShapeRectangle"]
-${defect_marking_radio_line_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/RadioButton[@AutomationId="Defect_Rdo_ShapeLine"]
-${defect_marking_radio_ellipse_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/RadioButton[@AutomationId="Defect_Rdo_ShapeEllipse"]
-${clear_all_defects_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="Defect_Btn_ClearAll"]
-${defect_delete_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Button[@AutomationId="Defect_Btn_Delete"]
-${evaluate_defect_marking_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/Pane/Button[@AutomationId="Defect_Btn_Evaluate"]
+${defect_marking_radio_rectangle_button_xpath}    ${defect_marking_panel_xpath}/RadioButton[@AutomationId="Defect_Rdo_ShapeRectangle"]
+${defect_marking_radio_line_button_xpath}    ${defect_marking_panel_xpath}/RadioButton[@AutomationId="Defect_Rdo_ShapeLine"]
+${defect_marking_radio_ellipse_button_xpath}    ${defect_marking_panel_xpath}/RadioButton[@AutomationId="Defect_Rdo_ShapeEllipse"]
+${defect_marking_radio_freehand_button_xpath}    ${defect_marking_panel_xpath}/RadioButton[@AutomationId="Defect_Rdo_ShapeFreehand"]
+${clear_all_defects_xpath}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_ClearAll"]
+${defect_delete_button_xpath}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_Delete"]
+${evaluate_defect_marking_button_xpath}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_Evaluate"]
+# Rows under INDICATIONS have neither AutomationId nor Name, so they can only be addressed by position.
+${defect_indications_list_xpath}    ${defect_marking_panel_xpath}/List[1]
 ${Image_Filter_Tool_Button_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Tgl_ImageFilters"]
 ${filter_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/ComboBox[@AutomationId="ImgFilters_Cmb_Filter"]
 ${filter_apply_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[2]/Custom/Pane/Button[@AutomationId="ImgFilters_Btn_ApplyFilter"]
@@ -570,7 +579,7 @@ Add Defect Marking and Classification Tool over image
     [Arguments]    ${DefectType}    ${radioButtonType}    ${x1}    ${y1}    ${x2}    ${y2}    ${custom_label}=${EMPTY}
     [Documentation]    Add a defect marking on the image viewer.
     ...    ${DefectType}: Defect type to select from the dropdown. When 'Other', ${custom_label} is required and is entered into the Custom Label field.
-    ...    ${radioButtonType}: Shape — Rectangle, Line, or Ellipse.
+    ...    ${radioButtonType}: Shape — Rectangle, Line, Ellipse, or Freehand. Case-insensitive.
     ...    ${x1}, ${y1}, ${x2}, ${y2}: Top-left and bottom-right pixel coordinates of the defect rectangle.
     ...    ${custom_label}: Free-text label entered into the Custom Label field. Required when ${DefectType}='Other'; ignored for any other defect type.
 
@@ -581,8 +590,9 @@ Add Defect Marking and Classification Tool over image
         Click    ${defect_marking_tool_button_xpath}
         Sleep    0.2s
     END
-    Wait Until Element Exist    ${defect_marking_window_xpath}    5
+    Open Defect Marking Panel
     Sleep    0.2s
+    Scroll Defect Marking Panel To Element    ${Defect_Cmb_DefectType_XPATH}
     Select Combobox Item By Name    ${Defect_Cmb_DefectType_XPATH}    ${DefectType}
     Sleep    0.2s
     IF    '${DefectType}' == 'Other'
@@ -591,16 +601,119 @@ Add Defect Marking and Classification Tool over image
         Set Text To Textbox    ${Defect_Txt_CustomLabel_XPATH}    ${custom_label}
         Sleep    0.2s
     END
-    Run Keyword If    '${radioButtonType}'=='Rectangle'    click    ${defect_marking_radio_rectangle_button_xpath}
-    Run Keyword If    '${radioButtonType}'=='Line'    click    ${defect_marking_radio_line_button_xpath}
-    Run Keyword If    '${radioButtonType}'=='Ellipse'    click    ${defect_marking_radio_ellipse_button_xpath}
+    ${shape}=    Evaluate    str($radioButtonType).strip().lower()
+    IF    '${shape}' == 'rectangle'
+        ${shape_xpath}=    Set Variable    ${defect_marking_radio_rectangle_button_xpath}
+    ELSE IF    '${shape}' == 'line'
+        ${shape_xpath}=    Set Variable    ${defect_marking_radio_line_button_xpath}
+    ELSE IF    '${shape}' == 'ellipse'
+        ${shape_xpath}=    Set Variable    ${defect_marking_radio_ellipse_button_xpath}
+    ELSE IF    '${shape}' == 'freehand'
+        ${shape_xpath}=    Set Variable    ${defect_marking_radio_freehand_button_xpath}
+    ELSE
+        Fail    Unsupported shape '${radioButtonType}'. Use Rectangle, Line, Ellipse or Freehand.
+    END
+    Scroll Defect Marking Panel To Element    ${shape_xpath}
+    Click    ${shape_xpath}
     Sleep    0.2s
     AutoItLibrary.Mouse Click Drag    left    ${x1}    ${y1}    ${x2}    ${y2}
     Sleep    0.5s
 
+Open Defect Marking Panel
+    [Documentation]    Bring the Defects tab of the right-hand dock to the front and wait for its panel to appear.
+    ...    The dock switches to Defects by itself when the tool is toggled on, but clicking the header keeps the
+    ...    automation independent of that behaviour (e.g. when the Files tab happens to be selected).
+
+    ${tab_visible}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${defect_marking_tab_header_xpath}    5
+    IF    ${tab_visible}    Click    ${defect_marking_tab_header_xpath}
+    Wait Until Element Exist    ${defect_marking_window_xpath}    5
+
+Is Defect Marking Panel Element Visible
+    [Arguments]    ${element_xpath}
+    [Documentation]    Return whether ${element_xpath} lies fully inside the Defects panel's visible rectangle.
+    ...    A control scrolled past the bottom of the panel still exists in the UI tree, so presence proves
+    ...    nothing — only the bounding rectangle says whether it can actually be seen and clicked.
+
+    ${measured}    ${element}=    Run Keyword And Ignore Error
+    ...    Get Rectangle Bounding From Element    ${element_xpath}    BoundingRectangle
+    IF    '${measured}' != 'PASS'    RETURN    ${False}
+    ${container}=    Get Rectangle Bounding From Element    ${defect_marking_window_xpath}    BoundingRectangle
+    ${is_visible}=    Evaluate
+    ...    int($element[2]) > 0 and int($element[3]) > 0 and int($element[0]) >= int($container[0]) and int($element[1]) >= int($container[1]) and int($element[0]) + int($element[2]) <= int($container[0]) + int($container[2]) and int($element[1]) + int($element[3]) <= int($container[1]) + int($container[3])
+    RETURN    ${is_visible}
+
+Get Defect Marking Panel Scroll Direction
+    [Arguments]    ${element_xpath}
+    [Documentation]    Return 'up' when ${element_xpath} sits above the panel's visible area, 'down' when it sits
+    ...    below. Falls back to 'down' when the element cannot be measured — the caller sweeps the other way
+    ...    afterwards, so a wrong guess only costs a few extra wheel steps.
+
+    ${measured}    ${element}=    Run Keyword And Ignore Error
+    ...    Get Rectangle Bounding From Element    ${element_xpath}    BoundingRectangle
+    IF    '${measured}' != 'PASS'    RETURN    down
+    ${usable}=    Evaluate    int($element[2]) > 0 and int($element[3]) > 0
+    IF    not ${usable}    RETURN    down
+    ${container}=    Get Rectangle Bounding From Element    ${defect_marking_window_xpath}    BoundingRectangle
+    ${above}=    Evaluate    int($element[1]) < int($container[1])
+    IF    ${above}    RETURN    up
+    RETURN    down
+
+Scroll Defect Marking Panel
+    [Arguments]    ${direction}    ${steps}    ${element_xpath}
+    [Documentation]    Wheel the Defects panel ${steps} notches in ${direction} ('up' or 'down'), stopping as soon as
+    ...    ${element_xpath} comes into view. Returns whether the element ended up visible.
+
+    FOR    ${index}    IN RANGE    ${steps}
+        IF    '${direction}' == 'up'
+            Scroll Up    ${defect_marking_window_xpath}    1
+        ELSE
+            Scroll Down    ${defect_marking_window_xpath}    1
+        END
+        Sleep    0.05s
+        ${visible}=    Is Defect Marking Panel Element Visible    ${element_xpath}
+        IF    ${visible}    RETURN    ${True}
+    END
+    RETURN    ${False}
+
+Scroll Defect Marking Panel To Element
+    [Arguments]    ${element_xpath}
+    [Documentation]    Scroll the Defects panel until ${element_xpath} is inside the visible area, so that a click on it
+    ...    actually lands. The panel holds more controls than the right-hand dock can show, so at any given scroll
+    ...    position some are cut off: Delete / Clear All disappear above once the panel is scrolled down, while
+    ...    Evaluate, Acceptance Criteria, Notes and Accept / Reject sit below until it is. Scrolling therefore has to
+    ...    work in both directions. Returns immediately when the element is already in view.
+
+    Wait Until Element Exist    ${element_xpath}    5
+    ${visible}=    Is Defect Marking Panel Element Visible    ${element_xpath}
+    IF    ${visible}    RETURN
+
+    # Focus first: WPF brings a focused control into view on its own. That is preferred over the mouse wheel,
+    # which would land on the Sensitivity / Max Results sliders and change their values instead of scrolling.
+    Run Keyword And Ignore Error    Focus    ${element_xpath}
+    Sleep    0.2s
+    ${visible}=    Is Defect Marking Panel Element Visible    ${element_xpath}
+    IF    ${visible}    RETURN
+
+    ${direction}=    Get Defect Marking Panel Scroll Direction    ${element_xpath}
+    ${visible}=    Scroll Defect Marking Panel    ${direction}    20    ${element_xpath}
+    IF    not ${visible}
+        # The element could not be measured reliably (a clipped control can report an empty rectangle), so the
+        # first guess may have scrolled away from it. Sweep the opposite way before giving up.
+        ${opposite}=    Set Variable If    '${direction}' == 'up'    down    up
+        ${visible}=    Scroll Defect Marking Panel    ${opposite}    30    ${element_xpath}
+    END
+    Should Be True    ${visible}
+    ...    '${element_xpath}' is still not visible after scrolling the Defects panel both ways.
+    Sleep    0.1s
+
 Take Defect Marking and Classification Tool window Screenshot
     [Arguments]    ${filename}
+    [Documentation]    Capture the Defects panel. The panel is scrolled down to the Evaluate button first, since the
+    ...    lower half of the panel is otherwise cut off by the dock and would be missing from the screenshot.
+
     Wait Until Element Exist    ${defect_marking_window_xpath}    5
+    Scroll Defect Marking Panel To Element    ${evaluate_defect_marking_button_xpath}
     ${screenshot_path}=    Take Screenshot    ${defect_marking_window_xpath}
     Log    Screenshot saved to (temporary): ${screenshot_path}
 
@@ -618,6 +731,7 @@ Clear AllDefects
     Sleep    0.2s
     Wait Until Element Exist    ${defect_marking_window_xpath}    5
     Sleep    0.2s
+    Scroll Defect Marking Panel To Element    ${clear_all_defects_xpath}
     Click    ${clear_all_defects_xpath}
     Sleep    0.2s
 
@@ -632,10 +746,14 @@ Delete Selected Defect
     ${defect_window_open}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${defect_marking_window_xpath}    1
     Run Keyword If    not ${defect_window_open}    Click    ${defect_marking_tool_button_xpath}
-    Wait Until Element Exist    ${defect_marking_window_xpath}    5
+    Open Defect Marking Panel
     Sleep    0.2s
-    Click    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/List/ListItem[${listItemNo}]  
+    Scroll Defect Marking Panel To Element    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
+    Click    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
     Sleep    0.2s
+    # Selecting an indication can move the panel (the Properties section grows), and Delete sits above the
+    # Indications list, so it may now be scrolled off the top — scroll back to it before clicking.
+    Scroll Defect Marking Panel To Element    ${defect_delete_button_xpath}
     Click    ${defect_delete_button_xpath}
     Sleep    0.2s
 
@@ -645,10 +763,12 @@ Evaluate Defect Marked
 
     Focus    ${window_XPATH}
     Sleep    0.2s
-    Wait Until Element Exist    ${defect_marking_window_xpath}    5
+    Open Defect Marking Panel
     Sleep    0.2s
-    Click    /Window[@AutomationId="FoxRTProMainWindow"]/Tab[2]/TabItem/Custom/List/ListItem[${listItemNo}]  
+    Scroll Defect Marking Panel To Element    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
+    Click    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
     Sleep    0.2s
+    Scroll Defect Marking Panel To Element    ${evaluate_defect_marking_button_xpath}
     Click    ${evaluate_defect_marking_button_xpath}
     Sleep    0.2s
 
@@ -659,6 +779,7 @@ Select Acceptance Criteria Code
 
     Should Not Be Empty    ${acceptance_code}    Acceptance criteria code cannot be empty.
     Wait Until Element Exist    ${Defect_Cmb_AcceptanceCode_XPATH}    5
+    Scroll Defect Marking Panel To Element    ${Defect_Cmb_AcceptanceCode_XPATH}
     Select Combobox Item By Name    ${Defect_Cmb_AcceptanceCode_XPATH}    ${acceptance_code}
     Sleep    0.2s
 
@@ -675,14 +796,17 @@ Select Acceptance Criteria
     ${decision_norm}=    Evaluate    str($decision).strip().lower()
 
     Wait Until Element Exist    ${Defect_Txt_Notes_XPATH}    5
+    Scroll Defect Marking Panel To Element    ${Defect_Txt_Notes_XPATH}
     Set Text To Textbox    ${Defect_Txt_Notes_XPATH}    ${notes}
     Sleep    0.2s
 
     IF    '${decision_norm}' == 'accept'
         Wait Until Element Exist    ${Defect_Btn_Accept_XPATH}    5
+        Scroll Defect Marking Panel To Element    ${Defect_Btn_Accept_XPATH}
         Click    ${Defect_Btn_Accept_XPATH}
     ELSE IF    '${decision_norm}' == 'reject'
         Wait Until Element Exist    ${Defect_Btn_Reject_XPATH}    5
+        Scroll Defect Marking Panel To Element    ${Defect_Btn_Reject_XPATH}
         Click    ${Defect_Btn_Reject_XPATH}
     ELSE
         Fail    Invalid decision '${decision}'. Use 'Accept' or 'Reject'.
