@@ -1,10 +1,10 @@
 *** Settings ***
-Documentation     Tools test suite. 82 test cases in total, made up of:
-...               1) MFRTT01 to MFRTT71 - the 71 base test cases (one per feature/scenario).
+Documentation     Tools test suite. 90 test cases in total, made up of:
+...               1) MFRTT01 to MFRTT79 - the 79 base test cases (one per feature/scenario).
 ...               2) MFRTT01-2 - the IQI line profiler variant of MFRTT01 (which covers the normal line profiler).
 ...               3) Ten "_2" cases that re-run the GPU-rendering filter tests under CPU rendering:
-...               MFRTT27_2, 28_2, 29_2, 32_2, 33_2, 34_2, 35_2, 36_2, 37_2, 38_2.
-...               (71 base + 1 + 10 = 82.)
+...               MFRTT34_2, 35_2, 36_2, 39_2, 40_2, 41_2, 42_2, 43_2, 44_2, 45_2.
+...               (79 base + 1 + 10 = 90.)
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -355,33 +355,105 @@ MFRTT25 - Verify whether able to delete the defect.
     Run Keyword And Continue On Failure   Compare Result Images    MFRTT25_4.png    MFRTT25_4.png    95
     Clear AllDefects
     Reset View
-MFRTT26 - Verify whether filters tab is enabled when Image filter tool item is clicked.
+MFRTT26 - Verify whether able to draw search region over the image in image viewer.
+    [Documentation]    Verify whether able to draw regions over the image in image viewer.
+    [Tags]    smoke    tools
+
+    Draw Region over image    810    455    930    490
+    Take Actual Screenshot    MFRTT26_1.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT26_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT26_1.png    MFRTT26_1.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTT26_2.png    MFRTT26_2.png    95
+MFRTT27 - Verify whether able to add multiple search regions over the image in image viewer.
+    [Documentation]    Verify whether able to add multiple search regions over the image in image viewer.
+    [Tags]    smoke    tools
+
+    Draw Region over image    645    615    675    765
+    Take Actual Screenshot    MFRTT27_1.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT27_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT27_1.png    MFRTT27_1.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTT27_2.png    MFRTT27_2.png    95
+MFRTT28 - Verify whether able to clear the added search regions over image in image viewer.
+    [Documentation]    Verify whether able to clear the added search regions over the image in image viewer.
+    [Tags]    smoke    tools
+
+    Clear Search Regions
+    Take Actual Screenshot    MFRTT28_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT28_1.png    MFRTT28_1.png
+MFRTT29 - Verify whether able to detect defects in the added region.
+    [Documentation]    Verify whether able to detect defects in the added region.
+    [Tags]    smoke    tools
+
+    Draw Region over image    810    455    930    490
+    Detect Defects in Search Regions    3.0    5    True    True
+    Take Actual Screenshot    MFRTT29_1.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT29_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT29_1.png    MFRTT29_1.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTT29_2.png    MFRTT29_2.png    95
+MFRTT30 - Verify whether able to detect defects for multiple search regions.
+    [Documentation]    Verify whether able to detect defects for multiple search regions.
+    [Tags]    smoke    tools
+
+    Draw Region over image    645    615    675    765
+    Detect Defects in Search Regions    3.0    25    True    True
+    Take Actual Screenshot    MFRTT30_1.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT30_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT30_1.png    MFRTT30_1.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTT30_2.png    MFRTT30_2.png    95
+MFRTT31 - Verify whether able to Evaluate the auto defects detected in the added search region.
+    [Documentation]    Verify whether able to Evaluate the auto defects detected in the added search region.
+    [Tags]    smoke    tools
+
+    Evaluate Defect Marked
+    Take Actual Screenshot    MFRTT31_1.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT31_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT31_1.png    MFRTT31_1.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTT31_2.png    MFRTT31_2.png    95
+MFRTT32 - Verify whether able to evaluate the auto defects detected for multiple regions after calibrating the image.
+    [Documentation]    Verify whether able to evaluate the auto defects detected for multiple regions after calibrating the image.
+    [Tags]    smoke    tools
+
+    Clear Search Regions
+    Clear AllDefects
+    Add Calibration tool over image    760    475    800    475
+    Calibrate Image    5    mm
+    Draw Region over image    810    455    930    490
+    Draw Region over image    645    615    675    765
+    Detect Defects in Search Regions    3.0    25    True    True
+    Evaluate Defect Marked
+    Take Actual Screenshot    MFRTT32_1.png
+    Take Defect Marking and Classification Tool window Screenshot    MFRTT32_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT32_1.png    MFRTT32_1.png
+    Run Keyword And Continue On Failure   Compare Result Images    MFRTT32_2.png    MFRTT32_2.png    95
+    Close Project
+MFRTT33 - Verify whether filters tab is enabled when Image filter tool item is clicked.
     [Documentation]    Verify whether filters tab is enabled when Image filter tool item is clicked.
     [Tags]    smoke    tools
 
     Click    ${window_XPATH}
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
     Apply Auto Best BNC
     Click Image Filter Tool
     Run Keyword And Continue On Failure    Verify Control Exists in Image Viewer    ${filter_combobox_xpath}
     Run Keyword And Continue On Failure    Verify Control Exists in Image Viewer    ${filter_apply_button_xpath}
-MFRTT27 - Verify whether able to apply image filter and view the changes in the image with GPU Rendering.
+MFRTT34 - Verify whether able to apply image filter and view the changes in the image with GPU Rendering.
     [Documentation]    Verify whether able to apply image filter and view the changes in the image with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
     Click    ${window_XPATH}
     Select GPU Type    GPU
     Apply Image Filter    Edge Gradient
-    Take Actual Screenshot    MFRTT27.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT27.png    MFRTT27.png
-MFRTT28 - Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with GPU Rendering.
+    Take Actual Screenshot    MFRTT34.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT34.png    MFRTT34.png
+MFRTT35 - Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with GPU Rendering.
     [Documentation]    Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
     Reset Image Filter
-    Take Actual Screenshot    MFRTT28.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT28.png    MFRTT28.png
+    Take Actual Screenshot    MFRTT35.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT35.png    MFRTT35.png
     Apply Auto Best BNC
-MFRTT29 - Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with GPU Rendering.
+MFRTT36 - Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with GPU Rendering.
     [Documentation]    Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
@@ -389,12 +461,12 @@ MFRTT29 - Verify whether able to apply all the available filters in the image fi
     @{filters}=    Create List    Edge Detection    Gradient Magnitude    Morphological Contour    Edge Gradient    High-Pass Sharpen    Low-Pass Smooth     Normalize    Sharpness Boost    Auto Equalise    Gaussian Blur    Fox Bleach    Median 3x3    Bilateral Smooth
     FOR    ${filter}    IN    @{filters}
         Apply Image Filter    ${filter}
-        Take Actual Screenshot    MFRTT29_${filter}.png
-        Run Keyword And Continue On Failure    Compare Result Images    MFRTT29_${filter}.png    MFRTT29_${filter}.png    98
+        Take Actual Screenshot    MFRTT36_${filter}.png
+        Run Keyword And Continue On Failure    Compare Result Images    MFRTT36_${filter}.png    MFRTT36_${filter}.png    98
         Reset Image Filter
     END
     Apply Auto Best BNC
-MFRTT30 - Verify whether able to rename a filter in the image filter tool and view the updated filter name in the filter combobox.
+MFRTT37 - Verify whether able to rename a filter in the image filter tool and view the updated filter name in the filter combobox.
     [Documentation]    Verify whether able to rename a filter in the image filter tool and view the updated filter name in the filter combobox.
     [Tags]    smoke    tools
 
@@ -402,7 +474,7 @@ MFRTT30 - Verify whether able to rename a filter in the image filter tool and vi
     Rename Image Filter    Edge Gradient    My Custom Filter1
     Sleep    0.5s
     Run Keyword And Continue On Failure    Verify Filter Exists in Filters List    My Custom Filter1
-MFRTT31 - Verify whether able to reset the filter name to default by clicking on Reset button in the filter tab after renaming the filter.
+MFRTT38 - Verify whether able to reset the filter name to default by clicking on Reset button in the filter tab after renaming the filter.
     [Documentation]    Verify whether able to reset the filter name to default by clicking on Reset button in the filter tab after renaming the filter.
     [Tags]    smoke    tools
 
@@ -410,7 +482,7 @@ MFRTT31 - Verify whether able to reset the filter name to default by clicking on
     Reset Filter Name to Default    My Custom Filter1
     Sleep    0.5s
     Run Keyword And Continue On Failure    Verify Filter Not Exists in Filters List    My Custom Filter1
-MFRTT32 - Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+MFRTT39 - Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Documentation]    Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
@@ -418,13 +490,13 @@ MFRTT32 - Verify whether able to apply Edge Detection filter by modifying the fi
     Set Image Filter Parameters    Edge Detection    Sigma=2.50    Kernel Radius=4    Canny Low Ratio=0.20    Canny High Ratio=0.50
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT32.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT32.png    MFRTT32.png
+    Take Actual Screenshot    MFRTT39.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT39.png    MFRTT39.png
     Set Image Filter Parameters    Edge Detection    Sigma=1.20    Kernel Radius=2    Canny Low Ratio=0.10    Canny High Ratio=0.25
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT33 - Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+MFRTT40 - Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Documentation]    Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
@@ -432,13 +504,13 @@ MFRTT33 - Verify whether able to apply Morphological Contour filter by modifying
     Set Image Filter Parameters    Morphological Contour    Auto Best Contrast=True    Morph Radius=5
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT33.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT33.png    MFRTT33.png
+    Take Actual Screenshot    MFRTT40.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT40.png    MFRTT40.png
     Set Image Filter Parameters    Morphological Contour    Auto Best Contrast=True    Morph Radius=1
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT34 - Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+MFRTT41 - Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Documentation]    Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
@@ -446,13 +518,13 @@ MFRTT34 - Verify whether able to apply High Pass Sharpen filter by modifying the
     Set Image Filter Parameters    High-Pass Sharpen    Auto Best Contrast=True    Butterworth Cutoff=0.50    Butterworth Order=5
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT34.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT34.png    MFRTT34.png
+    Take Actual Screenshot    MFRTT41.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT41.png    MFRTT41.png
     Set Image Filter Parameters    High-Pass Sharpen    Auto Best Contrast=True    Butterworth Cutoff=0.08    Butterworth Order=2
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT35 - Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+MFRTT42 - Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Documentation]    Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
@@ -460,13 +532,13 @@ MFRTT35 - Verify whether able to apply Low Pass Smooth filter by modifying the f
     Set Image Filter Parameters    Low-Pass Smooth    Auto Best Contrast=True    Butterworth Cutoff=0.50    Butterworth Order=5
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT35.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT35.png    MFRTT35.png
+    Take Actual Screenshot    MFRTT42.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT42.png    MFRTT42.png
     Set Image Filter Parameters    Low-Pass Smooth    Auto Best Contrast=True    Butterworth Cutoff=0.08    Butterworth Order=2
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT36 - Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+MFRTT43 - Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Documentation]    Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
@@ -474,13 +546,13 @@ MFRTT36 - Verify whether able to apply Sharpness Boost filter by modifying the f
     Set Image Filter Parameters    Sharpness Boost    Auto Best Contrast=True    Unsharp Amount=5.0    Unsharp Sigma=5.0
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT36.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT36.png    MFRTT36.png
+    Take Actual Screenshot    MFRTT43.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT43.png    MFRTT43.png
     Set Image Filter Parameters    Sharpness Boost    Auto Best Contrast=True    Unsharp Amount=1.5    Unsharp Sigma=1.0
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT37 - Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+MFRTT44 - Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Documentation]    Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
@@ -488,13 +560,13 @@ MFRTT37 - Verify whether able to apply Gaussian Blur filter by modifying the fil
     Set Image Filter Parameters    Gaussian Blur    Auto Best Contrast=True    Sigma=5.00    Kernel Radius=5
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT37.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT37.png    MFRTT37.png
+    Take Actual Screenshot    MFRTT44.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT44.png    MFRTT44.png
     Set Image Filter Parameters    Gaussian Blur    Auto Best Contrast=True    Sigma=1.20    Kernel Radius=2
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT38 - Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
+MFRTT45 - Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Documentation]    Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with GPU Rendering.
     [Tags]    smoke    tools    gpu_rendering
 
@@ -502,30 +574,30 @@ MFRTT38 - Verify whether able to apply Fox Bleach filter by modifying the filter
     Set Image Filter Parameters    Fox Bleach    Auto Best Contrast=True    Fox Bleach Tile Size=60    Fox Bleach Clip Limit=10.0
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT38.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT38.png    MFRTT38.png
+    Take Actual Screenshot    MFRTT45.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT45.png    MFRTT45.png
     Set Image Filter Parameters    Fox Bleach    Auto Best Contrast=True    Fox Bleach Tile Size=32    Fox Bleach Clip Limit=2.5
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT27_2 - Verify whether able to apply image filter and view the changes in the image with CPU Rendering.
+MFRTT34_2 - Verify whether able to apply image filter and view the changes in the image with CPU Rendering.
     [Documentation]    Verify whether able to apply image filter and view the changes in the image with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
     Click    ${window_XPATH}
     Select GPU Type    CPU
     Apply Image Filter    Edge Gradient
-    Take Actual Screenshot    MFRTT27_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT27_2.png    MFRTT27_2.png
-MFRTT28_2 - Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with CPU Rendering.
+    Take Actual Screenshot    MFRTT34_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT34_2.png    MFRTT34_2.png
+MFRTT35_2 - Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with CPU Rendering.
     [Documentation]    Verify whether able to reset the applied image filter by clicking on Reset button in the filter tab with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
     Reset Image Filter
-    Take Actual Screenshot    MFRTT28_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT28_2.png    MFRTT28_2.png
+    Take Actual Screenshot    MFRTT35_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT35_2.png    MFRTT35_2.png
     Apply Auto Best BNC
-MFRTT29_2 - Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with CPU Rendering.
+MFRTT36_2 - Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with CPU Rendering.
     [Documentation]    Verify whether able to apply all the available filters in the image filter tool and view the changes in the image with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
@@ -533,12 +605,12 @@ MFRTT29_2 - Verify whether able to apply all the available filters in the image 
     @{filters}=    Create List    Edge Detection    Gradient Magnitude    Morphological Contour    Edge Gradient    High-Pass Sharpen    Low-Pass Smooth     Normalize    Sharpness Boost    Auto Equalise    Gaussian Blur    Fox Bleach    Median 3x3    Bilateral Smooth
     FOR    ${filter}    IN    @{filters}
         Apply Image Filter    ${filter}
-        Take Actual Screenshot    MFRTT29_2_${filter}.png
-        Run Keyword And Continue On Failure    Compare Result Images    MFRTT29_2_${filter}.png    MFRTT29_2_${filter}.png    98
+        Take Actual Screenshot    MFRTT36_2_${filter}.png
+        Run Keyword And Continue On Failure    Compare Result Images    MFRTT36_2_${filter}.png    MFRTT36_2_${filter}.png    98
         Reset Image Filter
     END
     Apply Auto Best BNC
-MFRTT32_2 - Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+MFRTT39_2 - Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Documentation]    Verify whether able to apply Edge Detection filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
@@ -546,13 +618,13 @@ MFRTT32_2 - Verify whether able to apply Edge Detection filter by modifying the 
     Set Image Filter Parameters    Edge Detection    Sigma=2.50    Kernel Radius=4    Canny Low Ratio=0.20    Canny High Ratio=0.50
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT32_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT32_2.png    MFRTT32_2.png
+    Take Actual Screenshot    MFRTT39_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT39_2.png    MFRTT39_2.png
     Set Image Filter Parameters    Edge Detection    Sigma=1.20    Kernel Radius=2    Canny Low Ratio=0.10    Canny High Ratio=0.25
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT33_2 - Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+MFRTT40_2 - Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Documentation]    Verify whether able to apply Morphological Contour filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
@@ -560,13 +632,13 @@ MFRTT33_2 - Verify whether able to apply Morphological Contour filter by modifyi
     Set Image Filter Parameters    Morphological Contour    Auto Best Contrast=True    Morph Radius=5
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT33_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT33_2.png    MFRTT33_2.png
+    Take Actual Screenshot    MFRTT40_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT40_2.png    MFRTT40_2.png
     Set Image Filter Parameters    Morphological Contour    Auto Best Contrast=True    Morph Radius=1
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT34_2 - Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+MFRTT41_2 - Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Documentation]    Verify whether able to apply High Pass Sharpen filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
@@ -574,13 +646,13 @@ MFRTT34_2 - Verify whether able to apply High Pass Sharpen filter by modifying t
     Set Image Filter Parameters    High-Pass Sharpen    Auto Best Contrast=True    Butterworth Cutoff=0.50    Butterworth Order=5
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT34_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT34_2.png    MFRTT34_2.png
+    Take Actual Screenshot    MFRTT41_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT41_2.png    MFRTT41_2.png
     Set Image Filter Parameters    High-Pass Sharpen    Auto Best Contrast=True    Butterworth Cutoff=0.08    Butterworth Order=2
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT35_2 - Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+MFRTT42_2 - Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Documentation]    Verify whether able to apply Low Pass Smooth filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
@@ -588,13 +660,13 @@ MFRTT35_2 - Verify whether able to apply Low Pass Smooth filter by modifying the
     Set Image Filter Parameters    Low-Pass Smooth    Auto Best Contrast=True    Butterworth Cutoff=0.50    Butterworth Order=5
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT35_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT35_2.png    MFRTT35_2.png
+    Take Actual Screenshot    MFRTT42_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT42_2.png    MFRTT42_2.png
     Set Image Filter Parameters    Low-Pass Smooth    Auto Best Contrast=True    Butterworth Cutoff=0.08    Butterworth Order=2
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT36_2 - Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+MFRTT43_2 - Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Documentation]    Verify whether able to apply Sharpness Boost filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
@@ -602,13 +674,13 @@ MFRTT36_2 - Verify whether able to apply Sharpness Boost filter by modifying the
     Set Image Filter Parameters    Sharpness Boost    Auto Best Contrast=True    Unsharp Amount=5.0    Unsharp Sigma=5.0
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT36_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT36_2.png    MFRTT36_2.png
+    Take Actual Screenshot    MFRTT43_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT43_2.png    MFRTT43_2.png
     Set Image Filter Parameters    Sharpness Boost    Auto Best Contrast=True    Unsharp Amount=1.5    Unsharp Sigma=1.0
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT37_2 - Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+MFRTT44_2 - Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Documentation]    Verify whether able to apply Gaussian Blur filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
@@ -616,13 +688,13 @@ MFRTT37_2 - Verify whether able to apply Gaussian Blur filter by modifying the f
     Set Image Filter Parameters    Gaussian Blur    Auto Best Contrast=True    Sigma=5.00    Kernel Radius=5
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT37_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT37_2.png    MFRTT37_2.png
+    Take Actual Screenshot    MFRTT44_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT44_2.png    MFRTT44_2.png
     Set Image Filter Parameters    Gaussian Blur    Auto Best Contrast=True    Sigma=1.20    Kernel Radius=2
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
-MFRTT38_2 - Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
+MFRTT45_2 - Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Documentation]    Verify whether able to apply Fox Bleach filter by modifying the filter parameters and clicking on Apply button in the filter tab with CPU Rendering.
     [Tags]    smoke    tools    cpu_rendering
 
@@ -630,14 +702,14 @@ MFRTT38_2 - Verify whether able to apply Fox Bleach filter by modifying the filt
     Set Image Filter Parameters    Fox Bleach    Auto Best Contrast=True    Fox Bleach Tile Size=60    Fox Bleach Clip Limit=10.0
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT38_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT38_2.png    MFRTT38_2.png
+    Take Actual Screenshot    MFRTT45_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT45_2.png    MFRTT45_2.png
     Set Image Filter Parameters    Fox Bleach    Auto Best Contrast=True    Fox Bleach Tile Size=32    Fox Bleach Clip Limit=2.5
     Click Apply Image Filter
     Reset View
     Apply Auto Best BNC
     Select GPU Type    GPU
-MFRTT39 - Verify whether able to close filters tab.
+MFRTT46 - Verify whether able to close filters tab.
     [Documentation]    Verify whether able to close filters tab.
     [Tags]    smoke    tools
 
@@ -645,49 +717,49 @@ MFRTT39 - Verify whether able to close filters tab.
     Click Image Filter Tool    False
     Run Keyword And Continue On Failure    Verify Control Not Exists in Image Viewer    ${filter_combobox_xpath}
     Run Keyword And Continue On Failure    Verify Control Not Exists in Image Viewer    ${filter_apply_button_xpath}
-MFRTT40 - Verify whether able to apply Auto Best BNC and view the changes in the image.
+MFRTT47 - Verify whether able to apply Auto Best BNC and view the changes in the image.
     [Documentation]    Verify whether able to apply Auto Best BNC and view the changes in the image.
     [Tags]    smoke    tools
 
     Click    ${window_XPATH}
     Apply Auto Best BNC
-    Take Actual Screenshot    MFRTT40.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT40.png    MFRTT40.png
-MFRTT41 - Verify whether able to reset the applied Auto Best BNC by clicking on Reset View button.
+    Take Actual Screenshot    MFRTT47.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT47.png    MFRTT47.png
+MFRTT48 - Verify whether able to reset the applied Auto Best BNC by clicking on Reset View button.
     [Documentation]    Verify whether able to reset the applied Auto Best BNC by clicking on Reset View button.
     [Tags]    smoke    tools
 
     Reset View
-    Take Actual Screenshot    MFRTT41.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT41.png    MFRTT41.png
+    Take Actual Screenshot    MFRTT48.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT48.png    MFRTT48.png
     Apply Auto Best BNC
-MFRTT42 - Verify whether able to apply Persatile Brightness and Contrast and view the changes in the image.
+MFRTT49 - Verify whether able to apply Persatile Brightness and Contrast and view the changes in the image.
     [Documentation]    Verify whether able to apply Persatile Brightness and Contrast and view the changes in the image.
     [Tags]    smoke    tools
 
     Click    ${window_XPATH}
     Apply Percentile Brightness and Contrast    35    55
-    Take Actual Screenshot    MFRTT42.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT42.png    MFRTT42.png
+    Take Actual Screenshot    MFRTT49.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT49.png    MFRTT49.png
     Reset View
     Apply Auto Best BNC
-MFRTT43 - Verify whether able to save Percentile Brightness and Contrast preset.
+MFRTT50 - Verify whether able to save Percentile Brightness and Contrast preset.
     [Documentation]    Verify whether able to save and load Percentile Brightness and Contrast preset.
     [Tags]    smoke    tools
     Save Percentile Brightness and Contrast Preset    PBNC1
     Run Keyword And Continue On Failure    Verify Percentile Brightness and Contrast Preset Exists    PBNC1
-MFRTT44 - Verify whether able to load Percentile Brightness and Contrast preset and view the changes in the image.
+MFRTT51 - Verify whether able to load Percentile Brightness and Contrast preset and view the changes in the image.
     [Documentation]    Verify whether able to load Percentile Brightness and Contrast preset and view the changes in the image.
     [Tags]    smoke    tools
     Apply Percentile Brightness and Contrast    5    95
     Save Percentile Brightness and Contrast Preset    PBNC2
     Load Percentile Brightness and Contrast Preset    PBNC1
-    Take Actual Screenshot    MFRTT44_1.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT44_1.png    MFRTT44_1.png
+    Take Actual Screenshot    MFRTT51_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT51_1.png    MFRTT51_1.png
     Load Percentile Brightness and Contrast Preset    PBNC2
-    Take Actual Screenshot    MFRTT44_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT44_2.png    MFRTT44_2.png
-MFRTT45 - Verify whether able to delete Percentile Brightness and Contrast preset.
+    Take Actual Screenshot    MFRTT51_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT51_2.png    MFRTT51_2.png
+MFRTT52 - Verify whether able to delete Percentile Brightness and Contrast preset.
     [Documentation]    Verify whether able to delete Percentile Brightness and Contrast preset.
     [Tags]    smoke    tools
 
@@ -697,22 +769,22 @@ MFRTT45 - Verify whether able to delete Percentile Brightness and Contrast prese
     Run Keyword And Continue On Failure    Verify Percentile Brightness and Contrast Preset Exists    PBNC2
     Reset View
     Apply Auto Best BNC
-MFRTT46 - Verify whether able to apply Fox Bleach filter using the tool item.
+MFRTT53 - Verify whether able to apply Fox Bleach filter using the tool item.
     [Documentation]    Verify whether able to apply Fox Bleach filter using the tool item.
     [Tags]    smoke    tools
     Click    ${window_XPATH}
     Apply Fox Bleach Filter    True
-    Take Actual Screenshot    MFRTT46.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT46.png    MFRTT46.png
-MFRTT47 - Verify whether able to reset the applied Fox Bleach filter by un-checking the tool item.
+    Take Actual Screenshot    MFRTT53.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT53.png    MFRTT53.png
+MFRTT54 - Verify whether able to reset the applied Fox Bleach filter by un-checking the tool item.
     [Documentation]    Verify whether able to reset the applied Fox Bleach filter by un-checking the tool item.
     [Tags]    smoke    tools
     Apply Fox Bleach Filter    False
-    Take Actual Screenshot    MFRTT47.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT47.png    MFRTT47.png
+    Take Actual Screenshot    MFRTT54.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT54.png    MFRTT54.png
     Reset View
     Apply Auto Best BNC
-MFRTT48 - Verify whether able to apply Median 3x3 filter using CPU Rendering.
+MFRTT55 - Verify whether able to apply Median 3x3 filter using CPU Rendering.
     [Documentation]    Verify whether able to apply Median 3x3 filter using CPU Rendering.
     [Tags]    smoke
 
@@ -720,11 +792,11 @@ MFRTT48 - Verify whether able to apply Median 3x3 filter using CPU Rendering.
     Select GPU Type    CPU
     Click Image Filter Tool    True
     Apply Image Filter    Median 3x3
-    Take Actual Screenshot    MFRTT48.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT48.png    MFRTT48.png
+    Take Actual Screenshot    MFRTT55.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT55.png    MFRTT55.png
     Reset View
     Apply Auto Best BNC
-MFRTT49 - Verify whether able to apply Median 3x3 filter using GPU Rendering.
+MFRTT56 - Verify whether able to apply Median 3x3 filter using GPU Rendering.
     [Documentation]    Verify whether able to apply Median 3x3 filter using GPU Rendering.
     [Tags]    smoke
 
@@ -732,11 +804,11 @@ MFRTT49 - Verify whether able to apply Median 3x3 filter using GPU Rendering.
     Select GPU Type    GPU
     Click Image Filter Tool    True
     Apply Image Filter    Median 3x3
-    Take Actual Screenshot    MFRTT49.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT49.png    MFRTT49.png
+    Take Actual Screenshot    MFRTT56.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT56.png    MFRTT56.png
     Reset View
     Apply Auto Best BNC
-MFRTT50 - Verify whether able to apply Bilateral Smooth filter using CPU Rendering.
+MFRTT57 - Verify whether able to apply Bilateral Smooth filter using CPU Rendering.
     [Documentation]    Verify whether able to apply Bilateral Smooth filter using CPU Rendering.
     [Tags]    smoke
 
@@ -744,11 +816,11 @@ MFRTT50 - Verify whether able to apply Bilateral Smooth filter using CPU Renderi
     Select GPU Type    CPU
     Click Image Filter Tool    True
     Apply Image Filter    Bilateral Smooth
-    Take Actual Screenshot    MFRTT50.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT50.png    MFRTT50.png
+    Take Actual Screenshot    MFRTT57.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT57.png    MFRTT57.png
     Reset View
     Apply Auto Best BNC
-MFRTT51 - Verify whether able to apply Bilateral Smooth filter using CPU Rendering and modifying the filter parameters.
+MFRTT58 - Verify whether able to apply Bilateral Smooth filter using CPU Rendering and modifying the filter parameters.
     [Documentation]    Verify whether able to apply Bilateral Smooth filter using CPU Rendering and modifying the filter parameters.
     [Tags]    smoke
 
@@ -758,11 +830,11 @@ MFRTT51 - Verify whether able to apply Bilateral Smooth filter using CPU Renderi
     Set Image Filter Parameters    Bilateral Smooth    Auto Best Contrast=True    Sigma=2.5    Kernel Radius=5    Bilateral Range Sigma=0.200
     Sleep    0.5s
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT51.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT51.png    MFRTT51.png
+    Take Actual Screenshot    MFRTT58.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT58.png    MFRTT58.png
     Reset View
     Apply Auto Best BNC
-MFRTT52 - Verify whether able to apply Bilateral Smooth filter using GPU Rendering.
+MFRTT59 - Verify whether able to apply Bilateral Smooth filter using GPU Rendering.
     [Documentation]    Verify whether able to apply Bilateral Smooth filter using GPU Rendering.
     [Tags]    smoke
 
@@ -770,11 +842,11 @@ MFRTT52 - Verify whether able to apply Bilateral Smooth filter using GPU Renderi
     Select GPU Type    GPU
     Click Image Filter Tool    True
     Apply Image Filter    Bilateral Smooth
-    Take Actual Screenshot    MFRTT52.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT52.png    MFRTT52.png
+    Take Actual Screenshot    MFRTT59.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT59.png    MFRTT59.png
     Reset View
     Apply Auto Best BNC
-MFRTT53 - Verify whether able to apply Bilateral Smooth filter using GPU Rendering and modifying the filter parameters.
+MFRTT60 - Verify whether able to apply Bilateral Smooth filter using GPU Rendering and modifying the filter parameters.
     [Documentation]    Verify whether able to apply Bilateral Smooth filter using GPU Rendering and modifying the filter parameters.
     [Tags]    smoke
 
@@ -783,48 +855,48 @@ MFRTT53 - Verify whether able to apply Bilateral Smooth filter using GPU Renderi
     Click Image Filter Tool    True
     Set Image Filter Parameters    Bilateral Smooth    Auto Best Contrast=True    Sigma=2.5    Kernel Radius=5    Bilateral Range Sigma=0.200
     Click Apply Image Filter
-    Take Actual Screenshot    MFRTT53.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT53.png    MFRTT53.png
+    Take Actual Screenshot    MFRTT60.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT60.png    MFRTT60.png
     Reset View
     Apply Auto Best BNC
     Click Image Filter Tool    False
     Close Project
-MFRTT54 - Verify whether able to add wallthickness tool over the testCR.dcm file.
+MFRTT61 - Verify whether able to add wallthickness tool over the testCR.dcm file.
     [Documentation]    This test case is to verify whether able to add wallthickness tool over the testCR.dcm file.
 
     Open ProjectFile    ${project_Directory_Path}testCR.dcm
     Add Wall Thickness Measurement tool over image    480    340    545    340
-    Take Actual Screenshot    MFRTT54_Actual.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT54_Actual.png    MFRTT54_Actual.png
-    Take wall thickness measurement window Screenshot    MFRTT54_Actual2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT54_Actual2.png    MFRTT54_Actual2.png
+    Take Actual Screenshot    MFRTT61_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT61_Actual.png    MFRTT61_Actual.png
+    Take wall thickness measurement window Screenshot    MFRTT61_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT61_Actual2.png    MFRTT61_Actual2.png
     Click Delete Wall Thickness Measurement Annotation    580    270
     Close Project
-MFRTT55 - Verify whether custom defect type is getting added properly and shown in the defect marking and classification tool.
+MFRTT62 - Verify whether custom defect type is getting added properly and shown in the defect marking and classification tool.
     [Documentation]    This test case is to verify whether custom defect type is getting added properly and shown in the defect marking and classification tool.
 
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
     Add Defect Marking and Classification Tool over image    Other    Rectangle    821    372    1008    416    Custom Defect
-    Take Actual Screenshot    MFRTT55_Actual.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT55_Actual.png    MFRTT55_Actual.png
+    Take Actual Screenshot    MFRTT62_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT62_Actual.png    MFRTT62_Actual.png
     Delete Selected Defect    1
     Click    ${defect_marking_tool_button_xpath}
     Fail    Known bug: Custom defect type is showing large text which is odd over the image, need to change screenshot once fixed.
-MFRTT56 - Verify whether able to evalute custom defect type in the defect marking and classification tool.
+MFRTT63 - Verify whether able to evalute custom defect type in the defect marking and classification tool.
     [Documentation]    This test case is to verify whether able to evalute custom defect type in the defect marking and classification tool.
 
     Add Defect Marking and Classification Tool over image    Other    Rectangle    821    372    1008    416    Custom Defect
     Select Acceptance Criteria Code    Manual
     Select Acceptance Criteria    Accept    Accepted By Manual Inspection
-    Take Actual Screenshot    MFRTT56_Actual.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT56_Actual.png    MFRTT56_Actual.png
+    Take Actual Screenshot    MFRTT63_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT63_Actual.png    MFRTT63_Actual.png
     Select Acceptance Criteria    Reject    Rejected By Manual Inspection
-    Take Actual Screenshot    MFRTT56_Actual2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT56_Actual2.png    MFRTT56_Actual2.png
+    Take Actual Screenshot    MFRTT63_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT63_Actual2.png    MFRTT63_Actual2.png
     Delete Selected Defect    1
     Click    ${defect_marking_tool_button_xpath}
     Fail    Known bug: Custom defect type is showing large text which is odd over the image, need to change screenshot once fixed.
-MFRTT57 - Verify whether able to export images with defects added over the image.
+MFRTT64 - Verify whether able to export images with defects added over the image.
     [Documentation]    This test case is to verify whether able to export images with defects added over the image.
 
     Add Defect Marking and Classification Tool over image    Porosity    Rectangle    821    372    1008    416
@@ -834,62 +906,62 @@ MFRTT57 - Verify whether able to export images with defects added over the image
     Select Acceptance Criteria Code    ASME B31.3
     Evaluate Defect Marked    2
     Click    ${defect_marking_tool_button_xpath}
-    Export Image    MFRTT57_Image    ${Actual_Image_Exports}MFRTT57_Image    PNG     False
-    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTT57_Image.png    ${Expected_Image_Exports}MFRTT57_Image.png
+    Export Image    MFRTT64_Image    ${Actual_Image_Exports}MFRTT64_Image    PNG     False
+    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTT64_Image.png    ${Expected_Image_Exports}MFRTT64_Image.png
     Click    ${defect_marking_tool_button_xpath}
     Delete Selected Defect    2
     Delete Selected Defect    1
     Click    ${defect_marking_tool_button_xpath}
     Close Project
-MFRTT58 - Verify whether able to Cancel IQI detection.
+MFRTT65 - Verify whether able to Cancel IQI detection.
     [Documentation]    This test case is to verify whether able to Cancel IQI detection.
 
     Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
     Click    ${IQI_wire_phantom_tool_button_xpath}
     sleep    0.2s
     Click Cancel IQI Detection
-    Take Actual Screenshot    MFRTT58_Actual.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT58_Actual.png    MFRTT58_Actual.png
-MFRTT59 - Verify whether IQI detection is working over a filtered image.
+    Take Actual Screenshot    MFRTT65_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT65_Actual.png    MFRTT65_Actual.png
+MFRTT66 - Verify whether IQI detection is working over a filtered image.
     [Documentation]    This test case is to verify whether IQI detection is working over a filtered image.
 
     Apply Fox Bleach Filter    True
     Run Keyword And Continue On Failure   Detect IQI Wire Phantom Tool
-    Take Actual Screenshot    MFRTT59_Actual.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT59_Actual.png    MFRTT59_Actual.png
+    Take Actual Screenshot    MFRTT66_Actual.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT66_Actual.png    MFRTT66_Actual.png
     Click    ${IQI_wire_phantom_tool_button_xpath}
     Close Project
     Fail    Known bug: IQI detection over filtered image does not work.
-MFRTT60 - Verify whether Clear All button is disabled in Batch processing window when no files are loaded into it.
+MFRTT67 - Verify whether Clear All button is disabled in Batch processing window when no files are loaded into it.
    [Documentation]    This test case is to verify whether Clear All button is disabled in Batch processing window when no files are loaded into it.
 
     Open Batch Processing Window
     Run Keyword And Continue On Failure    VerifyControlState    ${batch_procession_window_clearall_button_XPATH}    disabled
     Close Batch Processing Window
-MFRTT61 - Verify whether Run Batch button is disabled in Batch processing window when no files are loaded into it.
+MFRTT68 - Verify whether Run Batch button is disabled in Batch processing window when no files are loaded into it.
     [Documentation]    This test case is to verify whether Run Batch button is disabled in Batch processing window when no files are loaded into it.
 
     Open Batch Processing Window
     Run Keyword And Continue On Failure    VerifyControlState    ${batch_procession_window_run_batch_button_XPATH}    disabled
     Close Batch Processing Window
-MFRTT62 - Verify whether able to move the labels of wall-thickness tool over the image.
+MFRTT69 - Verify whether able to move the labels of wall-thickness tool over the image.
     [Documentation]    This test case is to verify whether able to move the labels of the wall-thickness tool over the image in image viewer.
 
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
     Add Wall Thickness Measurement tool over image    790    400    840    400
-    Take Actual Screenshot    MFRTT62_Actual1.png
+    Take Actual Screenshot    MFRTT69_Actual1.png
     Move annotation Label    840    337    740    310
-    Take Actual Screenshot    MFRTT62_Actual2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT62_Actual2.png    MFRTT62_Actual2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT62_Actual1.png    MFRTT62_Actual2.png    100    False
+    Take Actual Screenshot    MFRTT69_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT69_Actual2.png    MFRTT69_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT69_Actual1.png    MFRTT69_Actual2.png    100    False
     Click Delete Wall Thickness Measurement Annotation    799    313
-MFRTT63 - Verify whether clear all button in defect marking window is disabled when no defects are added over the image.
+MFRTT70 - Verify whether clear all button in defect marking window is disabled when no defects are added over the image.
     [Documentation]    This test case is to verify whether clear all button in defect marking window is disabled when no defects are added over the image.
 
     Click    ${defect_marking_tool_button_xpath}
     Run Keyword And Continue On Failure    VerifyControlState    ${clear_all_defects_xpath}    disabled
     click    ${defect_marking_tool_button_xpath}    
-MFRTT64 - Verify whether pressing Esc key cleares all the tool selection.
+MFRTT71 - Verify whether pressing Esc key cleares all the tool selection.
     [Documentation]    This test case is to verify whether pressing Esc key cleares all the tool selection.
 
     Click    ${line_profiler_tool_button_xpath}
@@ -968,68 +1040,68 @@ MFRTT64 - Verify whether pressing Esc key cleares all the tool selection.
     Click    ${fox_bleach_filter_button_xpath}
     sleep    0.2s
     Apply Auto Best BNC
-MFRTT65 - Verify whether Low and High % values are in sync with image viewer window level(BNC).
+MFRTT72 - Verify whether Low and High % values are in sync with image viewer window level(BNC).
     [Documentation]    This test case is to verify whether Low and High % values are in sync with image viewer window level(BNC).
 
     Apply Window Level    1    845    470    1050    570
     Run Keyword And Continue On Failure    Verify Percentile Brightness and Contrast Values    3    40
     Click    ${window_level_tool_button_xpath}
     Reset View
-MFRTT66 - Verify whether able to reset surface plot 3D view after rotating it.
+MFRTT73 - Verify whether able to reset surface plot 3D view after rotating it.
     [Documentation]    This test case is to verify whether able to reset surface plot 3D view after rotating it.
 
     Add Surface Plot 3D Tool over image    710    558    808    701
     Rotate Surface Plot 3D Image    990    930    990    805
-    Take surface plot window Screenshot    MFRTT66_1.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT66_1.png    MFRTT66_1.png
+    Take surface plot window Screenshot    MFRTT73_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT73_1.png    MFRTT73_1.png
     Reset Surface Plot 3D Image
-    Take surface plot window Screenshot    MFRTT66_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT66_2.png    MFRTT66_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT66_1.png    MFRTT66_2.png    100    False
-MFRTT67 - Verify whether able to reset surface plot 3D view after moving it around.
+    Take surface plot window Screenshot    MFRTT73_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT73_2.png    MFRTT73_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT73_1.png    MFRTT73_2.png    100    False
+MFRTT74 - Verify whether able to reset surface plot 3D view after moving it around.
     [Documentation]    This test case is to verify whether able to reset surface plot 3D view after moving it around.
 
     Move Surface Plot 3D Image    1000    875    350    875
-    Take surface plot window Screenshot    MFRTT67_1.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT67_1.png    MFRTT67_1.png
+    Take surface plot window Screenshot    MFRTT74_1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT74_1.png    MFRTT74_1.png
     Reset Surface Plot 3D Image
-    Take surface plot window Screenshot    MFRTT67_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT67_2.png    MFRTT67_2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT67_1.png    MFRTT67_2.png    100    False
+    Take surface plot window Screenshot    MFRTT74_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT74_2.png    MFRTT74_2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT74_1.png    MFRTT74_2.png    100    False
     Close Project
-MFRTT68 - Verify whether able to export line profiler data to a png file.
+MFRTT75 - Verify whether able to export line profiler data to a png file.
     [Documentation]    This test case is to verify whether able to export line profiler data to a png file.
 
     Login To FoxViewerDesktop    admin    admin
     Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
     Add Line Profiler Tool    590    290    967    252    Normal
-    Export Graph View Data    Line Profiler    PNG    MFRTT68_LineProfilerData.png
-    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTT68_LineProfilerData.png    ${Expected_Image_Exports}MFRTT68_LineProfilerData.png
-MFRTT69 - Verify whether able to export line profiler data to a csv file.
+    Export Graph View Data    Line Profiler    PNG    MFRTT75_LineProfilerData.png
+    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTT75_LineProfilerData.png    ${Expected_Image_Exports}MFRTT75_LineProfilerData.png
+MFRTT76 - Verify whether able to export line profiler data to a csv file.
     [Documentation]    This test case is to verify whether able to export line profiler data to a csv file.
 
-    Export Graph View Data    Line Profiler    CSV    MFRTT69_LineProfilerData.csv
-    Run Keyword And Continue On Failure    Compare Result Files     ${Actual_Image_Exports}MFRTT69_LineProfilerData.csv    ${Expected_Image_Exports}MFRTT69_LineProfilerData.csv
+    Export Graph View Data    Line Profiler    CSV    MFRTT76_LineProfilerData.csv
+    Run Keyword And Continue On Failure    Compare Result Files     ${Actual_Image_Exports}MFRTT76_LineProfilerData.csv    ${Expected_Image_Exports}MFRTT76_LineProfilerData.csv
     Sleep    0.2s
     Click    ${line_profiler_tool_button_xpath}
     Sleep    0.2s
     Close Project
-MFRTT70 - Verify whether able to export wall-thickness graph data to a png file.
+MFRTT77 - Verify whether able to export wall-thickness graph data to a png file.
     [Documentation]    This test case is to verify whether able to export wall-thickness graph data to a png file.
 
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
     Add Wall Thickness Measurement tool over image    805    400    860    403
-    Export Graph View Data    Wall Thickness Measurement    PNG    MFRTT70_WallThicknessGraphData.png
-    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTT70_WallThicknessGraphData.png    ${Expected_Image_Exports}MFRTT70_WallThicknessGraphData.png
-MFRTT71 - Verify whether able to export wall-thickness graph data to a csv file.
+    Export Graph View Data    Wall Thickness Measurement    PNG    MFRTT77_WallThicknessGraphData.png
+    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTT77_WallThicknessGraphData.png    ${Expected_Image_Exports}MFRTT77_WallThicknessGraphData.png
+MFRTT78 - Verify whether able to export wall-thickness graph data to a csv file.
     [Documentation]    This test case is to verify whether able to export wall-thickness graph data to a csv file.
 
-    Export Graph View Data    Wall Thickness Measurement    CSV    MFRTT71_WallThicknessGraphData.csv
-    Run Keyword And Continue On Failure    Compare Result Files     ${Actual_Image_Exports}MFRTT71_WallThicknessGraphData.csv    ${Expected_Image_Exports}MFRTT71_WallThicknessGraphData.csv
+    Export Graph View Data    Wall Thickness Measurement    CSV    MFRTT78_WallThicknessGraphData.csv
+    Run Keyword And Continue On Failure    Compare Result Files     ${Actual_Image_Exports}MFRTT78_WallThicknessGraphData.csv    ${Expected_Image_Exports}MFRTT78_WallThicknessGraphData.csv
     Sleep    0.2s
     Click Delete Wall Thickness Measurement Annotation    812    312
     Close Project
-MFRTT72 - Verify whether defects added over image are getting persisted after switching between images.
+MFRTT79 - Verify whether defects added over image are getting persisted after switching between images.
     [Documentation]    This test case is to verify whether defects added over image are getting persisted after switching between images.
 
     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm    
@@ -1039,13 +1111,13 @@ MFRTT72 - Verify whether defects added over image are getting persisted after sw
     Sleep    0.2s
     Click    ${defect_marking_tool_button_xpath}
     Sleep    0.2s
-    Take Actual Screenshot    MFRTT72_Actual1.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT72_Actual1.png    MFRTT72_Actual1.png
+    Take Actual Screenshot    MFRTT79_Actual1.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT79_Actual1.png    MFRTT79_Actual1.png
     Select Files From Files Tab    MLE_6_0.280.dcm
     Select Files From Files Tab    MLE_4_0.237.dcm
-    Take Actual Screenshot    MFRTT72_Actual2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT72_Actual2.png    MFRTT72_Actual2.png
-    Run Keyword And Continue On Failure    Compare Result Images    MFRTT72_Actual1.png    MFRTT72_Actual2.png
+    Take Actual Screenshot    MFRTT79_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT79_Actual2.png    MFRTT79_Actual2.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTT79_Actual1.png    MFRTT79_Actual2.png
     Delete Selected Defect    1
     sleep    0.2s
     Click    ${defect_marking_tool_button_xpath}

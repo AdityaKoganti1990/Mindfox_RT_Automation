@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "sourceFile": "MLE_4_0.237.dcm",
+  "savedAt": "2026-08-13T08:26:45.1535105Z",
+  "savedBy": "admin",
+  "annotations": [
+    {
+      "type": "Rectangle",
+      "isSecondaryPanel": false,
+      "startPoint": {
+        "x": 881,
+        "y": 1070.326088195402
+      },
+      "endPoint": {
+        "x": 1125.3666868026035,
+        "y": 1314.692774998005
+      },
+      "points": [],
+      "text": "",
+      "color": "#FFFF8C00",
+      "strokeWidth": 2,
+      "fontSize": 10,
+      "fontFamily": "Segoe UI",
+      "bold": true,
+      "italic": false,
+      "showBackground": true,
+      "labelOffsetX": 0,
+      "labelOffsetY": 0,
+      "zOrder": 0
+    },
+    {
+      "type": "Rectangle",
+      "isSecondaryPanel": false,
+      "startPoint": {
+        "x": 881,
+        "y": 1070.326088195402
+      },
+      "endPoint": {
+        "x": 1125.3666868026035,
+        "y": 1314.692774998005
+      },
+      "points": [],
+      "text": "",
+      "color": "#FFFF8C00",
+      "strokeWidth": 2,
+      "fontSize": 10,
+      "fontFamily": "Segoe UI",
+      "bold": true,
+      "italic": false,
+      "showBackground": true,
+      "labelOffsetX": 0,
+      "labelOffsetY": 0,
+      "zOrder": 0
+    }
+  ],
+  "defects": [],
+  "wallThicknessAnnotations": []
+}

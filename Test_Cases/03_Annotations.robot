@@ -471,7 +471,7 @@ MFRTANN41 - Verify whether able to move Text annotation over the image in image 
 
     Add Text Annotation    This is a text annotation
     Take Actual Screenshot    MFRTANN41_Actual1.png
-    Move Annotation    950    600    930    245
+    Move Annotation    900    595    910    280
     Take Actual Screenshot    MFRTANN41_Actual2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN41_Actual2.png    MFRTANN41_Actual2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN41_Actual1.png    MFRTANN41_Actual2.png    100    False
@@ -560,7 +560,7 @@ MFRTANN49 - Verify whether able to resize Text annotation in image viewer.
 
     Add Text Annotation    This is a text annotation
     Take Actual Screenshot    MFRTANN49_Actual1.png
-    Resize Annotation    950    600    930    245
+    Resize Annotation    900    595    910    280
     Take Actual Screenshot    MFRTANN49_Actual2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN49_Actual2.png    MFRTANN49_Actual2.png
     Run Keyword And Continue On Failure    Compare Result Images    MFRTANN49_Actual1.png    MFRTANN49_Actual2.png    100    False

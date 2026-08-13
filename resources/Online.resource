@@ -182,13 +182,18 @@ Is Visible Mode Indicator
 
 VerifyControlState
     [Arguments]    ${control_name}=${EMPTY}    ${expected_state}=${EMPTY}    ${timeout}=2
+    [Documentation]    Check that ${control_name} is in ${expected_state} (enabled, disabled, exists, not exists,
+    ...    selected, de-selected). ${control_name} may be a friendly name or a raw XPath.
+    ...    ${timeout}: seconds to wait, written either as a bare number or with an 's' suffix ('2' or '2s').
+
     Should Not Be Empty    ${control_name}    Control name cannot be empty.
     ${control_xpath}=    Resolve Online Control XPath    ${control_name}
+    ${retries}=    Normalize Retry Count    ${timeout}
     ${normalized_expected_state}=    Set Variable    ${EMPTY}
     IF    '${expected_state}' != '${EMPTY}'
         ${normalized_expected_state}=    Normalize Control State    ${expected_state}
     END
-    ${exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${control_xpath}    ${timeout}
+    ${exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${control_xpath}    ${retries}
     IF    not ${exists}
         ${actual_state}=    Set Variable    not exists
         Log    Control '${control_name}' does not exist.
@@ -197,7 +202,7 @@ VerifyControlState
         Log    Control '${control_name}' is currently ${actual_state}.
     ELSE
         IF    '${normalized_expected_state}' == 'enabled'
-            ${is_enabled}=    Run Keyword And Return Status    Wait Until Element Is Enabled    ${control_xpath}    ${timeout}
+            ${is_enabled}=    Run Keyword And Return Status    Wait Until Element Is Enabled    ${control_xpath}    ${retries}
         ELSE
             ${is_enabled}=    Is Element Enabled    ${control_xpath}
         END
@@ -274,6 +279,21 @@ Resolve Online Control XPath
     END
 
     Fail    Unsupported control name '${control_name}'. Supported controls: Start Acquisition, Open File. You can also pass a direct XPath.
+
+Normalize Retry Count
+    [Arguments]    ${timeout}
+    [Documentation]    Turn a timeout written as '1s', '1 s' or '1' into the plain whole number that FlaUI's wait
+    ...    keywords expect. They take a retry count, not a duration, and cast it with int(), so a value like '1s'
+    ...    raises inside FlaUI. Callers wrap those waits in Run Keyword And Return Status, which swallows the
+    ...    error and reports the control as 'not exists' — so a control that was on screen the whole time looks
+    ...    missing, and the real cause (a badly formed timeout) never surfaces.
+
+    ${value}=    Evaluate    str($timeout).strip().lower().rstrip('s').strip()
+    ${is_number}=    Run Keyword And Return Status    Evaluate    float($value)
+    Should Be True    ${is_number}
+    ...    Invalid timeout '${timeout}'. Give a number of seconds, e.g. 2 or 2s.
+    ${retries}=    Evaluate    max(1, int(round(float($value))))
+    RETURN    ${retries}
 
 Normalize Control State
     [Arguments]    ${state}

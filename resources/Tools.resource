@@ -67,6 +67,21 @@ ${defect_marking_radio_line_button_xpath}    ${defect_marking_panel_xpath}/Radio
 ${defect_marking_radio_ellipse_button_xpath}    ${defect_marking_panel_xpath}/RadioButton[@AutomationId="Defect_Rdo_ShapeEllipse"]
 ${defect_marking_radio_freehand_button_xpath}    ${defect_marking_panel_xpath}/RadioButton[@AutomationId="Defect_Rdo_ShapeFreehand"]
 ${clear_all_defects_xpath}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_ClearAll"]
+${draw_regions_button_xpath}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_DrawRegion"]
+# Only shown while search regions exist — it disappears once they are cleared.
+${clear_search_regions_button_xpath}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_ClearRegion"]
+${detect_in_regions_button_xpath}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_AutoDetect"]
+# Auto Detect tuning controls. The two numeric fields sit inside their own Custom wrappers, so they are
+# matched by AutomationId anywhere below the panel rather than by the wrapper's position.
+${defect_sensitivity_input_xpath}    ${defect_marking_panel_xpath}//Edit[@AutomationId="Defect_AdrSensitivity_Num"]
+${defect_max_results_input_xpath}    ${defect_marking_panel_xpath}//Edit[@AutomationId="Defect_AdrMaxResults_Num"]
+${defect_appear_dark_checkbox_xpath}    ${defect_marking_panel_xpath}/CheckBox[@AutomationId="Defect_Chk_AdrDark"]
+${defect_trace_exact_shape_checkbox_xpath}    ${defect_marking_panel_xpath}/CheckBox[@AutomationId="Defect_Chk_AdrExactShape"]
+# Auto Detect's result line, e.g. '<n> candidate(s) found in <m> region. Confirm each.' It carries no
+# AutomationId and the wording ahead of the full stop changes from run to run, so only the trailing
+# 'Confirm each.' is matched. Position is no good either — the surrounding text in this panel comes and
+# goes with the tool's state.
+${defect_detection_result_text_xpath}    ${defect_marking_panel_xpath}/Text[contains(@Name,"Confirm each.")]
 ${defect_delete_button_xpath}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_Delete"]
 ${evaluate_defect_marking_button_xpath}    ${defect_marking_panel_xpath}/Button[@AutomationId="Defect_Btn_Evaluate"]
 # Rows under INDICATIONS have neither AutomationId nor Name, so they can only be addressed by position.
@@ -156,7 +171,7 @@ Export Graph View Data
     ...    ${folder_path}: Destination directory. Defaults to ${Actual_Image_Exports} (= <repo>\\Exports\\Image Exports\\Actual\\). Pass the full path (e.g. ${Actual_Image_Exports}${file_name}) to Compare Result Images.
     ...
     ...    Example:
-    ...    | Export Graph View Data    Line Profiler    PNG    MFRTT68_LineProfilerData.png
+    ...    | Export Graph View Data    Line Profiler    PNG    MFRTT75_LineProfilerData.png
 
     ${save_type}=    Evaluate    str($save_type).strip().lstrip('.').lower()
     Should Be True    '${save_type}' in ('png', 'csv')    Unsupported save type '${save_type}'. Use 'PNG' or 'CSV'.
@@ -619,6 +634,157 @@ Add Defect Marking and Classification Tool over image
     AutoItLibrary.Mouse Click Drag    left    ${x1}    ${y1}    ${x2}    ${y2}
     Sleep    0.5s
 
+Draw Region over image
+    [Arguments]    ${x1}    ${y1}    ${x2}    ${y2}
+    [Documentation]    Draw an Auto Detect search region over the image by dragging from one corner to the other.
+    ...    The region tells Auto Detect where to look, keeping lead markers and film edges out of the search.
+    ...    ${x1}, ${y1}: screen coordinates of the region's first corner.
+    ...    ${x2}, ${y2}: screen coordinates of the opposite corner.
+    ...
+    ...    Turns the Defect Marking tool on if it is off, brings the Defects panel to the front, and scrolls the
+    ...    Draw Regions button into view before clicking it — it sits mid-panel and is easily out of view.
+    ...    Drawing mode is left again once the region is drawn, so the panel ends up back at rest and repeat calls
+    ...    each add another region.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    ${current_state}=    Get Toggle State    ${defect_marking_tool_button_xpath}
+    IF    '${current_state}' != 'ON'
+        Click    ${defect_marking_tool_button_xpath}
+        Sleep    0.2s
+    END
+    Open Defect Marking Panel
+    Sleep    0.2s
+    Scroll Defect Marking Panel To Element    ${draw_regions_button_xpath}
+    # The one button toggles drawing mode: it reads 'Draw Regions' at rest and 'Done Drawing' while drawing.
+    # Clicking it when drawing mode is already on would switch it off and the drag below would mark a defect
+    # instead of a region, so enter only when it is at rest — this matters if an earlier call or a manual step
+    # left the mode on. The UIA Name is the static 'Draw Detection Regions' in both states, so the visible
+    # label is the only thing that tells them apart.
+    ${already_drawing}=    Is Drawing Regions
+    IF    not ${already_drawing}
+        Click    ${draw_regions_button_xpath}
+        Sleep    0.2s
+    END
+    AutoItLibrary.Mouse Click Drag    left    ${x1}    ${y1}    ${x2}    ${y2}
+    Sleep    0.5s
+    # Leave drawing mode again. Drawing adds a 'Clear' button and a '<n> region set' line to the panel, which
+    # moves this button, so scroll to it once more rather than clicking where it used to be.
+    Scroll Defect Marking Panel To Element    ${draw_regions_button_xpath}
+    sleep    0.2s
+    Click    ${draw_regions_button_xpath}
+    Sleep    0.3s
+
+Is Drawing Regions
+    [Documentation]    Return whether Auto Detect's drawing mode is currently on, read from the button's visible
+    ...    label ('Draw Regions' at rest, 'Done Drawing' while drawing). Returns ${False} when the label cannot be
+    ...    read at all, which is the safe answer — the caller then clicks to enter drawing mode.
+
+    ${label_read}    ${label}=    Run Keyword And Ignore Error
+    ...    Get Name From Element    ${draw_regions_button_xpath}/Text
+    IF    '${label_read}' != 'PASS'    RETURN    ${False}
+    ${drawing}=    Evaluate    'done' in str($label).strip().lower()
+    RETURN    ${drawing}
+
+Detect Defects in Search Regions
+    [Arguments]    ${sensitivity}=${EMPTY}    ${max_results}=${EMPTY}    ${defects_appear_dark}=${EMPTY}
+    ...    ${trace_exact_shape}=${EMPTY}    ${timeout}=60
+    [Documentation]    Set the Auto Detect parameters, run detection over the search regions drawn on the image, and
+    ...    wait for its result line to appear — e.g. '<n> candidate(s) found in <m> region. Confirm each.'. The
+    ...    wording ahead of the full stop varies from run to run, so only the trailing 'Confirm each.' is matched.
+    ...
+    ...    Every parameter is optional — one left out keeps whatever the panel currently shows, so an existing
+    ...    call with no arguments behaves exactly as before.
+    ...    ${sensitivity}: Sensitivity value, lower finds more (e.g. 5.0).
+    ...    ${max_results}: Max Results cap (e.g. 25).
+    ...    ${defects_appear_dark}: 'Defects appear dark (film)' checkbox — on/off, yes/no, true/false or 1/0.
+    ...    ${trace_exact_shape}: 'Trace exact defect shape' checkbox — same accepted values.
+    ...    ${timeout}: seconds to wait for detection to finish — it is slow on large images. Defaults to 60.
+    ...
+    ...    Returns: the full result line, so a test can pull the candidate and region counts out of it.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Open Defect Marking Panel
+    Sleep    0.2s
+    IF    '${sensitivity}' != '${EMPTY}'
+        Set Defect Detection Numeric Parameter    ${defect_sensitivity_input_xpath}    ${sensitivity}    Sensitivity
+    END
+    IF    '${max_results}' != '${EMPTY}'
+        Set Defect Detection Numeric Parameter    ${defect_max_results_input_xpath}    ${max_results}    Max Results
+    END
+    IF    '${defects_appear_dark}' != '${EMPTY}'
+        Set Defect Detection Checkbox    ${defect_appear_dark_checkbox_xpath}    ${defects_appear_dark}
+        ...    Defects appear dark
+    END
+    IF    '${trace_exact_shape}' != '${EMPTY}'
+        Set Defect Detection Checkbox    ${defect_trace_exact_shape_checkbox_xpath}    ${trace_exact_shape}
+        ...    Trace exact defect shape
+    END
+    Scroll Defect Marking Panel To Element    ${detect_in_regions_button_xpath}
+    # The button stays disabled until a search region exists. Clicking it then does nothing at all, and the wait
+    # below would just time out, so say plainly what is missing instead.
+    ${enabled}=    Run Keyword And Return Status
+    ...    Element Should Be Enabled    ${detect_in_regions_button_xpath}
+    Should Be True    ${enabled}
+    ...    'Detect in Regions' is disabled — draw a search region first with 'Draw Region over image'.
+    Click    ${detect_in_regions_button_xpath}
+    Wait Until Element Exist    ${defect_detection_result_text_xpath}    ${timeout}
+    ...    Auto Detect reported no result within ${timeout}s — no status line ending in 'Confirm each.' appeared.
+    ${message}=    Get Name From Element    ${defect_detection_result_text_xpath}
+    Log    Auto Detect result: ${message}
+    RETURN    ${message}
+
+Set Defect Detection Numeric Parameter
+    [Arguments]    ${xpath}    ${value}    ${field_name}
+    [Documentation]    Type ${value} into one of the Auto Detect numeric fields. The trailing TAB is what commits
+    ...    the value — these spinners keep the old number until focus leaves the field.
+    ...    The value is passed through as written so an integer stays an integer (25 rather than 25.0).
+
+    ${is_numeric}=    Run Keyword And Return Status    Evaluate    float($value)
+    Should Be True    ${is_numeric}    ${field_name} must be numeric, got '${value}'.
+    Scroll Defect Marking Panel To Element    ${xpath}
+    Click    ${xpath}
+    Sleep    0.1s
+    Set Text To Textbox    ${xpath}    ${value}
+    Sleep    0.1s
+    @{tab_keys}=    Create List    s'TAB'
+    Press Keys    ${tab_keys}    ${xpath}
+    Sleep    0.1s
+
+Set Defect Detection Checkbox
+    [Arguments]    ${xpath}    ${value}    ${field_name}
+    [Documentation]    Put one of the Auto Detect checkboxes into the requested state, clicking only when it is not
+    ...    already there — these are toggles, so an unconditional click would invert a box that was already right.
+    ...    ${value}: on/off, yes/no, true/false or 1/0. Anything else fails rather than being read as 'off'.
+
+    ${normalized}=    Evaluate    str($value).strip().lower()
+    ${is_true}=    Evaluate    $normalized in ('true','1','yes','y','on','checked')
+    ${is_false}=    Evaluate    $normalized in ('false','0','no','n','off','unchecked')
+    Should Be True    ${is_true} or ${is_false}
+    ...    Invalid value for '${field_name}': '${value}'. Use on/off, yes/no, true/false or 1/0.
+    ${target_state}=    Set Variable If    ${is_true}    ON    OFF
+    Scroll Defect Marking Panel To Element    ${xpath}
+    ${current_state}=    Get Toggle State    ${xpath}
+    IF    '${current_state}' != '${target_state}'
+        Click    ${xpath}
+        Sleep    0.2s
+    END
+
+Clear Search Regions
+    [Documentation]    Remove the Auto Detect search regions drawn over the image by clicking the Clear button, then
+    ...    wait until that button disappears. The button is only shown while regions exist, so its absence is the
+    ...    confirmation that they were cleared — the keyword fails if it is still there after 10 seconds.
+
+    Focus    ${window_XPATH}
+    Sleep    0.2s
+    Open Defect Marking Panel
+    Sleep    0.2s
+    Scroll Defect Marking Panel To Element    ${clear_search_regions_button_xpath}
+    Click    ${clear_search_regions_button_xpath}
+    Wait Until Element Does Not Exist    ${clear_search_regions_button_xpath}    10
+    ...    Clear button is still showing after clearing the search regions.
+
 Open Defect Marking Panel
     [Documentation]    Bring the Defects tab of the right-hand dock to the front and wait for its panel to appear.
     ...    The dock switches to Defects by itself when the tool is toggled on, but clicking the header keeps the
@@ -628,6 +794,40 @@ Open Defect Marking Panel
     ...    Wait Until Element Exist    ${defect_marking_tab_header_xpath}    5
     IF    ${tab_visible}    Click    ${defect_marking_tab_header_xpath}
     Wait Until Element Exist    ${defect_marking_window_xpath}    5
+
+Invoke Defect Panel Button
+    [Arguments]    ${xpath}    ${description}
+    [Documentation]    Press a Defects panel button through the UIA Invoke pattern, which does not care where the
+    ...    button is on screen.
+    ...
+    ...    A plain Click drives the physical mouse to the button's clickable point, so it misses whenever the panel
+    ...    is scrolled and the button is clipped. Scrolling first does not reliably help either: FlaUI's Scroll Up /
+    ...    Scroll Down park the mouse on the panel's own clickable point — its centre, which lands on the Sensitivity
+    ...    slider or the Indications list — and those controls swallow the wheel instead of passing it on to the
+    ...    panel's scroll viewer. Invoke sidesteps all of it. Falls back to scroll-to-top plus a real click for any
+    ...    button that turns out not to support the pattern.
+
+    Wait Until Element Exist    ${xpath}    5
+    ${invoked}=    Run Keyword And Return Status    Invoke Button    ${xpath}
+    IF    not ${invoked}
+        Log    ${description} does not support Invoke; falling back to scrolling and clicking.    level=WARN
+        Scroll Defect Marking Panel To Top
+        Click    ${xpath}
+    END
+    Sleep    0.2s
+
+Scroll Defect Marking Panel To Top
+    [Documentation]    Scroll the Defects panel all the way up, unconditionally. Use this for the controls at the top
+    ...    of the panel — Defect Type, Shape, Delete, Clear All — instead of 'Scroll Defect Marking Panel To Element'.
+    ...    That keyword stops as soon as it believes the control is visible, and the belief is not always right: a
+    ...    clipped control can still report a bounding rectangle that sits inside the panel's, so the scroll is
+    ...    skipped and the click then lands on whatever is actually drawn there. Winding the panel to the top takes
+    ...    the judgement out of it.
+
+    FOR    ${index}    IN RANGE    25
+        Scroll Up    ${defect_marking_window_xpath}    1
+    END
+    Sleep    0.2s
 
 Is Defect Marking Panel Element Visible
     [Arguments]    ${element_xpath}
@@ -731,9 +931,7 @@ Clear AllDefects
     Sleep    0.2s
     Wait Until Element Exist    ${defect_marking_window_xpath}    5
     Sleep    0.2s
-    Scroll Defect Marking Panel To Element    ${clear_all_defects_xpath}
-    Click    ${clear_all_defects_xpath}
-    Sleep    0.2s
+    Invoke Defect Panel Button    ${clear_all_defects_xpath}    Clear All
 
 Delete Selected Defect
     [Arguments]    ${listItemNo}
@@ -751,23 +949,26 @@ Delete Selected Defect
     Scroll Defect Marking Panel To Element    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
     Click    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
     Sleep    0.2s
-    # Selecting an indication can move the panel (the Properties section grows), and Delete sits above the
-    # Indications list, so it may now be scrolled off the top — scroll back to it before clicking.
-    Scroll Defect Marking Panel To Element    ${defect_delete_button_xpath}
-    Click    ${defect_delete_button_xpath}
-    Sleep    0.2s
+    # Selecting an indication grows the Properties section and pushes Delete further out of view, so press it
+    # through Invoke rather than trying to get the mouse onto it.
+    Invoke Defect Panel Button    ${defect_delete_button_xpath}    Delete
 
 Evaluate Defect Marked
-    [Arguments]    ${listItemNo}
-    [Documentation]    Evaluate if the defect type of a defect marked on the image by the Defect Marking and Classification tool is correct by clicking on it to select it and then getting the defect type value from the combobox.
+    [Arguments]    ${listItemNo}=${EMPTY}
+    [Documentation]    Evaluate a defect marked on the image by the Defect Marking and Classification tool.
+    ...    ${listItemNo}: 1-based row in the Indications list to select before evaluating. Leave it out to
+    ...    evaluate whatever is already selected — the Evaluate button is then clicked on its own, which is what
+    ...    you want after a step that has already made the selection (auto-detected candidates, for instance).
 
     Focus    ${window_XPATH}
     Sleep    0.2s
     Open Defect Marking Panel
     Sleep    0.2s
-    Scroll Defect Marking Panel To Element    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
-    Click    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
-    Sleep    0.2s
+    IF    '${listItemNo}' != '${EMPTY}'
+        Scroll Defect Marking Panel To Element    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
+        Click    ${defect_indications_list_xpath}/ListItem[${listItemNo}]
+        Sleep    0.2s
+    END
     Scroll Defect Marking Panel To Element    ${evaluate_defect_marking_button_xpath}
     Click    ${evaluate_defect_marking_button_xpath}
     Sleep    0.2s

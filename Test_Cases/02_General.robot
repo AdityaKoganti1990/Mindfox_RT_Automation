@@ -12,7 +12,6 @@ ${names}
 ${Login_window_name}    FoXpert RT - Login
 
 *** Test Cases ***
-
 MFRTG01 - Verify whether able to open projection window from main window
     [Documentation]    Verify whether able to open projection window from main window
     [Tags]    smoke    general
@@ -138,6 +137,9 @@ MFRTG17 - Verify Window Can Be Restored From Minmized State
 
     Restore FoxRT Window
     Wait Until Keyword Succeeds    5x    1s    Assert Window Is Maximized
+    sleep    0.2s
+    Focus    ${MAIN_WINDOW_XPATH}
+    Resize FoxRT Application Window    10    10    1850    1000
 
     Log    Window restore validation completed
 MFRTG18 - Verify whether able to open Help Window.
@@ -172,7 +174,7 @@ MFRTG24 - Verify whether able to add a new user in UserManagement Window.
     [Documentation]    Verify whether able to add a new user in UserManagement Window
     [Tags]    smoke    general
     Add New User In UserManagement Window    User1    User1    Level I    5555    Mindfox
-    Verify New User Added In UserManagement Window    User1
+    Verify New User Added In UserManagement Window    User1    
 MFRTG25 - Verify whether able to delete a user from UserManagement Window.
     [Documentation]    Verify whether able to delete a user from UserManagement Window
     [Tags]    smoke    general
@@ -345,8 +347,7 @@ MFRTG42 - Verify whether shortcut keys are working for cancelling/clear annotati
     Run Keyword And Continue On Failure   Verify Tool Selected    Line Profiler    Not Selected
     Click    ${window_level_tool_button_xpath}
     Press Shortcut Keys    Escape
-    Run Keyword And Continue On Failure   Verify Tool Selected    Window Level    Selected
-    Click    ${window_level_tool_button_xpath}
+    Run Keyword And Continue On Failure   Verify Tool Selected    Window Level    Not Selected
 MFRTG43 - Verify whether CPU/GPU Info window is opening successfully.
     [Documentation]    Verify whether CPU/GPU Info window is opening successfully
     [Tags]    smoke    general
@@ -551,8 +552,8 @@ MFRTG69 - Verify whether image info is showing correctly for PNG files.
     Run Keyword And Continue On Failure    Verify Image Info    PNG    
     ...    Dimensions:1762 × 2144 px    
     ...    Pixel spacing:—    
-    ...    Bit depth:16-bit unsigned    
-    ...    Intensity min:0    Intensity max:4096    
+    ...    Bit depth:8-bit unsigned    
+    ...    Intensity min:0    Intensity max:255    
     ...    Window C / W:128 / 255
     Close Project
 MFRTG70 - Verify whether image info is showing correctly for JPG files.
@@ -562,8 +563,8 @@ MFRTG70 - Verify whether image info is showing correctly for JPG files.
     Run Keyword And Continue On Failure    Verify Image Info    JPG    
     ...    Dimensions:1762 × 2144 px    
     ...    Pixel spacing:—    
-    ...    Bit depth:16-bit unsigned    
-    ...    Intensity min:0    Intensity max:4096    
+    ...    Bit depth:8-bit unsigned    
+    ...    Intensity min:0    Intensity max:255    
     ...    Window C / W:128 / 255
     Close Project
 MFRTG71 - Verify whether image info is showing correctly for TIFF files.
@@ -573,8 +574,8 @@ MFRTG71 - Verify whether image info is showing correctly for TIFF files.
     Run Keyword And Continue On Failure    Verify Image Info    TIFF    
     ...    Dimensions:1762 × 2144 px    
     ...    Pixel spacing:—    
-    ...    Bit depth:16-bit unsigned    
-    ...    Intensity min:0    Intensity max:4096    
+    ...    Bit depth:8-bit unsigned    
+    ...    Intensity min:0    Intensity max:255    
     ...    Window C / W:128 / 255
     Close Project
 MFRTG72 - Verify whether image info is showing correctly for BMP files.
@@ -584,8 +585,8 @@ MFRTG72 - Verify whether image info is showing correctly for BMP files.
     Run Keyword And Continue On Failure    Verify Image Info    BMP    
     ...    Dimensions:1762 × 2144 px    
     ...    Pixel spacing:—    
-    ...    Bit depth:16-bit unsigned    
-    ...    Intensity min:0    Intensity max:4096    
+    ...    Bit depth:8-bit unsigned    
+    ...    Intensity min:0    Intensity max:255    
     ...    Window C / W:128 / 255
     Close Project
     Close FoxRT Application Window

@@ -31,6 +31,10 @@ ${OPEN_BUTTON_NAME_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/
 ${OPEN_BUTTON_NAME_FALLBACK_XPATH}    /Window/Window//Button[@Name="Open"]
 ${Button_Next_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_NextFile"]
 ${Button_Clear_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem/Button[@AutomationId="Main_Btn_ClearFiles"]
+# Files tab of the right-hand dock. WPF only builds the selected tab's content, so the file list and the
+# Clear button above do not exist in the UI tree at all while the Defects tab is in front — every lookup
+# against them fails. Anything that reads Files-tab content has to select this tab first.
+${files_tab_header_xpath}     /Window[@AutomationId="FoxRTProMainWindow"]/Tab/TabItem[@AutomationId="Main_Tab_Files"]
 ${OpenFolder_Button_XPATH}   /Window[@AutomationId="FoxRTProMainWindow"]/Button[@AutomationId="Main_Btn_OpenFolder"]
 ${INPUT_FOLDER_DIALOG_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Edit
 ${Select_Folder_XPATH}         /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@Name="Select Folder"]
@@ -58,6 +62,19 @@ ${delete_user_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Windo
 ${save_changes_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Button[@AutomationId="UserMgmt_Btn_SaveChanges"]
 ${user_management_users_list_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/List[@AutomationId="UserMgmt_List_Users"]
 ${user_management_status_bar_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window/Text[12]
+# Confirmation raised by the Delete button: "Are you sure you want to delete user '<name>'? This action cannot
+# be undone." Its confirm button is labelled 'Delete' — the same label as the button that opened it — so it is
+# always matched inside the dialog, never by name alone.
+# The prompt is not a window of its own — it is drawn inside the User Management window, so its buttons are
+# direct children of that window and there is nothing named "Delete User" to anchor to. Presence is therefore
+# detected from the prompt's own sentence, which nothing else on screen shares.
+${DELETE_USER_CONFIRM_PROMPT_XPATH}    //*[contains(@Name,"Are you sure you want to delete user")]
+${DELETE_USER_CONFIRM_WINDOW_XPATH}    //*[@Name="Delete User"]
+# Positional, because the confirm button carries no AutomationId and its Name ("Delete") is shared with the
+# User Management window's own Delete button. Index 3 only means the confirm button while the prompt is up —
+# with the prompt closed it resolves to a different button — so the Name is always checked before pressing.
+${DELETE_USER_CONFIRM_BUTTON_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[1]/Button[3]
+${DELETE_USER_CONFIRM_BUTTON_FALLBACK_XPATH}    /Window/Window[1]/Button[3]
 ${UI_Scale_Combobox_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]//ComboBox[@AutomationId="Main_Cmb_UiScale"]
 ${audit_log_window_xpath}                /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Audit Log"]
 ${audit_log_from_date_xpath}             ${audit_log_window_xpath}//*[@AutomationId="FromDate"]
@@ -93,6 +110,8 @@ ${ImageStitching_Button_UserManagement_XPATH}    /Window[@AutomationId="FoxRTPro
 Open ProjectFile
     [Arguments]    @{project_file_paths}
     ${project_file_path}=    Evaluate    ' '.join(['"' + p + '"' for p in $project_file_paths]) if len($project_file_paths) > 1 else $project_file_paths[0]
+    # Load detection below reads the Clear button, which only exists while the Files tab is selected.
+    Show Files Tab
     ${warning_clicked}    ${duplicate_warning}=    Dismiss Project Open Warning Popup If Present
     Set Retry Timeout    0
     ${clear_enabled_before_open}=    Run Keyword And Return Status    Element Should Be Enabled    ${Button_Clear_XPATH}
@@ -159,6 +178,19 @@ Verify Project Load Status Bar Message
     END
     Reset Retry Timeout
     Should Be True    ${status_confirmed}    Status bar did not confirm project load (expected 'Loaded <n> file(s)', last saw '${displayed_message}').
+
+Show Files Tab
+    [Documentation]    Bring the Files tab of the right-hand dock to the front. Only the selected tab's content is
+    ...    built by WPF, so while the Defects tab is in front the file list and the Clear button are absent from
+    ...    the UI tree entirely and every lookup against them fails. Does nothing when the tab is not present.
+
+    Set Retry Timeout    0
+    ${tab_exists}=    Run Keyword And Return Status    Element Should Exist    ${files_tab_header_xpath}
+    Reset Retry Timeout
+    IF    ${tab_exists}
+        Click    ${files_tab_header_xpath}
+        Sleep    0.2s
+    END
 
 Dismiss Project Open Warning Popup If Present
     [Documentation]    Dismiss the duplicate-files or generic warning popup when one is showing.
@@ -435,6 +467,8 @@ Close Project
     ...    ${warning_action} decides which button to click. Defaults to No (discard changes and close).
     Should Match Regexp    ${warning_action}    ^(Yes|No|Cancel)$
     ...    Unsupported close-project action: ${warning_action}. Use Yes, No or Cancel.
+    # The Clear button lives in the Files tab and disappears from the tree while Defects is in front.
+    Show Files Tab
     Click    ${Button_Clear_XPATH}
     ${warning_visible}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${PROJECT_CLOSE_WARNING_NO_BUTTON_XPATH}    1
@@ -537,15 +571,7 @@ Verify New User Added In UserManagement Window
 
     Element Should Exist    //*[@Name="${userName}"]
 
-    ${expected_message}=    Set Variable    User '${userName}' created
-    Set Retry Timeout    0
-    ${status}    ${displayed_message}=    Run Keyword And Ignore Error
-    ...    Get Name From Element    ${user_management_status_bar_xpath}
-    Reset Retry Timeout
-    Should Be Equal As Strings    ${status}    PASS
-    ...    Status bar message was not shown after adding user '${userName}'.
-    Should Be Equal As Strings    ${displayed_message}    ${expected_message}
-    ...    Expected status bar message '${expected_message}' but found '${displayed_message}'.
+    Verify User Management Status Message    User '${userName}' created    adding user '${userName}'
 
 Delete User From UserManagement Window
     [Arguments]    ${userName}
@@ -554,23 +580,105 @@ Delete User From UserManagement Window
     Sleep    0.2s
     Click    //*[@AutomationId="UserMgmt_Btn_DeleteUser"]
     Sleep    0.2s
+    Confirm Delete User Dialog
+
+Confirm Delete User Dialog
+    [Documentation]    Confirm the 'Delete User' prompt the app raises after clicking Delete ("Are you sure you want
+    ...    to delete user ...? This action cannot be undone."). Nothing is removed until this is answered, so
+    ...    skipping it leaves the user in the list.
+    ...
+    ...    The prompt lives inside the User Management window rather than in a window of its own, so its Delete
+    ...    button can only be reached by position. That index means the confirm button *only while the prompt is
+    ...    showing* — with the prompt closed it lands on another button in the same window — so the prompt is
+    ...    confirmed to be on screen first, and each candidate's Name is checked to be 'Delete' before it is
+    ...    pressed. Without those two guards this keyword could press Save Changes by accident.
+    ...
+    ...    Pressing goes through the UIA Invoke pattern first, falling back to a real mouse click: Invoke needs no
+    ...    clickable point, so it is unaffected by the prompt dimming or overlapping what sits beneath it.
+    ...
+    ...    Fails if the prompt is showing but no candidate matched — that is a locator problem, and saying so here
+    ...    beats letting it surface later as 'Control contains item'. A prompt that never appears is tolerated,
+    ...    since the caller's verification covers that case.
+
+    Set Retry Timeout    0
+    ${prompt_shown}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${DELETE_USER_CONFIRM_PROMPT_XPATH}    5
+    IF    not ${prompt_shown}
+        ${prompt_shown}=    Run Keyword And Return Status
+        ...    Element Should Exist    ${DELETE_USER_CONFIRM_WINDOW_XPATH}
+    END
+    IF    not ${prompt_shown}
+        Reset Retry Timeout
+        Log    No 'Delete User' confirmation prompt appeared; nothing to confirm.    level=WARN
+        RETURN
+    END
+
+    @{candidates}=    Create List
+    ...    ${DELETE_USER_CONFIRM_BUTTON_XPATH}
+    ...    ${DELETE_USER_CONFIRM_BUTTON_FALLBACK_XPATH}
+    ...    //*[@Name="Delete User"]//Button[@Name="Delete"]
+
+    ${confirmed}=    Set Variable    ${False}
+    FOR    ${candidate}    IN    @{candidates}
+        ${is_delete_button}=    Is Element Named    ${candidate}    Delete
+        IF    not ${is_delete_button}    CONTINUE
+        ${confirmed}=    Run Keyword And Return Status    Invoke Button    ${candidate}
+        IF    not ${confirmed}
+            ${confirmed}=    Run Keyword And Return Status    Click    ${candidate}
+        END
+        IF    ${confirmed}
+            Log    Confirmed the Delete User prompt via: ${candidate}
+            BREAK
+        END
+    END
+    Reset Retry Timeout
+
+    Should Be True    ${confirmed}
+    ...    The 'Delete User' prompt is showing but no candidate resolved to its Delete button. Tried: @{candidates}
+    Wait Until Element Does Not Exist    ${DELETE_USER_CONFIRM_PROMPT_XPATH}    10
+    ...    The 'Delete User' prompt is still on screen after pressing its Delete button.
+    Sleep    0.2s
+
+Is Element Named
+    [Arguments]    ${xpath}    ${expected_name}
+    [Documentation]    Return whether the element at ${xpath} exists and its Name is exactly ${expected_name}.
+    ...    Used to make a positional locator safe: the index is only trusted when it lands on the control it is
+    ...    meant to. Returns ${False} when the element is missing rather than failing.
+
+    ${read_ok}    ${name}=    Run Keyword And Ignore Error    Get Name From Element    ${xpath}
+    IF    '${read_ok}' != 'PASS'    RETURN    ${False}
+    ${matches}=    Evaluate    str($name).strip() == str($expected_name).strip()
+    RETURN    ${matches}
 
 Verify User Deleted From UserManagement Window
     [Arguments]    ${userName}
 
-    ${user_deleted}=    Listbox Should Not Contain    //*[@AutomationId="UserMgmt_List_Users"]    ${userName}
-    Should Be Equal As Strings    ${user_deleted}    None
+    # The list redraws a moment after the deletion is confirmed, so give it a few attempts rather than
+    # checking once and failing on the refresh lag.
+    Wait Until Keyword Succeeds    10x    0.3s
+    ...    Listbox Should Not Contain    //*[@AutomationId="UserMgmt_List_Users"]    ${userName}
 
-    ${expected_message}=    Set Variable    User '${userName}' deleted
+    Verify User Management Status Message    User '${userName}' deleted    deleting user '${userName}'
+
+Verify User Management Status Message
+    [Arguments]    ${expected_message}    ${context}
+    [Documentation]    Check the User Management status bar against ${expected_message}, ignoring which quote
+    ...    characters the app wraps the user name in — the build switched from 'User1' to "User1", and which
+    ...    quote it uses is cosmetic. Everything else in the message still has to match exactly.
+    ...    ${context}: what had just been done, used in the failure message (e.g. "adding user 'User1'").
+
     Set Retry Timeout    0
     ${status}    ${displayed_message}=    Run Keyword And Ignore Error
     ...    Get Name From Element    ${user_management_status_bar_xpath}
     Reset Retry Timeout
     Should Be Equal As Strings    ${status}    PASS
-    ...    Status bar message was not shown after deleting user '${userName}'.
-    Should Be Equal As Strings    ${displayed_message}    ${expected_message}
+    ...    Status bar message was not shown after ${context}.
+    ${displayed_normalised}=    Evaluate    str($displayed_message).replace('"', "'")
+    ${expected_normalised}=    Evaluate    str($expected_message).replace('"', "'")
+    Should Be Equal As Strings    ${displayed_normalised}    ${expected_normalised}
     ...    Expected status bar message '${expected_message}' but found '${displayed_message}'.
-    
+
+
 Verify Image Info
     [Arguments]    ${file_type}    @{params}
     [Documentation]    Verify each Image Info field shown in the right-panel tab matches its expected value.
