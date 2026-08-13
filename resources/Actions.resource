@@ -70,33 +70,76 @@ ${stitch_window_add_files_button_by_name_xpath}    /Window[@AutomationId="FoxRTP
 ${stitch_window_add_files_button_by_name_fallback_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@Name="Add files"]
 ${stitch_window_add_files_button_contains_name_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Button[contains(@Name,"Add")]
 ${stitch_window_clearall_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@AutomationId="Stitching_Btn_ClearAll"]
+# IMAGE INDEX panel. The cards live in an ItemsControl; each DataItem is named after its view model class
+# ('FoxViewerDesktop.ViewModels.StitchSourceItem'), so a file can only be recognised by the TextBlock inside
+# its card, never by the item's own Name.
+${stitch_source_list_xpath}    ${stitch_window_xpath}//List[@AutomationId="Stitching_SourceList"]
+# Canvas area the indexed images get placed onto — the region 'Take Stitch View Screenshot' captures.
+${stitch_canvas_view_xpath}    ${stitch_window_xpath}/Pane[@AutomationId="Stitching_CanvasScroll"]
+# The stitched output itself. Exists only after a stitch has run, alongside the 'Back to Edit' button.
+${stitch_result_image_xpath}    ${stitch_window_xpath}//Image[@AutomationId="Stitching_ResultImage"]
+# SELECTED IMAGE section — all four act on the image currently selected on the canvas, and are disabled
+# while nothing is selected.
+${stitch_rotate_left_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_RotateLeft"]
+${stitch_rotate_right_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_RotateRight"]
+${stitch_forward_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_Forward"]
+${stitch_back_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_Back"]
+${stitch_remove_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_Remove"]
+${stitch_clear_canvas_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_Clear"]
+# Whatever has been placed on the canvas. Only used to confirm a clear actually emptied it, and only when the
+# items were visible beforehand — so an unrecognised item shape costs the check, not a false failure.
+${stitch_canvas_items_xpath}    ${stitch_canvas_view_xpath}//List/*
+${stitch_recent_summary_text_xpath}    ${stitch_window_xpath}//Text[@AutomationId="Stitching_Txt_RecentSummary"]
+${stitch_recent_count_input_xpath}    ${stitch_window_xpath}//Edit[@AutomationId="Stitching_Num_RecentCount"]
+${stitch_window_add_all_button_xpath}    ${stitch_window_xpath}/Button[@AutomationId="Stitching_Btn_AddAll"]
+# Renamed from Stitching_Btn_ClearAll in the redesign.
+${stitch_window_clear_index_button_xpath}    ${stitch_window_xpath}/Button[@AutomationId="Stitching_Btn_ClearIndex"]
 ${stitch_file_dialog_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Window/ComboBox[1]/Edit[@Name="File name:"]
 ${stitch_file_dialog_open_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Window//*[@AutomationId="1" and @Name="Open"]
 ${stitch_configuration_scrollviewer_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Pane[2]
-${stitch_direction_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//ComboBox[@AutomationId="Stitching_Cmb_Direction"]
-${stitch_overlap_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Slider[@AutomationId="Stitching_Sld_Overlap"]
-${stitch_overlap_nud_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Edit[@AutomationId="Stitching_Overlap_Num"]
-${stitch_overlap_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Overlap")]
-${stitch_blend_levels_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Slider[@AutomationId="Stitching_Sld_BlendLevels"]
-${stitch_blend_levels_nud_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Edit[@AutomationId="Stitching_BlendLevels_Num"]
-${stitch_blend_levels_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Blend Levels:")]
-${stitch_sub_pixel_checkbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//CheckBox[@AutomationId="Stitching_Chk_SubPixel"]
-${stitch_min_confidence_slider_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Slider[@AutomationId="Stitching_Sld_MinConfidence"]
-${stitch_min_confidence_nud_input_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Edit[@AutomationId="Stitching_MinConfidence_Num"]
-${stitch_min_confidence_value_text_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Text[contains(@Name,"Min Confidence:")]
-${stitch_window_level_combobox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//ComboBox[@AutomationId="Stitching_Cmb_WindowLevel"]
-${stitch_invert_image_checkbox_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//CheckBox[@AutomationId="Stitching_Chk_InvertImage"]
-${stitch_window_stitch_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]//Button[@AutomationId="Stitching_Btn_Stitch"]
-${stitch_export_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Button[@AutomationId="Stitching_Btn_Export"]
-${Stitch_IMAGE_VIEWER_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Pane[3]/Image    
-${stitch_export_dialog_title}    Export Stitched Image
-${stitch_export_filename_control}    [CLASS:Edit; INSTANCE:1]
-${stitch_export_filetype_control}    [CLASS:ComboBox; INSTANCE:2]
-${stitch_export_save_button_control}    [CLASS:Button; INSTANCE:2]
-${stitch_export_overwrite_dialog_title}    Confirm Save As
-${stitch_export_overwrite_yes_button_control}    [TEXT:&Yes]
-${stitch_export_overwrite_yes_button_fallback_control}    [TEXT:Yes]
-${stitch_export_overwrite_yes_button_instance_control}    [CLASS:Button; INSTANCE:1]
+${stitch_blend_levels_nud_input_xpath}    ${stitch_window_xpath}//Edit[@AutomationId="Stitching_BlendLevels_Num"]
+${stitch_min_confidence_nud_input_xpath}    ${stitch_window_xpath}//Edit[@AutomationId="Stitching_MinConfidence_Num"]
+${stitch_window_level_combobox_xpath}    ${stitch_window_xpath}//ComboBox[@AutomationId="Stitching_Cmb_WindowLevel"]
+${stitch_invert_image_checkbox_xpath}    ${stitch_window_xpath}//CheckBox[@AutomationId="Stitching_Chk_Invert"]
+# --- Stitch controls as of the Auto/Manual redesign -------------------------------------------------------
+# Detector, Blend levels, Min confidence, Window level and Invert image moved inside the 'Output options'
+# expander; Edge blend and Feather sit outside it. Everything is anchored on AutomationId rather than on the
+# positional paths, because adding a control shifts every index after it — the Feather NUD did exactly that
+# to Custom[1]/Custom[2] inside the expander.
+${stitch_output_options_group_xpath}    ${stitch_window_xpath}/Pane[3]/Group
+${stitch_output_options_header_xpath}    ${stitch_window_xpath}//Button[@AutomationId="HeaderSite"]
+${stitch_detector_combobox_xpath}    ${stitch_window_xpath}//ComboBox[@AutomationId="Stitching_Cmb_Detector"]
+${stitch_edge_blend_checkbox_xpath}    ${stitch_window_xpath}//CheckBox[@AutomationId="Stitching_Chk_Feather"]
+${stitch_feather_nud_input_xpath}    ${stitch_window_xpath}//Edit[@AutomationId="Stitching_Feather_Num"]
+${stitch_auto_stitch_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_AutoStitch"]
+${stitch_apply_manual_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_ApplyManual"]
+# Appears only once a stitch has produced a result — the signal that the run finished.
+${stitch_back_to_edit_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_BackToEdit"]
+${stitch_save_image_button_xpath}    ${stitch_window_xpath}//Button[@AutomationId="Stitching_Btn_Save"]
+${Stitch_IMAGE_VIEWER_XPATH}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="Image Stitching"]/Pane[3]/Image
+# 'Save Image' opens the standard Windows Save-As dialog, so it is driven with AutoIt control identifiers
+# rather than XPaths. The controls below are that dialog's, not the app's.
+${stitch_save_dialog_title}    Save Stitched Image
+${stitch_save_filename_control}    [CLASS:Edit; INSTANCE:1]
+${stitch_save_filetype_control}    [CLASS:ComboBox; INSTANCE:2]
+${stitch_save_button_control}    [CLASS:Button; INSTANCE:2]
+# The Save dialog is a native #32770 parented to the Stitch window. All of the locators below were read off
+# the live dialog and confirmed to resolve through FlaUI.
+#
+# Do not drive this dialog with AutoIt class-instance identifiers: 'Save' and 'Cancel' are the only controls
+# of native class Button (the toolbar ones are Button3d/AJOSplitButton), which makes [CLASS:Button; INSTANCE:2]
+# the *Cancel* button. That is what silently abandoned the save and left the previous run's file in place.
+${stitch_save_dialog_xpath}    ${stitch_window_xpath}/Window[@Name="Save Stitched Image"]
+${stitch_save_dialog_filename_xpath}    ${stitch_save_dialog_xpath}//Edit[@AutomationId="1001"]
+${stitch_save_dialog_filename_by_name_xpath}    ${stitch_save_dialog_xpath}//Edit[@Name="File name:"]
+${stitch_save_dialog_filename_host_xpath}    ${stitch_save_dialog_xpath}//ComboBox[@AutomationId="FileNameControlHost"]//Edit
+${stitch_save_dialog_filetype_xpath}    ${stitch_save_dialog_xpath}//ComboBox[@AutomationId="FileTypeControlHost"]
+${stitch_save_dialog_save_button_xpath}    ${stitch_save_dialog_xpath}/Button[@AutomationId="1"]
+${stitch_save_dialog_cancel_button_xpath}    ${stitch_save_dialog_xpath}/Button[@AutomationId="2"]
+${stitch_save_overwrite_dialog_title}    Confirm Save As
+${stitch_save_overwrite_yes_button_control}    [TEXT:&Yes]
+${stitch_save_overwrite_yes_button_fallback_control}    [TEXT:Yes]
+${stitch_save_overwrite_yes_button_instance_control}    [CLASS:Button; INSTANCE:1]
 ${rt_simulator_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Btn_RtSimulator"]
 ${rt_simulator_window_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="FoXpert RT Simulator"]
 ${rt_simulator_window_close_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="FoXpert RT Simulator"]/Button[3]
@@ -576,17 +619,19 @@ Verify Batch Process Completed Successfully
     END
 
 Open Stitch Window
-    [Documentation]    Open Stitch Window
-    
+    [Documentation]    Open the Stitch window and size it to match the main application window, so screenshots and
+    ...    coordinate-based steps see it at a known, repeatable size. The Stitch window is owned by the main
+    ...    window, so it stays above it even though the two now occupy the same rectangle.
+
     Click    ${MAIN_WINDOW_XPATH}
     Sleep    0.2s
     Click    ${stitch_button_xpath}
     Sleep    0.2s
     Wait Until Element Exist    ${stitch_window_xpath}    5
     Sleep    1s
-    Resize Stitch Window    100    100    1250    900
-    Sleep    0.2s
     Resize FoxRT Application Window    10    10    1850    1000
+    Sleep    0.2s
+    Resize Stitch Window    10    10    1850    1000
     Sleep    0.2s
 
 Resize Stitch Window
@@ -660,6 +705,224 @@ Click Add Files In Stitch Window
     END
     Should Be True    ${add_clicked}    Could not find/click Add Files button in Stitch window.
 
+Rotate Image In Canvas
+    [Arguments]    ${direction}
+    [Documentation]    Rotate the image currently selected on the Stitch canvas by 90 degrees.
+    ...    ${direction}: '90DegreeCounterClockwise' or '90DegreeClockwise'. Case and spacing are ignored, and
+    ...    CCW / CW / Left / Right are accepted as shorthand.
+    ...
+    ...    The rotation buttons belong to the SELECTED IMAGE section, so they only work on a selected canvas
+    ...    image — with nothing selected they are disabled, and this keyword says so rather than clicking into
+    ...    the void.
+
+    ${key}=    Evaluate    ''.join(str($direction).split()).lower().replace('-', '').replace('_', '')
+    # Matched exactly, never with a substring test: '90degreecounterclockwise' ends with 'clockwise', so an
+    # `in` check would send a counter-clockwise request to the clockwise button.
+    @{counter_clockwise}=    Create List    90degreecounterclockwise    90degreesconterclockwise
+    ...    counterclockwise    anticlockwise    ccw    left    rotateleft
+    @{clockwise}=    Create List    90degreeclockwise    90degreesclockwise    clockwise    cw    right
+    ...    rotateright
+
+    ${is_ccw}=    Evaluate    $key in $counter_clockwise
+    ${is_cw}=    Evaluate    $key in $clockwise
+    IF    ${is_ccw}
+        ${xpath}=    Set Variable    ${stitch_rotate_left_button_xpath}
+        ${label}=    Set Variable    90DegreeCounterClockwise
+    ELSE IF    ${is_cw}
+        ${xpath}=    Set Variable    ${stitch_rotate_right_button_xpath}
+        ${label}=    Set Variable    90DegreeClockwise
+    ELSE
+        Fail    Unsupported rotation '${direction}'. Use 90DegreeCounterClockwise or 90DegreeClockwise.
+    END
+
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    Wait Until Element Exist    ${xpath}    5
+    ...    The ${label} rotation button was not found in the Stitch window.
+    ${enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${xpath}
+    Should Be True    ${enabled}
+    ...    The ${label} rotation button is disabled — select an image on the canvas before rotating it.
+
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${xpath}
+    END
+    Should Be True    ${pressed}    Could not press the ${label} rotation button.
+    Sleep    0.4s
+
+Reorder Image In Canvas
+    [Arguments]    ${direction}
+    [Documentation]    Change the stacking order of the image currently selected on the Stitch canvas.
+    ...    ${direction}: 'Forward' to bring it in front of the images it overlaps, 'Back' to send it behind them.
+    ...    Case and spacing are ignored, and Front / InFront / Bring Forward / Behind / Backward / Send Back are
+    ...    accepted as shorthand.
+    ...
+    ...    Both buttons belong to the SELECTED IMAGE section, so they only apply to a selected canvas image —
+    ...    with nothing selected they are disabled, and this keyword says so rather than pressing a dead button.
+
+    ${key}=    Evaluate    ''.join(str($direction).split()).lower().replace('-', '').replace('_', '')
+    # Exact matching, not substring: 'backward' contains 'back' and 'forward' shares its tail, so a loose test
+    # would send some requests the wrong way while still passing.
+    @{forward_words}=    Create List    forward    front    infront    bringforward    bringtofront
+    @{back_words}=    Create List    back    behind    backward    sendback    sendbackward    sendtoback
+
+    ${is_forward}=    Evaluate    $key in $forward_words
+    ${is_back}=    Evaluate    $key in $back_words
+    IF    ${is_forward}
+        ${xpath}=    Set Variable    ${stitch_forward_button_xpath}
+        ${label}=    Set Variable    Forward
+    ELSE IF    ${is_back}
+        ${xpath}=    Set Variable    ${stitch_back_button_xpath}
+        ${label}=    Set Variable    Back
+    ELSE
+        Fail    Unsupported reorder direction '${direction}'. Use Forward or Back.
+    END
+
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    Wait Until Element Exist    ${xpath}    5
+    ...    The '${label}' button was not found in the Stitch window.
+    ${enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${xpath}
+    Should Be True    ${enabled}
+    ...    The '${label}' button is disabled — select an image on the canvas before reordering it.
+
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${xpath}
+    END
+    Should Be True    ${pressed}    Could not press the '${label}' button.
+    Sleep    0.4s
+
+Remove Image From Canvas
+    [Documentation]    Remove the image currently selected on the Stitch canvas, leaving it in the IMAGE INDEX so
+    ...    it can be placed again. Use `Clear Index From Stitch Window` to empty the index itself.
+    ...
+    ...    The button belongs to the SELECTED IMAGE section, so it only applies to a selected canvas image — with
+    ...    nothing selected it is disabled, and this keyword says so rather than pressing a dead button.
+
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    Wait Until Element Exist    ${stitch_remove_button_xpath}    5
+    ...    The 'Remove' button (Stitching_Btn_Remove) was not found in the Stitch window.
+    ${enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${stitch_remove_button_xpath}
+    Should Be True    ${enabled}
+    ...    The 'Remove' button is disabled — select an image on the canvas before removing it.
+
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${stitch_remove_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${stitch_remove_button_xpath}
+    END
+    Should Be True    ${pressed}    Could not press the 'Remove' button.
+    Sleep    0.4s
+
+Clear Canvas
+    [Documentation]    Take every image off the Stitch canvas with the 'Clear canvas' button. The IMAGE INDEX is
+    ...    left alone — use `Clear Index From Stitch Window` for that.
+    ...
+    ...    Returns quietly if the button is disabled, since that means the canvas is already empty and clearing
+    ...    it again would be asking for the state it is already in.
+
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    Wait Until Element Exist    ${stitch_clear_canvas_button_xpath}    5
+    ...    The 'Clear canvas' button (Stitching_Btn_Clear) was not found in the Stitch window.
+
+    Set Retry Timeout    0
+    ${enabled}=    Run Keyword And Return Status
+    ...    Element Should Be Enabled    ${stitch_clear_canvas_button_xpath}
+    IF    not ${enabled}
+        Reset Retry Timeout
+        Log    'Clear canvas' is disabled; taking the canvas to be empty already.    level=WARN
+        RETURN
+    END
+    ${had_items}=    Run Keyword And Return Status    Element Should Exist    ${stitch_canvas_items_xpath}
+    Reset Retry Timeout
+
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${stitch_clear_canvas_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${stitch_clear_canvas_button_xpath}
+    END
+    Should Be True    ${pressed}    Could not press the 'Clear canvas' button.
+
+    # Only worth asserting when the items were actually visible before the click; otherwise there is nothing
+    # to compare against and a missing item locator would fail a clear that worked perfectly well.
+    IF    ${had_items}
+        Wait Until Element Does Not Exist    ${stitch_canvas_items_xpath}    5
+        ...    The canvas still holds images after pressing 'Clear canvas'.
+    END
+    Sleep    0.3s
+
+Take Stitch View Screenshot
+    [Arguments]    ${filename}    ${xpath}=${stitch_canvas_view_xpath}
+    [Documentation]    Capture the Stitch window's canvas view and save it into the Actual folder as ${filename},
+    ...    ready for `Compare Result Images`. Mirrors `Take Actual Screenshot`, but framed on the canvas
+    ...    (Stitching_CanvasScroll) instead of the main image viewer.
+    ...    ${filename}: name to save as, e.g. MFRTA17_Canvas.png.
+    ...    ${xpath}: region to capture — defaults to the canvas; pass ${stitch_window_xpath} for the whole window.
+    ...
+    ...    Returns: the full path the screenshot was saved to.
+
+    Wait Until Element Exist    ${xpath}    5
+    Sleep    0.2s    # Let any pending canvas redraw finish before capturing
+    ${screenshot_path}=    Take Screenshot    ${xpath}
+    Log    Screenshot saved to (temporary): ${screenshot_path}
+
+    ${dest}=    Set Variable    ${actual_image}${filename}
+    Create Directory    ${actual_image}
+    Move File    ${screenshot_path}    ${dest}
+
+    Log    Screenshot moved to: ${dest}
+    RETURN    ${dest}
+
+Take Stitch Window Screenshot
+    [Arguments]    ${filename}
+    [Documentation]    Capture the whole Stitch window — title bar, IMAGE INDEX, canvas and the controls on the
+    ...    right — and save it into the Actual folder as ${filename}, ready for `Compare Result Images`.
+    ...    Use `Take Stitch View Screenshot` instead when only the canvas matters; a full-window shot also picks
+    ...    up the index and the option controls, so unrelated changes there will show as differences.
+    ...    ${filename}: name to save as, e.g. MFRTA17_StitchWindow.png.
+    ...
+    ...    Returns: the full path the screenshot was saved to.
+
+    ${dest}=    Take Stitch View Screenshot    ${filename}    ${stitch_window_xpath}
+    RETURN    ${dest}
+
+Take Stitched Result Screenshot
+    [Arguments]    ${filename}
+    [Documentation]    Capture just the stitched output image and save it into the Actual folder as ${filename},
+    ...    ready for `Compare Result Images`.
+    ...
+    ...    The result image only exists once a stitch has produced one, so call this after `Run Stitch Process` —
+    ...    before that the capture fails with a locator error rather than saving an empty or stale picture.
+    ...    Framing on the result rather than the canvas keeps the baseline free of the surrounding chrome, so
+    ...    zoom level, selection handles and canvas background cannot cause a false difference.
+    ...    ${filename}: name to save as, e.g. MFRTA18_Result.png.
+    ...
+    ...    Returns: the full path the screenshot was saved to.
+
+    ${dest}=    Take Stitch View Screenshot    ${filename}    ${stitch_result_image_xpath}
+    RETURN    ${dest}
+
+Click Stitch Window Add All Button
+    [Documentation]    Press 'Add all' in the Stitch window, which puts every image currently open in the viewer
+    ...    into the IMAGE INDEX.
+    ...
+    ...    Pressing goes through the UIA Invoke pattern first, with a real mouse click as fallback — Invoke needs
+    ...    no clickable point, so it works even if the button is scrolled out of view.
+    ...
+    ...    How many cards this adds depends on what is open in the viewer and on the 'Show recent' cap, so the
+    ...    keyword deliberately asserts nothing about the outcome; use `Verify Files Added In Stitch Window` for
+    ...    that.
+
+    Wait Until Element Exist    ${stitch_window_xpath}    5
+    Wait Until Element Exist    ${stitch_window_add_all_button_xpath}    5
+    ...    'Add all' (Stitching_Btn_AddAll) was not found in the Stitch window.
+
+    ${pressed}=    Run Keyword And Return Status
+    ...    Invoke Button    ${stitch_window_add_all_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status
+        ...    Click    ${stitch_window_add_all_button_xpath}
+    END
+    Should Be True    ${pressed}    Could not press the 'Add all' button in the Stitch window.
+    Sleep    0.5s
+
 Get Stitch Open File Dialog Locators
     ${input_found}=    Run Keyword And Return Status
     ...    Wait Until Element Exist    ${stitch_file_dialog_input_xpath}    2
@@ -671,38 +934,96 @@ Get Stitch Open File Dialog Locators
 
 Verify Files Added In Stitch Window
     [Arguments]    @{file_paths}
-    [Documentation]    Verify that each provided file is visible in the Stitch window.
+    [Documentation]    Verify that each given file has a card in the Stitch window's IMAGE INDEX.
+    ...
+    ...    The index is an ItemsControl of cards (Stitching_SourceList). Each card carries its file name in its
+    ...    own TextBlock, while the DataItem wrapping it is named after the view model class — so a file is only
+    ...    ever recognisable by the card's text, and the search is scoped to the list rather than to the whole
+    ...    window, which also holds hint text and the canvas.
+    ...
+    ...    Only file names are compared, so full paths can be passed in.
 
     ${clean_file_paths}=    Evaluate    [str(p).strip() for p in $file_paths if str(p).strip()]
     ${path_count}=    Evaluate    len($clean_file_paths)
     Should Be True    ${path_count} > 0    Provide at least one file path to verify in Stitch window.
 
     Wait Until Element Exist    ${stitch_window_xpath}    5
+    Wait Until Element Exist    ${stitch_source_list_xpath}    5
+    ...    The Stitch window's image index (Stitching_SourceList) is not present.
 
     FOR    ${file_path}    IN    @{clean_file_paths}
         ${file_name}=    Evaluate    __import__('os').path.basename($file_path)
-        ${exact_name_xpath}=    Set Variable    ${stitch_window_xpath}//*[@Name="${file_name}"]
-        ${contains_name_xpath}=    Set Variable    ${stitch_window_xpath}//*[contains(@Name,"${file_name}")]
 
-        ${found_exact}=    Run Keyword And Return Status
-        ...    Wait Until Element Exist    ${exact_name_xpath}    2
-
-        ${found_contains}=    Set Variable    ${False}
-        IF    not ${found_exact}
-            ${found_contains}=    Run Keyword And Return Status
-            ...    Wait Until Element Exist    ${contains_name_xpath}    2
+        ${found}=    Run Keyword And Return Status
+        ...    Wait Until Element Exist    ${stitch_source_list_xpath}//Text[@Name="${file_name}"]    2
+        IF    not ${found}
+            # A long name may be shown elided, so fall back to a partial match on the card text.
+            ${found}=    Run Keyword And Return Status
+            ...    Wait Until Element Exist    ${stitch_source_list_xpath}//*[contains(@Name,"${file_name}")]    2
         END
 
-        Should Be True
-        ...    ${found_exact} or ${found_contains}
-        ...    File not found in Stitch window: ${file_name}
+        IF    not ${found}
+            ${card_count}=    Get Stitch Index Card Count
+            ${summary}=    Get Stitch Index Summary
+            Fail    File '${file_name}' has no card in the Stitch image index. The index holds ${card_count} card(s) and the window reports: '${summary}'. If more files were expected, the 'Show recent' limit may be capping what the index shows.
+        END
     END
 
-Clear All Files From Stitch Window
-    [Documentation]    Remove all files from Stitch window.
+Get Stitch Index Card Count
+    [Documentation]    Return how many cards the Stitch image index currently holds. Used to make a missing-file
+    ...    failure diagnosable — 'expected 6, index holds 5' points straight at the 'Show recent' cap.
+
+    Set Retry Timeout    0
+    ${count}=    Set Variable    ${0}
+    FOR    ${index}    IN RANGE    1    51
+        ${exists}=    Run Keyword And Return Status
+        ...    Element Should Exist    ${stitch_source_list_xpath}/DataItem[${index}]
+        IF    not ${exists}    BREAK
+        ${count}=    Set Variable    ${index}
+    END
+    Reset Retry Timeout
+    RETURN    ${count}
+
+Get Stitch Index Summary
+    [Documentation]    Return the index's own summary line ("Showing all N image(s) open in the viewer."), or a
+    ...    placeholder when it cannot be read. Reported alongside a missing-file failure.
+
+    ${read_ok}    ${summary}=    Run Keyword And Ignore Error
+    ...    Get Name From Element    ${stitch_recent_summary_text_xpath}
+    IF    '${read_ok}' != 'PASS'    RETURN    summary unavailable
+    RETURN    ${summary}
+
+Clear Index From Stitch Window
+    [Documentation]    Empty the Stitch window's IMAGE INDEX by pressing 'Clear index', then wait until no cards are
+    ...    left — so a press that did not register fails here rather than as a puzzling result in the next step.
+    ...
+    ...    The button is pressed through the UIA Invoke pattern first, falling back to a real mouse click: Invoke
+    ...    needs no clickable point, so it works even when the button is scrolled out of view.
+    ...    The pre-redesign id (Stitching_Btn_ClearAll) is kept as a last resort for older builds.
+
     Wait Until Element Exist    ${stitch_window_xpath}    5
-    Click    ${stitch_window_clearall_button_xpath}
-    Sleep    0.5s
+    Wait Until Element Exist    ${stitch_window_clear_index_button_xpath}    5
+    ...    'Clear index' (Stitching_Btn_ClearIndex) was not found in the Stitch window.
+
+    ${pressed}=    Run Keyword And Return Status
+    ...    Invoke Button    ${stitch_window_clear_index_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status
+        ...    Click    ${stitch_window_clear_index_button_xpath}
+    END
+    IF    not ${pressed}
+        Click    ${stitch_window_clearall_button_xpath}
+    END
+
+    Wait Until Element Does Not Exist    ${stitch_source_list_xpath}/DataItem[1]    5
+    ...    The Stitch image index still holds cards after pressing 'Clear index'.
+    Sleep    0.2s
+
+Clear All Files From Stitch Window
+    [Documentation]    Older name for `Clear Index From Stitch Window`, kept so existing tests keep working.
+    ...    Prefer the new name — it matches what the button is now called in the UI.
+
+    Clear Index From Stitch Window
 
 Verify No Files In Stitch Window
     [Documentation]    Verify no files are listed in Stitch window.
@@ -716,53 +1037,212 @@ Verify No Files In Stitch Window
     ...    Expected no files in Stitch window, but one or more file entries are still visible.
 
 Run Stitch Process
-    [Arguments]    ${direction}=Horizontal    ${overlap}=30    ${blend_levels}=5
-    ...    ${sub_pixel_refinement}=yes    ${min_confidence}=0.15
-    ...    ${window_level}=Auto Best Contrast    ${invert_image}=no
-    [Documentation]    Set Stitch options from arguments and then click Stitch.
+    [Arguments]    ${mode}=Auto    ${detector}=${EMPTY}    ${blend_levels}=${EMPTY}    ${min_confidence}=${EMPTY}
+    ...    ${window_level}=${EMPTY}    ${invert_image}=${EMPTY}    ${edge_blend}=${EMPTY}    ${feather}=${EMPTY}
+    ...    ${timeout}=60
+    [Documentation]    Run the stitch and wait for it to finish.
+    ...
+    ...    ${mode}: 'Auto' presses Auto Stitch and lets the app work everything out — no other argument applies.
+    ...    'Manual' applies whichever settings are given and then presses Stitch (manual layout).
+    ...
+    ...    Every setting is optional and only touched when supplied, so a test can change one thing and leave the
+    ...    rest of the panel alone. Settings are named for their UI labels:
+    ...    ${detector}: 'Detector (auto)' dropdown, e.g. 'SIFT (robust)'.
+    ...    ${blend_levels}: 'Blend levels' (1-8).
+    ...    ${min_confidence}: 'Min confidence (auto)' (0.05-0.50).
+    ...    ${window_level}: 'Window level' dropdown, e.g. 'Auto Best Contrast'.
+    ...    ${invert_image}: 'Invert image' checkbox — on/off, yes/no, true/false.
+    ...    ${edge_blend}: 'Edge blend (feather overlaps)' checkbox — same accepted values.
+    ...    ${feather}: 'Feather' percentage.
+    ...    ${timeout}: seconds to wait for the stitch to complete. Defaults to 60.
+    ...
+    ...    Completion is detected by the 'Back to Edit' button appearing, which only exists once a stitch has
+    ...    produced a result.
 
+    ${mode_key}=    Evaluate    ''.join(str($mode).split()).lower()
     Wait Until Element Exist    ${stitch_window_xpath}    5
     Focus    ${stitch_window_xpath}
     Sleep    0.2s
 
-    ${direction_options}=    Get All Names From Combobox    ${stitch_direction_combobox_xpath}
-    ${direction_valid}=    Evaluate    $direction in $direction_options
-    Should Be True
-    ...    ${direction_valid}
-    ...    Unsupported Direction: ${direction}. Available options: ${direction_options}
+    IF    '${mode_key}' == 'auto'
+        ${settings}=    Create List    ${detector}    ${blend_levels}    ${min_confidence}
+        ...    ${window_level}    ${invert_image}    ${edge_blend}    ${feather}
+        ${supplied}=    Evaluate    [v for v in $settings if str(v).strip()]
+        IF    ${supplied}
+            Log    Auto mode works the settings out for itself; these arguments are ignored: ${supplied}    level=WARN
+        END
+        Press Stitch Run Button    ${stitch_auto_stitch_button_xpath}    Auto Stitch
+    ELSE IF    '${mode_key}' == 'manual'
+        Set Stitch Manual Parameters    ${detector}    ${blend_levels}    ${min_confidence}
+        ...    ${window_level}    ${invert_image}    ${edge_blend}    ${feather}
+        Press Stitch Run Button    ${stitch_apply_manual_button_xpath}    Stitch (manual layout)
+    ELSE
+        Fail    Unsupported stitch mode '${mode}'. Use 'Auto' or 'Manual'.
+    END
 
-    ${window_level_options}=    Get All Names From Combobox    ${stitch_window_level_combobox_xpath}
-    ${window_level_valid}=    Evaluate    $window_level in $window_level_options
-    Should Be True
-    ...    ${window_level_valid}
-    ...    Unsupported Window Level: ${window_level}. Available options: ${window_level_options}
-
-    Select Combobox Item By Name    ${stitch_direction_combobox_xpath}    ${direction}
-    Sleep    0.2s
-    Set Stitch Numeric Input Value    ${stitch_overlap_nud_input_xpath}    ${overlap}    5    80    Overlap
-    Set Stitch Numeric Input Value    ${stitch_blend_levels_nud_input_xpath}    ${blend_levels}    1    8    Blend Levels
-
-    ${sub_pixel_refinement_bool}=    Convert User Input To Boolean    ${sub_pixel_refinement}    Sub-pixel Refinement
-    Set Checkbox State    ${stitch_sub_pixel_checkbox_xpath}    ${sub_pixel_refinement_bool}
-    Sleep    0.2s
-
-    Set Stitch Numeric Input Value    ${stitch_min_confidence_nud_input_xpath}    ${min_confidence}    0.05    0.50    Min Confidence
-    Select Combobox Item By Name    ${stitch_window_level_combobox_xpath}    ${window_level}
-    Sleep    0.2s
-
-    Scroll Stitch Configuration To Bottom
-    ${invert_image_bool}=    Convert User Input To Boolean    ${invert_image}    Invert Image
-    Set Checkbox State    ${stitch_invert_image_checkbox_xpath}    ${invert_image_bool}
-    Sleep    0.2s
-
-    Click    ${stitch_window_stitch_button_xpath}
-    Sleep    1s
-    Wait Until Element Exist    ${stitch_export_button_xpath}    30
+    Wait Until Element Exist    ${stitch_back_to_edit_button_xpath}    ${timeout}
+    ...    Stitching did not finish within ${timeout}s — the 'Back to Edit' button never appeared.
     Sleep    0.5s
 
+Set Stitch Manual Parameters
+    [Arguments]    ${detector}    ${blend_levels}    ${min_confidence}
+    ...    ${window_level}    ${invert_image}    ${edge_blend}    ${feather}
+    [Documentation]    Apply the manual-mode settings that were supplied, leaving the rest untouched.
+    ...    Edge blend and Feather sit on the panel itself; the other four live behind the 'Output options'
+    ...    expander, which is opened only if one of them was asked for and closed again afterwards.
+
+    ${edge_blend_bool}=    Set Variable    ${None}
+    IF    '${edge_blend}' != '${EMPTY}'
+        ${edge_blend_bool}=    Convert User Input To Boolean    ${edge_blend}    Edge Blend
+    END
+
+    # Feather only has meaning while edge blending is on, and the app disables its input when it is off.
+    # Asking for both at once cannot be honoured, so reject it before changing anything rather than applying
+    # half the request and then failing on a disabled textbox.
+    IF    '${feather}' != '${EMPTY}' and $edge_blend_bool is False
+        Fail    feather=${feather} conflicts with edge_blend=${edge_blend}: Feather only applies while 'Edge blend (feather overlaps)' is ticked, and its input is disabled while it is not. Either drop the feather argument or pass edge_blend=yes.
+    END
+
+    IF    $edge_blend_bool is not None
+        Set Checkbox State    ${stitch_edge_blend_checkbox_xpath}    ${edge_blend_bool}
+        Sleep    0.2s
+    END
+    IF    '${feather}' != '${EMPTY}'
+        # Feather is greyed out until edge blending is on, so a value asked for without edge_blend=yes could
+        # never be applied. Turn it on rather than failing — asking for a feather amount says you want it.
+        IF    '${edge_blend}' == '${EMPTY}'
+            ${feather_enabled}=    Run Keyword And Return Status
+            ...    Element Should Be Enabled    ${stitch_feather_nud_input_xpath}
+            IF    not ${feather_enabled}
+                Log    feather was given without edge_blend, and the Feather input is disabled; ticking 'Edge blend (feather overlaps)' so the value can be applied.    level=WARN
+                Set Checkbox State    ${stitch_edge_blend_checkbox_xpath}    ${True}
+                Sleep    0.3s
+            END
+        END
+        Set Stitch Numeric Input Value    ${stitch_feather_nud_input_xpath}    ${feather}    0    100    Feather
+        ...    enabled_by=with 'Edge blend (feather overlaps)' ticked — pass edge_blend=yes
+    END
+
+    ${expander_settings}=    Create List    ${detector}    ${blend_levels}    ${min_confidence}
+    ...    ${window_level}    ${invert_image}
+    ${needs_expander}=    Evaluate    any(str(v).strip() for v in $expander_settings)
+    IF    not ${needs_expander}    RETURN
+
+    Expand Stitch Output Options
+
+    IF    '${detector}' != '${EMPTY}'
+        ${detector_options}=    Get All Names From Combobox    ${stitch_detector_combobox_xpath}
+        ${detector_valid}=    Evaluate    $detector in $detector_options
+        Should Be True    ${detector_valid}
+        ...    Unsupported Detector: ${detector}. Available options: ${detector_options}
+        Select Combobox Item By Name    ${stitch_detector_combobox_xpath}    ${detector}
+        Sleep    0.2s
+    END
+    IF    '${blend_levels}' != '${EMPTY}'
+        Set Stitch Numeric Input Value    ${stitch_blend_levels_nud_input_xpath}    ${blend_levels}    1    8    Blend Levels
+    END
+    IF    '${min_confidence}' != '${EMPTY}'
+        Set Stitch Numeric Input Value    ${stitch_min_confidence_nud_input_xpath}    ${min_confidence}    0.05    0.50    Min Confidence
+    END
+    IF    '${window_level}' != '${EMPTY}'
+        ${window_level_options}=    Get All Names From Combobox    ${stitch_window_level_combobox_xpath}
+        ${window_level_valid}=    Evaluate    $window_level in $window_level_options
+        Should Be True    ${window_level_valid}
+        ...    Unsupported Window Level: ${window_level}. Available options: ${window_level_options}
+        Select Combobox Item By Name    ${stitch_window_level_combobox_xpath}    ${window_level}
+        Sleep    0.2s
+    END
+    IF    '${invert_image}' != '${EMPTY}'
+        ${invert_image_bool}=    Convert User Input To Boolean    ${invert_image}    Invert Image
+        Set Checkbox State    ${stitch_invert_image_checkbox_xpath}    ${invert_image_bool}
+        Sleep    0.2s
+    END
+
+    Collapse Stitch Output Options
+
+Get Stitch Output Options State
+    [Documentation]    Return 'Expanded' or 'Collapsed' for the 'Output options' expander. Read from the
+    ...    ExpandCollapse pattern on the expander itself; if that cannot be read — the Group is addressed by
+    ...    position and could move — fall back to whether the controls inside it are reachable.
+
+    ${read_ok}    ${state}=    Run Keyword And Ignore Error
+    ...    Get Property From Element    ${stitch_output_options_group_xpath}    EXPAND_COLLAPSE_STATE
+    IF    '${read_ok}' == 'PASS'    RETURN    ${state}
+
+    Set Retry Timeout    0
+    ${content_reachable}=    Run Keyword And Return Status
+    ...    Element Should Exist    ${stitch_detector_combobox_xpath}
+    Reset Retry Timeout
+    IF    ${content_reachable}    RETURN    Expanded
+    RETURN    Collapsed
+
+Toggle Stitch Output Options
+    [Documentation]    Press the expander header once, through Invoke where possible so it works regardless of
+    ...    where the header has scrolled to.
+
+    Wait Until Element Exist    ${stitch_output_options_header_xpath}    5
+    ...    The 'Output options' expander header (HeaderSite) was not found in the Stitch window.
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${stitch_output_options_header_xpath}
+    IF    not ${pressed}
+        Click    ${stitch_output_options_header_xpath}
+    END
+    Sleep    0.3s
+
+Expand Stitch Output Options
+    [Documentation]    Open the 'Output options' expander, doing nothing if it is already open.
+
+    ${state}=    Get Stitch Output Options State
+    IF    '${state}' == 'Expanded'    RETURN
+    Toggle Stitch Output Options
+    Wait Until Element Exist    ${stitch_detector_combobox_xpath}    5
+    ...    'Output options' was expanded but its controls did not appear.
+
+Collapse Stitch Output Options
+    [Documentation]    Close the 'Output options' expander, doing nothing if it is already closed. Checking the
+    ...    state first matters: a blind second click would re-open it whenever something else had closed it.
+
+    ${state}=    Get Stitch Output Options State
+    IF    '${state}' == 'Collapsed'    RETURN
+    Toggle Stitch Output Options
+
+Exit Stitched Result View
+    [Documentation]    Leave the stitched result view and go back to the canvas by pressing 'Back to Edit', then
+    ...    wait for that button to disappear — it exists only while a result is being shown, so its absence is
+    ...    the confirmation that the view actually switched.
+    ...
+    ...    Call this after capturing the result if the test carries on working with the canvas; a run left in the
+    ...    result view would otherwise have the next canvas step acting on a view that is not there.
+
+    Wait Until Element Exist    ${stitch_back_to_edit_button_xpath}    5
+    ...    'Back to Edit' was not found — the Stitch window does not appear to be showing a result.
+    ${pressed}=    Run Keyword And Return Status
+    ...    Invoke Button    ${stitch_back_to_edit_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${stitch_back_to_edit_button_xpath}
+    END
+    Should Be True    ${pressed}    Could not press the 'Back to Edit' button.
+    Wait Until Element Does Not Exist    ${stitch_back_to_edit_button_xpath}    10
+    ...    Still showing the stitched result after pressing 'Back to Edit'.
+    Sleep    0.3s
+
+Press Stitch Run Button
+    [Arguments]    ${xpath}    ${description}
+    [Documentation]    Press one of the two stitch buttons, Invoke first with a real click as fallback.
+
+    Wait Until Element Exist    ${xpath}    5
+    ...    The '${description}' button was not found in the Stitch window.
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${xpath}
+    END
+    Should Be True    ${pressed}    Could not press the '${description}' button.
+    Sleep    1s
+
 Set Stitch Numeric Input Value
-    [Arguments]    ${input_xpath}    ${value}    ${minimum}    ${maximum}    ${field_name}
+    [Arguments]    ${input_xpath}    ${value}    ${minimum}    ${maximum}    ${field_name}    ${enabled_by}=${EMPTY}
     [Documentation]    Set a stitch numeric value through the NUD text input and verify the applied value.
+    ...    ${enabled_by}: what has to be true for the input to be editable, quoted back in the failure message
+    ...    when it is disabled.
 
     ${value}=    Convert To Number    ${value}
     ${minimum}=    Convert To Number    ${minimum}
@@ -773,6 +1253,16 @@ Set Stitch Numeric Input Value
 
     ${value_text}=    Evaluate    str($value).rstrip('0').rstrip('.') if '.' in str($value) else str($value)
     Wait Until Element Exist    ${input_xpath}    2
+
+    # A disabled input rejects ValuePattern.SetValue with a bare COM ElementNotEnabledException that names
+    # nothing, so check first and say which field it was and what would make it editable.
+    ${is_enabled}=    Run Keyword And Return Status    Element Should Be Enabled    ${input_xpath}
+    IF    not ${is_enabled}
+        ${hint}=    Set Variable If    '${enabled_by}' == '${EMPTY}'
+        ...    ${EMPTY}    ${SPACE}It only becomes editable ${enabled_by}.
+        Fail    Cannot set ${field_name} to ${value_text}: the input is disabled.${hint}
+    END
+
     Set Text To Textbox    ${input_xpath}    ${value_text}
     Sleep    0.05s
 
@@ -785,65 +1275,173 @@ Set Stitch Numeric Input Value
     ...    ${difference} <= 0.0001
     ...    ${field_name} mismatch. Requested ${value}, but input shows ${applied_value}.
 
-Export Stitch Images
-    [Arguments]    ${output_folder}    ${export_format}=PNG    ${file_name}=${EMPTY}
-    [Documentation]    Export the stitched image to the requested output folder and format.
+Save Stitched Image
+    [Arguments]    ${output_folder}    ${save_format}=PNG    ${file_name}=${EMPTY}
+    [Documentation]    Save the stitched result to ${output_folder} in the requested format, via the 'Save Image'
+    ...    button and the Windows Save-As dialog it opens.
+    ...    ${output_folder}: folder to save into; created if it does not exist.
+    ...    ${save_format}: PNG, JPEG/JPG, TIFF/TIF, BMP or DICOM/DCM.
+    ...    ${file_name}: name without extension. Defaults to a timestamped name when omitted.
+    ...
+    ...    Returns: the full path of the saved file, once it has actually appeared on disk.
 
     Wait Until Element Exist    ${stitch_window_xpath}    5
-    Wait Until Element Exist    ${stitch_export_button_xpath}    5
+    Wait Until Element Exist    ${stitch_save_image_button_xpath}    5
+    ...    The 'Save Image' button (Stitching_Btn_Save) was not found — has a stitch been run yet?
 
-    ${format_label}    ${file_extension}=    Get Stitch Export Format Details    ${export_format}
+    ${format_label}    ${file_extension}=    Get Stitch Save Format Details    ${save_format}
 
-    Should Not Be Empty    ${output_folder}    Output folder is required for Stitch export.
+    Should Not Be Empty    ${output_folder}    Output folder is required to save the stitched image.
     Create Directory    ${output_folder}
 
     IF    str($file_name).strip() == ''
-        ${file_name}=    Evaluate    __import__('datetime').datetime.now().strftime('StitchExport_%Y%m%d_%H%M%S')
+        ${file_name}=    Evaluate    __import__('datetime').datetime.now().strftime('StitchImage_%Y%m%d_%H%M%S')
     ELSE
         ${file_name}=    Evaluate    __import__('os').path.splitext(str($file_name).strip())[0]
     END
 
-    ${export_file_name}=    Set Variable    ${file_name}.${file_extension}
-    ${export_file_path}=    Join Path    ${output_folder}    ${export_file_name}
-    ${file_already_exists}=    Evaluate    __import__('os').path.exists($export_file_path)
+    ${save_file_name}=    Set Variable    ${file_name}.${file_extension}
+    ${save_file_path}=    Join Path    ${output_folder}    ${save_file_name}
+    ${file_already_exists}=    Evaluate    __import__('os').path.exists($save_file_path)
 
-    Click    ${stitch_export_button_xpath}
-    Win Wait Active    ${stitch_export_dialog_title}    ${EMPTY}    5
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${stitch_save_image_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${stitch_save_image_button_xpath}
+    END
+    Should Be True    ${pressed}    Could not press the 'Save Image' button.
+    Wait Until Element Exist    ${stitch_save_dialog_xpath}    10
+    ...    The '${stitch_save_dialog_title}' dialog did not open after pressing 'Save Image'.
 
-    Control Command
-    ...    ${stitch_export_dialog_title}
-    ...    ${EMPTY}
-    ...    ${stitch_export_filetype_control}
-    ...    SelectString
-    ...    ${format_label}
-    ${selected_format}=    Control Command
-    ...    ${stitch_export_dialog_title}
-    ...    ${EMPTY}
-    ...    ${stitch_export_filetype_control}
-    ...    GetCurrentSelection
-    ...    ${EMPTY}
-    Should Be Equal As Strings
-    ...    ${selected_format}
-    ...    ${format_label}
-    ...    Stitch export format was not applied. Requested ${format_label}, but dialog shows ${selected_format}.
+    # Type first, then the name: changing the type rewrites the name box, so doing it the other way round
+    # would throw the name away. The pause lets that rewrite land before the name is typed over it.
+    Select Stitch Save Format    ${format_label}
+    Sleep    0.6s
 
-    Control Set Text
-    ...    ${stitch_export_dialog_title}
-    ...    ${EMPTY}
-    ...    ${stitch_export_filename_control}
-    ...    ${export_file_path}
-    Sleep    0.2s
-    Control Click
-    ...    ${stitch_export_dialog_title}
-    ...    ${EMPTY}
-    ...    ${stitch_export_save_button_control}
-    Handle Stitch Export Overwrite Warning If Present    ${file_already_exists}
-    Win Wait Close    ${stitch_export_dialog_title}    ${EMPTY}    10
+    Set Stitch Save Dialog File Name    ${save_file_path}
+    # Last look before committing — if anything has rewritten the box since, put the name back.
+    ${final_ok}    ${final_name}=    Run Keyword And Ignore Error
+    ...    Get Text From Textbox    ${stitch_save_dialog_filename_xpath}
+    ${still_right}=    Run Keyword And Return Status
+    ...    Should Be Equal As Strings    ${final_name}    ${save_file_path}
+    IF    not ${still_right}
+        Log    File name box drifted to '${final_name}' before saving; setting it again.    level=WARN
+        Set Stitch Save Dialog File Name    ${save_file_path}
+    END
+    Press Stitch Save Dialog Save Button
+    Handle Stitch Save Overwrite Warning If Present    ${file_already_exists}
+    Win Wait Close    ${stitch_save_dialog_title}    ${EMPTY}    10
 
-    Wait Until Keyword Succeeds    30x    1s    File Should Exist    ${export_file_path}
-    RETURN    ${export_file_path}
+    Wait Until Keyword Succeeds    30x    1s    File Should Exist    ${save_file_path}
+    RETURN    ${save_file_path}
 
-Handle Stitch Export Overwrite Warning If Present
+Get Stitch Save Format Selection
+    [Documentation]    Return the 'Save as type' entry currently showing, or an empty string if it cannot be read.
+
+    ${read_ok}    ${selection}=    Run Keyword And Ignore Error
+    ...    Control Command    ${stitch_save_dialog_title}    ${EMPTY}
+    ...    ${stitch_save_filetype_control}    GetCurrentSelection    ${EMPTY}
+    IF    '${read_ok}' != 'PASS'    RETURN    ${EMPTY}
+    RETURN    ${selection}
+
+Select Stitch Save Format
+    [Arguments]    ${format_label}
+    [Documentation]    Choose ${format_label} in the Save dialog's 'Save as type' list, by keyboard.
+    ...
+    ...    The control is a DirectUI AppControlHost, not a real combobox: expanding it exposes no items at all,
+    ...    so `Select Combobox Item By Name` and AutoIt's SelectString both succeed while changing nothing —
+    ...    which is how a TIFF run quietly saved a PNG. Opening the list and typing the entry's first letter does
+    ...    work, and the selection is read back to prove it.
+    ...
+    ...    Typing the letter again cycles through entries sharing that initial, so the loop copes if two formats
+    ...    ever start with the same letter (today PNG/JPEG/TIFF/BMP/DICOM are all distinct).
+
+    ${current}=    Get Stitch Save Format Selection
+    IF    '${current}' == '${format_label}'    RETURN
+
+    ${initial}=    Evaluate    str($format_label).strip()[0]
+    FOR    ${attempt}    IN RANGE    6
+        Click    ${stitch_save_dialog_filetype_xpath}
+        Sleep    0.4s
+        AutoItLibrary.Send    ${initial}
+        Sleep    0.3s
+        AutoItLibrary.Send    {ENTER}
+        Sleep    0.4s
+        ${current}=    Get Stitch Save Format Selection
+        IF    '${current}' == '${format_label}'    RETURN
+    END
+
+    Fail    Could not select '${format_label}' in 'Save as type'; it is showing '${current}'. Check the entry's exact wording — the label has to match the dialog text character for character.
+
+Set Stitch Save Dialog File Name
+    [Arguments]    ${file_path}
+    [Documentation]    Put ${file_path} into the Save-As dialog's 'File name' box.
+    ...
+    ...    Locates the box the same way `Export Audit Log` does, through the dialog's FileNameControlHost — the
+    ...    route already proven against this app. AutoIt's [CLASS:Edit] identifiers are kept only as a last
+    ...    resort: in the modern dialog the box lives inside a ComboBoxEx, so that index lands on a different
+    ...    control, writes there quite happily, and the dialog saves under its own default name instead.
+    ...
+    ...    Reading the value back is only a partial check — writing to the wrong control and reading that same
+    ...    control also matches — so locators are tried strictly best-known-first rather than first-that-answers.
+
+    @{filename_xpaths}=    Create List    ${stitch_save_dialog_filename_xpath}
+    ...    ${stitch_save_dialog_filename_host_xpath}    ${stitch_save_dialog_filename_by_name_xpath}
+
+    # Typed with real keystrokes rather than set through UIA. Writing the value with Set Text To Textbox puts
+    # the text on screen — it reads back correctly from both UIA and AutoIt — but the shell does not register
+    # it as an edit, so on Save it uses its own remembered name instead. That is how a TIFF run wrote
+    # 'stitched.tiff': the box showed the right path the whole time. PNG only escaped it because no filter
+    # change occurred, which leaves the shell's own name state alone. Same reasoning as `Set Audit Log Date
+    # Field`, which types into its picker for the same reason.
+    ${box}=    Set Variable    ${EMPTY}
+    FOR    ${xpath}    IN    @{filename_xpaths}
+        ${exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${xpath}    2
+        IF    ${exists}
+            ${box}=    Set Variable    ${xpath}
+            BREAK
+        END
+    END
+    Should Not Be Empty    ${box}
+    ...    Could not find the Save dialog's 'File name' box with any known locator.
+
+    FOR    ${attempt}    IN RANGE    3
+        Click    ${box}
+        Sleep    0.2s
+        AutoItLibrary.Send    ^a
+        Sleep    0.1s
+        AutoItLibrary.Send    {DEL}
+        Sleep    0.1s
+        AutoItLibrary.Send    ${file_path}    1
+        Sleep    0.4s
+        ${read_ok}    ${current}=    Run Keyword And Ignore Error    Get Text From Textbox    ${box}
+        ${matches}=    Run Keyword And Return Status
+        ...    Should Be Equal As Strings    ${current}    ${file_path}
+        IF    ${matches}
+            Log    File name typed into ${box} (attempt ${attempt})
+            RETURN
+        END
+    END
+
+    Fail    Could not get '${file_path}' to stay in the Save dialog's 'File name' box; it currently reads '${current}'. Saving now would fall back to the dialog's default name.
+
+Press Stitch Save Dialog Save Button
+    [Documentation]    Press Save in the Save-As dialog.
+    ...
+    ...    Deliberately by AutomationId '1' rather than by an AutoIt class instance: in this dialog only Save and
+    ...    Cancel carry the native class 'Button', so [CLASS:Button; INSTANCE:2] resolves to Cancel and quietly
+    ...    throws the save away.
+
+    Wait Until Element Exist    ${stitch_save_dialog_save_button_xpath}    5
+    ...    The Save button was not found in the '${stitch_save_dialog_title}' dialog.
+    ${pressed}=    Run Keyword And Return Status
+    ...    Invoke Button    ${stitch_save_dialog_save_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${stitch_save_dialog_save_button_xpath}
+    END
+    Should Be True    ${pressed}    Could not press Save in the '${stitch_save_dialog_title}' dialog.
+    Sleep    0.3s
+
+Handle Stitch Save Overwrite Warning If Present
     [Arguments]    ${overwrite_expected}=${False}
     [Documentation]    If an overwrite confirmation appears during Stitch export, confirm it by clicking Yes.
 
@@ -852,36 +1450,36 @@ Handle Stitch Export Overwrite Warning If Present
     END
 
     ${overwrite_visible}=    Run Keyword And Return Status
-    ...    Win Wait Active    ${stitch_export_overwrite_dialog_title}    ${EMPTY}    2
+    ...    Win Wait Active    ${stitch_save_overwrite_dialog_title}    ${EMPTY}    2
 
     ${yes_clicked}=    Set Variable    ${False}
     IF    ${overwrite_visible}
         ${yes_clicked}=    Run Keyword And Return Status
         ...    Control Click
-        ...    ${stitch_export_overwrite_dialog_title}
+        ...    ${stitch_save_overwrite_dialog_title}
         ...    ${EMPTY}
-        ...    ${stitch_export_overwrite_yes_button_control}
+        ...    ${stitch_save_overwrite_yes_button_control}
     END
     IF    not ${yes_clicked}
         ${yes_clicked}=    Run Keyword And Return Status
         ...    Control Click
         ...    [ACTIVE]
         ...    ${EMPTY}
-        ...    ${stitch_export_overwrite_yes_button_control}
+        ...    ${stitch_save_overwrite_yes_button_control}
     END
     IF    not ${yes_clicked}
         ${yes_clicked}=    Run Keyword And Return Status
         ...    Control Click
         ...    [ACTIVE]
         ...    ${EMPTY}
-        ...    ${stitch_export_overwrite_yes_button_fallback_control}
+        ...    ${stitch_save_overwrite_yes_button_fallback_control}
     END
     IF    not ${yes_clicked}
         ${yes_clicked}=    Run Keyword And Return Status
         ...    Control Click
         ...    [ACTIVE]
         ...    ${EMPTY}
-        ...    ${stitch_export_overwrite_yes_button_instance_control}
+        ...    ${stitch_save_overwrite_yes_button_instance_control}
     END
     IF    not ${yes_clicked}
         ${alt_y_sent}=    Run Keyword And Return Status    Send    !y
@@ -892,17 +1490,23 @@ Handle Stitch Export Overwrite Warning If Present
     Should Be True    ${yes_clicked}    Stitch export overwrite warning was expected, but the Yes confirmation could not be completed.
     Sleep    0.2s
 
-Get Stitch Export Format Details
-    [Arguments]    ${export_format}
-    [Documentation]    Return the native Save dialog label and file extension for the requested Stitch export format.
+Get Stitch Save Format Details
+    [Arguments]    ${save_format}
+    [Documentation]    Return the Save-As dialog's 'Save as type' label and the file extension for the requested
+    ...    format. The label has to match the dialog entry exactly, since it is selected by string.
 
-    ${normalized_format}=    Evaluate    str($export_format).strip().lower()
+    ${normalized_format}=    Evaluate    str($save_format).strip().lower()
 
     IF    '${normalized_format}' == 'png'
         RETURN    PNG (*.png)    png
     END
     IF    '${normalized_format}' == 'jpeg' or '${normalized_format}' == 'jpg'
         RETURN    JPEG (*.jpg)    jpg
+    END
+    # Not offered by the dialog yet — added ahead of the build that introduces it. The label follows the
+    # pattern of the others and will need correcting if the real entry is worded differently.
+    IF    '${normalized_format}' == 'dicom' or '${normalized_format}' == 'dcm'
+        RETURN    DICOM (*.dcm)    dcm
     END
     IF    '${normalized_format}' == 'tiff' or '${normalized_format}' == 'tif'
         RETURN    TIFF (*.tiff)    tiff
@@ -911,7 +1515,7 @@ Get Stitch Export Format Details
         RETURN    BMP (*.bmp)    bmp
     END
 
-    Fail    Unsupported Stitch export format: ${export_format}. Use PNG, JPEG, TIFF, or BMP.
+    Fail    Unsupported stitch save format: ${save_format}. Use PNG, JPEG, TIFF, BMP or DICOM.
 
 Get Stitch Slider Display Value
     [Arguments]    ${value_text_xpath}

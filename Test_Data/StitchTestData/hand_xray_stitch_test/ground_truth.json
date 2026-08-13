@@ -1,0 +1,181 @@
+{
+  "source": "synthetic phantom - no patient data",
+  "full_reference": {
+    "width": 1024,
+    "height": 1400,
+    "bit_depth": 16
+  },
+  "tile_height": 600,
+  "tile_width": 1024,
+  "step_px": 400,
+  "overlap_px": 200,
+  "pixel_spacing_mm": 0.14,
+  "nominal_starts_y": [
+    0,
+    400,
+    800
+  ],
+  "transform_note": "tile_to_reference is a 2x3 affine: [Xref, Yref]^T = M . [u, v, 1]^T, with (u,v) tile pixel coords and (Xref, Yref) coords in full_reference.png. A correct stitcher should recover these.",
+  "sets": {
+    "clean": {
+      "series_instance_uid": "1.2.826.0.1.3680043.8.498.19922040571323222990093162473197894273",
+      "tiles": [
+        {
+          "file": "clean/tile_1.png",
+          "dicom": "dicom/clean/tile_1.dcm",
+          "nominal_start_y": 0,
+          "tile_to_reference": [
+            [
+              1.0,
+              -0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "applied": {
+            "dx": 0,
+            "dy": 0,
+            "rotation_deg": 0,
+            "gain": 1,
+            "offset": 0,
+            "heel_k": 0
+          }
+        },
+        {
+          "file": "clean/tile_2.png",
+          "dicom": "dicom/clean/tile_2.dcm",
+          "nominal_start_y": 400,
+          "tile_to_reference": [
+            [
+              1.0,
+              -0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              400.0
+            ]
+          ],
+          "applied": {
+            "dx": 0,
+            "dy": 0,
+            "rotation_deg": 0,
+            "gain": 1,
+            "offset": 0,
+            "heel_k": 0
+          }
+        },
+        {
+          "file": "clean/tile_3.png",
+          "dicom": "dicom/clean/tile_3.dcm",
+          "nominal_start_y": 800,
+          "tile_to_reference": [
+            [
+              1.0,
+              -0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              800.0
+            ]
+          ],
+          "applied": {
+            "dx": 0,
+            "dy": 0,
+            "rotation_deg": 0,
+            "gain": 1,
+            "offset": 0,
+            "heel_k": 0
+          }
+        }
+      ]
+    },
+    "misaligned": {
+      "series_instance_uid": "1.2.826.0.1.3680043.8.498.91153704273388868555035292988784820014",
+      "tiles": [
+        {
+          "file": "misaligned/tile_1.png",
+          "dicom": "dicom/misaligned/tile_1.dcm",
+          "nominal_start_y": 0,
+          "tile_to_reference": [
+            [
+              1.0,
+              -0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "applied": {
+            "dx": 0.0,
+            "dy": 0.0,
+            "rotation_deg": 0.0,
+            "gain": 1.0,
+            "offset": 0.0,
+            "heel_k": 0.06
+          }
+        },
+        {
+          "file": "misaligned/tile_2.png",
+          "dicom": "dicom/misaligned/tile_2.dcm",
+          "nominal_start_y": 400,
+          "tile_to_reference": [
+            [
+              0.9999691576447897,
+              -0.007853900888711334,
+              -4.028038447518918
+            ],
+            [
+              0.007853900888711334,
+              0.9999691576447897,
+              399.08805545154297
+            ]
+          ],
+          "applied": {
+            "dx": -6.4,
+            "dy": 3.1,
+            "rotation_deg": 0.45,
+            "gain": 0.93,
+            "offset": 0.01,
+            "heel_k": 0.09
+          }
+        },
+        {
+          "file": "misaligned/tile_3.png",
+          "dicom": "dicom/misaligned/tile_3.dcm",
+          "nominal_start_y": 800,
+          "tile_to_reference": [
+            [
+              0.999925369660452,
+              0.012217000835247169,
+              1.2731104832744453
+            ],
+            [
+              -0.012217000835247169,
+              0.999925369660452,
+              804.0774935295109
+            ]
+          ],
+          "applied": {
+            "dx": 4.9,
+            "dy": -2.2,
+            "rotation_deg": -0.7,
+            "gain": 1.08,
+            "offset": -0.006,
+            "heel_k": 0.07
+          }
+        }
+      ]
+    }
+  }
+}
