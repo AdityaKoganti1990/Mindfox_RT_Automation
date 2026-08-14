@@ -140,6 +140,22 @@ ${stitch_save_overwrite_dialog_title}    Confirm Save As
 ${stitch_save_overwrite_yes_button_control}    [TEXT:&Yes]
 ${stitch_save_overwrite_yes_button_fallback_control}    [TEXT:Yes]
 ${stitch_save_overwrite_yes_button_instance_control}    [CLASS:Button; INSTANCE:1]
+# Image Arithmetic. Spelled 'Aritmetic' to match the test that calls these — see the keyword's documentation.
+${arithmetic_tool_button_xpath}    ${MAIN_WINDOW_XPATH}//Button[@AutomationId="Main_Btn_ImageArithmetic"]
+${ARITMETIC_WINDOW_XPATH}    ${MAIN_WINDOW_XPATH}/Window[@AutomationId="Arithmetic_Window"]
+${arithmetic_browse_a_button_xpath}    ${ARITMETIC_WINDOW_XPATH}//Button[@AutomationId="Arithmetic_Btn_BrowseA"]
+${arithmetic_browse_b_button_xpath}    ${ARITMETIC_WINDOW_XPATH}//Button[@AutomationId="Arithmetic_Btn_BrowseB"]
+${arithmetic_operation_combobox_xpath}    ${ARITMETIC_WINDOW_XPATH}//ComboBox[@AutomationId="Arithmetic_Combo_Operation"]
+${arithmetic_compute_button_xpath}    ${ARITMETIC_WINDOW_XPATH}//Button[@AutomationId="Arithmetic_Btn_Compute"]
+${arithmetic_result_image_xpath}    ${ARITMETIC_WINDOW_XPATH}//Image[@AutomationId="Arithmetic_Preview"]
+# 'Save Result & Open' is the button's visible label; its UIA name is 'Save Result'.
+${arithmetic_save_button_xpath}    ${ARITMETIC_WINDOW_XPATH}//Button[@AutomationId="Arithmetic_Btn_Save"]
+# Same native #32770 shape as the stitch Save dialog, parented to the Arithmetic window.
+${arithmetic_save_dialog_title}    Save Arithmetic Result
+${arithmetic_save_dialog_xpath}    ${ARITMETIC_WINDOW_XPATH}/Window[@Name="Save Arithmetic Result"]
+${arithmetic_save_dialog_filename_xpath}    ${arithmetic_save_dialog_xpath}//Edit[@AutomationId="1001"]
+${arithmetic_save_dialog_filename_by_name_xpath}    ${arithmetic_save_dialog_xpath}//Edit[@Name="File name:"]
+${arithmetic_save_dialog_save_button_xpath}    ${arithmetic_save_dialog_xpath}/Button[@AutomationId="1"]
 ${rt_simulator_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Pane/Button[@AutomationId="Main_Btn_RtSimulator"]
 ${rt_simulator_window_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="FoXpert RT Simulator"]
 ${rt_simulator_window_close_button_xpath}    /Window[@AutomationId="FoxRTProMainWindow"]/Window[@Name="FoXpert RT Simulator"]/Button[3]
@@ -617,6 +633,319 @@ Verify Batch Process Completed Successfully
         ${file_path}=    Join Path    ${path}    ${file_name}
         Wait Until Keyword Succeeds    30x    1s    File Should Exist    ${file_path}
     END
+
+Open Aritmetic Window
+    [Documentation]    Open the Image Arithmetic window and size it to match the main application window, so
+    ...    screenshots and coordinate-based steps see it at a known, repeatable size.
+    ...
+    ...    Named 'Aritmetic' — missing the second 'h' — to match the calling test and ${ARITMETIC_WINDOW_XPATH}.
+    ...    Worth correcting to 'Arithmetic' everywhere at some point; it is a rename of the keyword, the
+    ...    variable and the call sites.
+
+    Focus    ${MAIN_WINDOW_XPATH}
+    Sleep    0.2s
+    Wait Until Element Exist    ${arithmetic_tool_button_xpath}    5
+    ...    The Arithmetic tool button (Main_Btn_ImageArithmetic) was not found.
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${arithmetic_tool_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${arithmetic_tool_button_xpath}
+    END
+    Should Be True    ${pressed}    Could not press the Arithmetic tool button.
+
+    Wait Until Element Exist    ${ARITMETIC_WINDOW_XPATH}    10
+    ...    The Arithmetic window (Arithmetic_Window) did not open.
+    Sleep    0.5s
+    # Main window first, Arithmetic window last: both are being moved with Win Move [ACTIVE], so the one you
+    # care about should be the final thing focused.
+    Resize FoxRT Application Window    10    10    1850    1000
+    Sleep    0.2s
+    Resize Aritmetic Window    10    10    1850    1000
+    Sleep    0.2s
+
+Load Images in Arithmetic Window
+    [Arguments]    ${image_slot}    ${file_path}
+    [Documentation]    Load a file into one of the Arithmetic window's two image slots through its Browse button.
+    ...    ${image_slot}: 'Image A' or 'Image B'. Case and spacing are ignored, and a bare 'A' / 'B' works.
+    ...    ${file_path}: full path of the file to load. Checked on disk first, so a bad path fails here rather
+    ...    than leaving an Open dialog stranded on screen for the next keyword to trip over.
+    ...
+    ...    The Open dialog is driven with the same helpers `Open ProjectFile` uses, which already cope with the
+    ...    several shapes this app's file dialog takes.
+
+    ${key}=    Evaluate    ''.join(str($image_slot).split()).lower().replace('-', '').replace('_', '')
+    @{slot_a}=    Create List    imagea    a    slota    first
+    @{slot_b}=    Create List    imageb    b    slotb    second
+    ${is_a}=    Evaluate    $key in $slot_a
+    ${is_b}=    Evaluate    $key in $slot_b
+    IF    ${is_a}
+        ${browse_xpath}=    Set Variable    ${arithmetic_browse_a_button_xpath}
+        ${label}=    Set Variable    Image A
+    ELSE IF    ${is_b}
+        ${browse_xpath}=    Set Variable    ${arithmetic_browse_b_button_xpath}
+        ${label}=    Set Variable    Image B
+    ELSE
+        Fail    Unsupported image slot '${image_slot}'. Use 'Image A' or 'Image B'.
+    END
+
+    ${file_exists}=    Evaluate    __import__('os').path.exists($file_path)
+    Should Be True    ${file_exists}    File to load into ${label} does not exist: ${file_path}
+
+    Wait Until Element Exist    ${ARITMETIC_WINDOW_XPATH}    5
+    ...    The Arithmetic window is not open — call `Open Aritmetic Window` first.
+    Wait Until Element Exist    ${browse_xpath}    5
+    ...    The Browse button for ${label} was not found in the Arithmetic window.
+
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${browse_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${browse_xpath}
+    END
+    Should Be True    ${pressed}    Could not press the Browse button for ${label}.
+    Sleep    0.5s
+
+    ${input_xpath}=    Get Open File Dialog Input Locator
+    Set Text To Textbox    ${input_xpath}    ${file_path}
+    Sleep    0.3s
+    # Read back before committing: a file dialog that quietly ignores the value would otherwise open whatever
+    # happened to be selected, and the mismatch would only show up much later as a wrong image.
+    ${read_ok}    ${typed}=    Run Keyword And Ignore Error    Get Text From Textbox    ${input_xpath}
+    ${matches}=    Run Keyword And Return Status    Should Be Equal As Strings    ${typed}    ${file_path}
+    IF    not ${matches}
+        Log    File name box shows '${typed}' rather than the requested path; typing it instead.    level=WARN
+        Click    ${input_xpath}
+        Sleep    0.2s
+        AutoItLibrary.Send    ^a
+        Sleep    0.1s
+        AutoItLibrary.Send    {DEL}
+        Sleep    0.1s
+        AutoItLibrary.Send    ${file_path}    1
+        Sleep    0.3s
+    END
+
+    Click Open File Dialog Button
+    Wait Until Element Does Not Exist    ${input_xpath}    10
+    ...    The Open dialog is still showing after choosing the file for ${label}.
+    Sleep    0.5s
+
+Verify Image Loaded In Aritmetic Window
+    [Arguments]    ${file_name}
+    [Documentation]    Check that ${file_name} is showing as loaded in the Arithmetic window.
+    ...    ${file_name}: the file's name, e.g. MLE_4_0.237.dcm. A full path is accepted too — only the name is
+    ...    compared — so the same variable used to load the file can be passed straight back in.
+    ...
+    ...    Matched on the label's text rather than its position: the window carries one such label per loaded
+    ...    slot, so which index a given file lands on depends on what else is loaded.
+
+    ${name}=    Evaluate    __import__('os').path.basename(str($file_name).strip())
+    Should Not Be Empty    ${name}    A file name is required to check what the Arithmetic window has loaded.
+
+    Wait Until Element Exist    ${ARITMETIC_WINDOW_XPATH}    5
+    ...    The Arithmetic window is not open — call `Open Aritmetic Window` first.
+
+    ${exact_xpath}=    Set Variable    ${ARITMETIC_WINDOW_XPATH}//Text[@Name="${name}"]
+    ${found}=    Run Keyword And Return Status    Wait Until Element Exist    ${exact_xpath}    5
+    IF    not ${found}
+        # A label may be shown with extra detail around it (a path, or dimensions), so fall back to a partial
+        # match before declaring the file missing.
+        ${found}=    Run Keyword And Return Status
+        ...    Wait Until Element Exist    ${ARITMETIC_WINDOW_XPATH}//Text[contains(@Name,"${name}")]    2
+    END
+
+    Should Be True    ${found}
+    ...    '${name}' is not showing as loaded in the Arithmetic window. Check the file actually loaded, and that the window labels the slot with the file name.
+
+Save Result And Open
+    [Arguments]    ${output_folder}    ${file_name}
+    [Documentation]    Press 'Save Result & Open' in the Arithmetic window, save the computed result to
+    ...    ${output_folder}\\${file_name}, and wait for the file to appear on disk. The app then opens the saved
+    ...    file in the main viewer, which is what the button's '& Open' half does.
+    ...    ${output_folder}: folder to save into; created if it does not exist.
+    ...    ${file_name}: name including its extension, e.g. MFRTA44.dcm.
+    ...
+    ...    Returns: the full path of the saved file.
+
+    Should Not Be Empty    ${output_folder}    An output folder is required.
+    Should Not Be Empty    ${file_name}    A file name is required.
+    Create Directory    ${output_folder}
+    ${save_file_path}=    Join Path    ${output_folder}    ${file_name}
+    ${file_already_exists}=    Evaluate    __import__('os').path.exists($save_file_path)
+
+    Wait Until Element Exist    ${ARITMETIC_WINDOW_XPATH}    5
+    ...    The Arithmetic window is not open — call `Open Aritmetic Window` first.
+    Wait Until Element Exist    ${arithmetic_save_button_xpath}    5
+    ...    The 'Save Result & Open' button (Arithmetic_Btn_Save) was not found.
+    ${enabled}=    Run Keyword And Return Status
+    ...    Element Should Be Enabled    ${arithmetic_save_button_xpath}
+    Should Be True    ${enabled}
+    ...    'Save Result & Open' is disabled — compute a result before saving it.
+
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${arithmetic_save_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${arithmetic_save_button_xpath}
+    END
+    Should Be True    ${pressed}    Could not press 'Save Result & Open'.
+
+    Wait Until Element Exist    ${arithmetic_save_dialog_xpath}    10
+    ...    The '${arithmetic_save_dialog_title}' dialog did not open.
+    Set Arithmetic Save Dialog File Name    ${save_file_path}
+
+    ${save_pressed}=    Run Keyword And Return Status
+    ...    Invoke Button    ${arithmetic_save_dialog_save_button_xpath}
+    IF    not ${save_pressed}
+        ${save_pressed}=    Run Keyword And Return Status
+        ...    Click    ${arithmetic_save_dialog_save_button_xpath}
+    END
+    Should Be True    ${save_pressed}    Could not press Save in the '${arithmetic_save_dialog_title}' dialog.
+
+    # Reuses the stitch overwrite handling: both dialogs raise the same Windows 'Confirm Save As' prompt.
+    Handle Stitch Save Overwrite Warning If Present    ${file_already_exists}
+    Wait Until Element Does Not Exist    ${arithmetic_save_dialog_xpath}    15
+    ...    The '${arithmetic_save_dialog_title}' dialog is still open after pressing Save.
+
+    Wait Until Keyword Succeeds    30x    1s    File Should Exist    ${save_file_path}
+    Sleep    0.5s
+    RETURN    ${save_file_path}
+
+Set Arithmetic Save Dialog File Name
+    [Arguments]    ${file_path}
+    [Documentation]    Type ${file_path} into the Save dialog's 'File name' box and confirm it stuck.
+    ...    Typed with real keystrokes rather than set through UIA: the shell shows a value written with
+    ...    Set Text To Textbox but does not register it as an edit, and then saves under its own default name —
+    ...    the same trap that made the stitch save write 'stitched.tiff'.
+
+    ${box}=    Set Variable    ${EMPTY}
+    @{candidates}=    Create List    ${arithmetic_save_dialog_filename_xpath}
+    ...    ${arithmetic_save_dialog_filename_by_name_xpath}
+    FOR    ${xpath}    IN    @{candidates}
+        ${exists}=    Run Keyword And Return Status    Wait Until Element Exist    ${xpath}    2
+        IF    ${exists}
+            ${box}=    Set Variable    ${xpath}
+            BREAK
+        END
+    END
+    Should Not Be Empty    ${box}
+    ...    Could not find the '${arithmetic_save_dialog_title}' dialog's 'File name' box.
+
+    FOR    ${attempt}    IN RANGE    3
+        Click    ${box}
+        Sleep    0.2s
+        AutoItLibrary.Send    ^a
+        Sleep    0.1s
+        AutoItLibrary.Send    {DEL}
+        Sleep    0.1s
+        AutoItLibrary.Send    ${file_path}    1
+        Sleep    0.4s
+        ${read_ok}    ${current}=    Run Keyword And Ignore Error    Get Text From Textbox    ${box}
+        ${matches}=    Run Keyword And Return Status
+        ...    Should Be Equal As Strings    ${current}    ${file_path}
+        IF    ${matches}    RETURN
+    END
+
+    Fail    Could not get '${file_path}' to stay in the Save dialog's 'File name' box; it reads '${current}'.
+
+Take Arithmetic Result Screenshot
+    [Arguments]    ${filename}
+    [Documentation]    Capture the Arithmetic window's result preview and save it into the Actual folder as
+    ...    ${filename}, ready for `Compare Result Images`.
+    ...    ${filename}: name to save as, e.g. MFRTA37_Result.png.
+    ...
+    ...    Framed on the preview alone, so the surrounding controls — file names, the chosen operation — cannot
+    ...    cause a false difference. Call it after `Perform Arithmetic Operation`: the preview exists whether or
+    ...    not anything has been computed, so capturing too early gets a blank or stale picture rather than an
+    ...    error.
+    ...
+    ...    Returns: the full path the screenshot was saved to.
+
+    Wait Until Element Exist    ${arithmetic_result_image_xpath}    10
+    ...    The result preview (Arithmetic_Preview) was not found in the Arithmetic window.
+    Sleep    0.3s
+    ${dest}=    Take Actual Screenshot    ${filename}    ${arithmetic_result_image_xpath}
+    RETURN    ${dest}
+
+Resolve Arithmetic Operation
+    [Arguments]    ${operation}    ${options}
+    [Documentation]    Turn a short operation name into the dropdown entry that actually exists, or return an
+    ...    empty string when nothing matches.
+    ...
+    ...    The entries spell out their formula — 'Add (A + B)', 'Absolute Difference |A − B|' — and use typographic
+    ...    characters (− × ÷) that are awkward to type and easy to get subtly wrong in a test. So a test names the
+    ...    operation (Add, Sub, Absolute Difference, Average, Multiply, Divide) and the entry is matched from the
+    ...    live list rather than hardcoded here, which also means a reworded formula does not break anything.
+    ...    The full entry text is still accepted and wins outright.
+
+    FOR    ${option}    IN    @{options}
+        ${is_exact}=    Evaluate    str($option).strip() == str($operation).strip()
+        IF    ${is_exact}    RETURN    ${option}
+    END
+
+    ${key}=    Evaluate    ''.join(ch for ch in str($operation).lower() if ch.isalnum())
+    ${aliases}=    Create Dictionary
+    ...    add=add    addition=add    plus=add    sum=add
+    ...    sub=subtract    subtract=subtract    subtraction=subtract    minus=subtract
+    ...    absolutedifference=absolutedifference    absdifference=absolutedifference
+    ...    absdiff=absolutedifference    absolute=absolutedifference
+    ...    average=average    avg=average    mean=average
+    ...    multiply=multiply    multiplication=multiply    mult=multiply    times=multiply    product=multiply
+    ...    divide=divide    division=divide    div=divide    flatfield=divide
+    ${canonical}=    Evaluate    $aliases.get($key, $key)
+
+    FOR    ${option}    IN    @{options}
+        ${normalised}=    Evaluate    ''.join(ch for ch in str($option).lower() if ch.isalnum())
+        ${is_match}=    Evaluate    $normalised.startswith($canonical)
+        IF    ${is_match}    RETURN    ${option}
+    END
+    RETURN    ${EMPTY}
+
+Perform Arithmetic Operation
+    [Arguments]    ${operation}
+    [Documentation]    Pick ${operation} from the Arithmetic window's operation dropdown and press Compute.
+    ...    ${operation}: the entry's text exactly as the dropdown shows it, e.g. 'Subtract'.
+    ...
+    ...    The requested value is checked against the dropdown's own entries first, so a near-miss on the
+    ...    wording fails saying what is actually on offer rather than computing with whatever was selected
+    ...    before. That check is skipped if the entries cannot be read, since asserting against an empty list
+    ...    would fail every call.
+
+    Should Not Be Empty    ${operation}    An operation is required.
+    Wait Until Element Exist    ${ARITMETIC_WINDOW_XPATH}    5
+    ...    The Arithmetic window is not open — call `Open Aritmetic Window` first.
+    Wait Until Element Exist    ${arithmetic_operation_combobox_xpath}    5
+    ...    The operation dropdown (Arithmetic_Combo_Operation) was not found.
+
+    ${read_ok}    ${options}=    Run Keyword And Ignore Error
+    ...    Get All Names From Combobox    ${arithmetic_operation_combobox_xpath}
+    ${resolved}=    Set Variable    ${operation}
+    IF    '${read_ok}' == 'PASS' and ${options}
+        ${resolved}=    Resolve Arithmetic Operation    ${operation}    ${options}
+        Should Not Be Empty    ${resolved}
+        ...    Unsupported arithmetic operation: ${operation}. Available options: ${options}
+        Log    Requested '${operation}' resolved to '${resolved}'.
+    END
+
+    Select Combobox Item By Name    ${arithmetic_operation_combobox_xpath}    ${resolved}
+    Sleep    0.3s
+
+    Wait Until Element Exist    ${arithmetic_compute_button_xpath}    5
+    ...    The Compute button (Arithmetic_Btn_Compute) was not found.
+    ${enabled}=    Run Keyword And Return Status
+    ...    Element Should Be Enabled    ${arithmetic_compute_button_xpath}
+    Should Be True    ${enabled}
+    ...    The Compute button is disabled — load both Image A and Image B before computing.
+
+    ${pressed}=    Run Keyword And Return Status    Invoke Button    ${arithmetic_compute_button_xpath}
+    IF    not ${pressed}
+        ${pressed}=    Run Keyword And Return Status    Click    ${arithmetic_compute_button_xpath}
+    END
+    Should Be True    ${pressed}    Could not press the Compute button.
+    Sleep    1s
+
+Resize Aritmetic Window
+    [Arguments]    ${x}=0    ${y}=0    ${width}=1280    ${height}=800
+    [Documentation]    Move and size the Arithmetic window, mirroring `Resize Stitch Window`.
+
+    Restore FoxRT Window
+    Focus    ${ARITMETIC_WINDOW_XPATH}
+    Win Move    [ACTIVE]    ${EMPTY}    ${x}    ${y}    ${width}    ${height}
+    Sleep    1s
 
 Open Stitch Window
     [Documentation]    Open the Stitch window and size it to match the main application window, so screenshots and

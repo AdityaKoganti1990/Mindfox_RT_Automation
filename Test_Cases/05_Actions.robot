@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Actions test suite. Total Test Cases: 30 (MFRTA01 - MFRTA30).
+Documentation     Actions test suite. Total Test Cases: 44 (MFRTA01 - MFRTA44).
 Library           FlaUILibrary
 Library           Process
 Library           AutoItLibrary
@@ -279,81 +279,155 @@ MFRTA30 - Verify whether able to close RT simulator.
     Close RT Simulator
     Sleep    0.1s
     Run Keyword And Continue On Failure   Verify RT Simulator Window Is Closed
-# MFRTA31 - Verify whether annotations are shown in generated report.
-#     [Documentation]    This test case is to verify whether annotations are shown in generated report.
-#     [Tags]    MFRTA31
+MFRTA31 - Verify whether annotations are shown in generated report.
+    [Documentation]    This test case is to verify whether annotations are shown in generated report.
+    [Tags]    MFRTA31
     
-#     Add Text Annotation    This is a text annotation
-#     Open Report Viewer
-#     Set Report Viewer Params    TestReport1    2026-04-15    Test Report Title    True    True    True    True
-#     Click Export Pdf Button    MFRTA31
-#     Run Keyword And Continue On Failure    Compare Result Files    MFRTA31.pdf    MFRTA31.pdf    95
-#     Delete the annotation
-#     Close Project
-# MFRTA32 - Verify whether tools are shown in generated report.
-#     [Documentation]    This test case is to verify whether tools are shown in generated report.
-#     [Tags]    MFRTA32
+    Add Text Annotation    This is a text annotation
+    Open Report Viewer
+    Set Report Viewer Params    TestReport1    2026-04-15    Test Report Title    True    True    True    True
+    Click Export Pdf Button    MFRTA31
+    Run Keyword And Continue On Failure    Compare Result Files    MFRTA31.pdf    MFRTA31.pdf    95
+    Delete the annotation
+    Close Project
+MFRTA32 - Verify whether tools are shown in generated report.
+    [Documentation]    This test case is to verify whether tools are shown in generated report.
+    [Tags]    MFRTA32
     
-#     Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
-#     Detect IQI Wire Phantom Tool
-#     Open Report Viewer
-#     Set Report Viewer Params    TestReport2    2026-04-15    Test Report Title    True    True    True    True
-#     Click Export Pdf Button    MFRTA32
-#     Run Keyword And Continue On Failure    Compare Result Files    MFRTA32.pdf    MFRTA32.pdf    95
-#     Click    ${IQI_wire_phantom_tool_button_xpath}
-#     Close Project
-# MFRTA33 - Verify whether option is provided to open generated report from the application.
-#     [Documentation]    This test case is to verify whether option is provided to open generated report from the application.
-#     [Tags]    MFRTA33
+    Open ProjectFile    ${project_Directory_Path}DuplexPlate_With_RT.dcm
+    Detect IQI Wire Phantom Tool
+    Open Report Viewer
+    Set Report Viewer Params    TestReport2    2026-04-15    Test Report Title    True    True    True    True
+    Click Export Pdf Button    MFRTA32
+    Run Keyword And Continue On Failure    Compare Result Files    MFRTA32.pdf    MFRTA32.pdf    95
+    Click    ${IQI_wire_phantom_tool_button_xpath}
+    Close Project
+MFRTA33 - Verify whether option is provided to open generated report from the application.
+    [Documentation]    This test case is to verify whether option is provided to open generated report from the application.
+    [Tags]    MFRTA33
 
-#     Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
-#     Open Report Viewer
-#     Set Report Viewer Params    TestReport3    2026-04-15    Test Report Title    True    True    True    True
-#     sleep    0.5s
-#     click    ${REPORT_VIEWER_EXPORT-PDF_BUTTON_XPATH}
-#     sleep    0.5s
-#     Set Text To Textbox    ${EXPORT_PDF_DIALOG_FILENAME_XPATH}    ${CURDIR}\\..\\Actual\\MFRTA33.pdf
-#     Sleep    0.5s
-#     Click    ${Export_PDF_DIALOG_SAVE_BUTTON_XPATH}
-#     Sleep    0.5s
-#     ${replace_prompt_visible}=    Run Keyword And Return Status
-#     ...    Wait Until Element Exist    ${EXPORT_PDF_REPLACE_YES_BUTTON_XPATH}    3
-#     IF    ${replace_prompt_visible}
-#         IF    'Yes' == 'no'
-#             Click    ${EXPORT_PDF_REPLACE_NO_BUTTON_XPATH}
-#         ELSE
-#             Click    ${EXPORT_PDF_REPLACE_YES_BUTTON_XPATH}
-#         END
-#     ELSE
-#         ${replace_prompt_visible_fallback}=    Run Keyword And Return Status
-#         ...    Wait Until Element Exist    ${EXPORT_PDF_REPLACE_YES_BUTTON_FALLBACK_XPATH}    2
-#         IF    ${replace_prompt_visible_fallback}
-#             IF    'Yes' == 'no'
-#                 Click    ${EXPORT_PDF_REPLACE_NO_BUTTON_FALLBACK_XPATH}
-#             ELSE
-#                 Click    ${EXPORT_PDF_REPLACE_YES_BUTTON_FALLBACK_XPATH}
-#             END
-#         END
-#     END
-#     Wait Until Element Exist    ${Report_open_report_button_XPATH}    10
-#     Run Keyword And Continue On Failure    VerifyControlState    ${Report_open_report_button_XPATH}    exists    2
-#     sleep    0.2s
-#     Click    ${Report_close_report_button_XPATH}
-# MFRTA34 - Verify whether able to run batch processing with only filters option selected.
-#     [Documentation]    Verify whether able to run batch processing with only filters option selected.
-#     [Tags]    MFRTA34
+    Open ProjectFile    ${project_Directory_Path}MLE_4_0.237.dcm
+    Open Report Viewer
+    Set Report Viewer Params    TestReport3    2026-04-15    Test Report Title    True    True    True    True
+    sleep    0.5s
+    click    ${REPORT_VIEWER_EXPORT-PDF_BUTTON_XPATH}
+    sleep    0.5s
+    Set Text To Textbox    ${EXPORT_PDF_DIALOG_FILENAME_XPATH}    ${CURDIR}\\..\\Actual\\MFRTA33.pdf
+    Sleep    0.5s
+    Click    ${Export_PDF_DIALOG_SAVE_BUTTON_XPATH}
+    Sleep    0.5s
+    ${replace_prompt_visible}=    Run Keyword And Return Status
+    ...    Wait Until Element Exist    ${EXPORT_PDF_REPLACE_YES_BUTTON_XPATH}    3
+    IF    ${replace_prompt_visible}
+        IF    'Yes' == 'no'
+            Click    ${EXPORT_PDF_REPLACE_NO_BUTTON_XPATH}
+        ELSE
+            Click    ${EXPORT_PDF_REPLACE_YES_BUTTON_XPATH}
+        END
+    ELSE
+        ${replace_prompt_visible_fallback}=    Run Keyword And Return Status
+        ...    Wait Until Element Exist    ${EXPORT_PDF_REPLACE_YES_BUTTON_FALLBACK_XPATH}    2
+        IF    ${replace_prompt_visible_fallback}
+            IF    'Yes' == 'no'
+                Click    ${EXPORT_PDF_REPLACE_NO_BUTTON_FALLBACK_XPATH}
+            ELSE
+                Click    ${EXPORT_PDF_REPLACE_YES_BUTTON_FALLBACK_XPATH}
+            END
+        END
+    END
+    Wait Until Element Exist    ${Report_open_report_button_XPATH}    10
+    Run Keyword And Continue On Failure    VerifyControlState    ${Report_open_report_button_XPATH}    exists    2
+    sleep    0.2s
+    Click    ${Report_close_report_button_XPATH}
+MFRTA34 - Verify whether able to run batch processing with only filters option selected.
+    [Documentation]    Verify whether able to run batch processing with only filters option selected.
+    [Tags]    MFRTA34
 
-#     Open Batch Processing Window
-#     Add files to Batch Processing Window    @{BATCH_TEST_FILES}
-#     Sleep    0.1s
-#     Click    ${batch_operation_export_images_checkbox_XPATH}
-#     sleep    0.1s
-#     Run Keyword And Continue On Failure    Verify ControlState    ${batch_operation_apply_filter_checkbox_XPATH}    disabled
-#     Sleep    0.1s
-#     Click    ${batch_operation_export_images_checkbox_XPATH}
-#     sleep    0.1s
-#     Run Keyword And Continue On Failure    Verify ControlState    ${batch_operation_apply_filter_checkbox_XPATH}    enabled
-#     Close Batch Processing Window
-#     Close Project
-#     Close FoxRT Application Window
+    Open Batch Processing Window
+    Add files to Batch Processing Window    @{BATCH_TEST_FILES}
+    Sleep    0.1s
+    Click    ${batch_operation_export_images_checkbox_XPATH}
+    sleep    0.1s
+    Run Keyword And Continue On Failure    Verify ControlState    ${batch_operation_apply_filter_checkbox_XPATH}    disabled
+    Sleep    0.1s
+    Click    ${batch_operation_export_images_checkbox_XPATH}
+    sleep    0.1s
+    Run Keyword And Continue On Failure    Verify ControlState    ${batch_operation_apply_filter_checkbox_XPATH}    enabled
+    Close Batch Processing Window
+    Close Project
+MFRTA35 - Verify whether able to open Aritmetic Operations window.
+    [Documentation]    Verify whether able to open Aritmetic Operations window.
+    [Tags]    MFRTA35
+
+    Open Aritmetic Window
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Verify window is opened    Image Arithmetic
+MFRTA36 - Verify whether able to load image A in Aritmetic Operations window.
+    [Documentation]    Verify whether able to load image A in Aritmetic Operations window.
+    [Tags]    MFRTA36
+
+    Load Images in Arithmetic Window    Image A    ${project_Directory_Path}MLE_4_0.237.dcm
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Verify Image Loaded In Aritmetic Window    MLE_4_0.237.dcm
+MFRTA37 - Verify whether able to load image B in Aritmetic Operations window.
+    [Documentation]    Verify whether able to load image B in Aritmetic Operations window.
+    [Tags]    MFRTA37
+
+    Load Images in Arithmetic Window    Image B    ${project_Directory_Path}MLE_6_0.280.dcm
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Verify Image Loaded In Aritmetic Window    MLE_6_0.280.dcm
+MFRTA38 - Verify whether able to perform subtraction operation in Aritmetic Operations window.
+    [Documentation]    Verify whether able to perform subtraction operation in Aritmetic Operations window.
+    [Tags]    MFRTA38
+
+    Perform Arithmetic Operation    Subtract
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Take Arithmetic Result Screenshot    MFRTA38.png    
+MFRTA39 - Verify whether able to perform Absolute Difference operation in Aritmetic Operations window.
+    [Documentation]    Verify whether able to perform Absolute Difference operation in Aritmetic Operations window.
+    [Tags]    MFRTA39
+
+    Perform Arithmetic Operation    Absolute Difference
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Take Arithmetic Result Screenshot    MFRTA39.png
+MFRTA40 - Verify whether able to perform Average operation in Aritmetic Operations window.
+    [Documentation]    Verify whether able to perform Average operation in Aritmetic Operations window.
+    [Tags]    MFRTA40
+
+    Perform Arithmetic Operation    Average
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Take Arithmetic Result Screenshot    MFRTA40.png
+MFRTA41 - Verify whether able to perform Multiply operation in Aritmetic Operations window.
+    [Documentation]    Verify whether able to perform Multiply operation in Aritmetic Operations window.
+    [Tags]    MFRTA41
+
+    Perform Arithmetic Operation    Multiply
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Take Arithmetic Result Screenshot    MFRTA41.png
+MFRTA42 - Verify whether able to perform Divide operation in Aritmetic Operations window.
+    [Documentation]    Verify whether able to perform Divide operation in Aritmetic Operations window.
+    [Tags]    MFRTA42
+
+    Perform Arithmetic Operation    Divide
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Take Arithmetic Result Screenshot    MFRTA42.png
+MFRTA43 - Verify whether able to perform Addition operation in Aritmetic Operations window.
+    [Documentation]    Verify whether able to perform Addition operation in Aritmetic Operations window.
+    [Tags]    MFRTA43
+
+    Perform Arithmetic Operation    Addition
+    Sleep    0.1s
+    Run Keyword And Continue On Failure   Take Arithmetic Result Screenshot    MFRTA43.png
+MFRTA44 - Verify whether Save Result & Open, saves the result and open it into main application.
+    [Documentation]    Verify whether Save Result & Open, saves the result and open it into main application.
+    [Tags]    MFRTA44
+
+    Save Result And Open    ${Actual_Image_Exports}    MFRTA44.dcm
+    Sleep    0.1s
+    Run Keyword And Continue On Failure    Compare Result Images    ${Actual_Image_Exports}MFRTA44.dcm    ${Expected_Image_Exports}MFRTA44.dcm
+    Run Keyword And Continue On Failure    Take Actual Screenshot    MFRTA44.png
+    Run Keyword And Continue On Failure    Compare Result Images    MFRTA44.png    MFRTA44.png    95
+    Close Project
+    Close FoxRT Application Window
+    
 
